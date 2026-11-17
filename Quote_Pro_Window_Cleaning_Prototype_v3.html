@@ -112,6 +112,9 @@
 #admin .estimate-setting-row{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;column-gap:12px!important;width:100%;max-width:100%;margin:12px 0;cursor:pointer;text-align:left;line-height:1.45;color:var(--ink)}
 #admin .estimate-setting-row input[type="checkbox"]{appearance:auto;-webkit-appearance:checkbox;box-sizing:border-box;display:block!important;grid-column:1;width:20px!important;min-width:20px!important;max-width:20px!important;height:20px!important;min-height:20px!important;margin:0!important;padding:0!important;border-radius:4px!important;accent-color:var(--accent);justify-self:start}
 #admin .estimate-setting-row span{display:block;grid-column:2;width:auto;min-width:0;margin:0;padding:0;font-size:14px;overflow-wrap:break-word}
+/* Fix ALL standard admin checkbox rows: generic .admin input had made each checkbox 100% wide. */
+#admin .adminsec label.check{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-width:0;line-height:1.4;text-align:left;cursor:pointer}
+#admin .adminsec label.check input[type="checkbox"]{box-sizing:border-box;appearance:auto;-webkit-appearance:checkbox;display:block;flex:0 0 20px;width:20px;min-width:20px;max-width:20px;height:20px;min-height:20px;max-height:20px;margin:0;padding:0;border-radius:4px;accent-color:var(--accent)}
 </style></head><body><svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
 <filter id="quote-icon-light" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
 <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -0.2126 -0.7152 -0.0722 0 1"/>
