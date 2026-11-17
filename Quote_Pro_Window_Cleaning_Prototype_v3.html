@@ -136,7 +136,7 @@
 <div style="margin-top:16px"><label class="check"><input id="enableEstimateBuffer" type="checkbox"> Add an estimate buffer (price range)</label>
 <div class="row" style="justify-content:flex-start;gap:7px;margin-top:6px">
 <span class="fine">Estimate buffer</span><button type="button" id="bufferHelpToggle" aria-label="What is an estimate buffer?" aria-expanded="false" aria-controls="bufferHelp" style="border:1px solid var(--stroke);border-radius:50%;width:24px;height:24px;min-width:24px;padding:0;background:var(--panel2);color:var(--ink);font-size:12px;font-weight:800">i</button></div>
-<p id="bufferHelp" class="fine hidden" style="background:var(--panel2);padding:12px;border-radius:9px;margin-top:8px">An estimate buffer creates a natural minimum–maximum price range to allow for misunderstandings when customers count or describe their windows. For example, a £25 estimate with a 10% buffer becomes £22.50–£27.50. It is not an extra charge; it communicates an estimated range, with the final price subject to confirmation. Existing item price ranges are included first, then the buffer is applied to the total.</p>
+<p id="bufferHelp" class="fine hidden" style="background:var(--panel2);padding:12px;border-radius:9px;margin-top:8px">An estimate buffer creates a natural minimum–maximum price range to allow for misunderstandings when customers count or describe their windows. For example, a £25 estimate with a 10% buffer becomes £22–£28. The lower end is rounded down to the nearest whole pound and the upper end rounded up, so customers never see pennies in the buffered estimate. It is not an extra charge; it communicates an estimated range, with the final price subject to confirmation. Existing item price ranges are included first, then the buffer is applied to the total.</p>
 <div id="bufferControls" class="settings hidden" style="margin-top:12px">
 <label class="field">Buffer type<select id="bufferMode"><option value="percent">Percentage (± %)</option><option value="amount">Fixed amount (± £)</option></select></label>
 <label class="field">Buffer size<input id="bufferValue" type="number" min="0" step="0.01" value="10" inputmode="decimal"></label>
@@ -253,10 +253,15 @@ function price(){
  const b=Math.max(0,Number(config.bufferValue)||0);
  const lowBuffer=hasBuffer?(config.bufferMode==='amount'?b:minSubtotal*b/100):0;
  const highBuffer=hasBuffer?(config.bufferMode==='amount'?b:maxSubtotal*b/100):0;
- return {items,ps,frequencyIncrease,multiplier,minSubtotal,maxSubtotal,minTotal:items.length?Math.max(0,minimum,minSubtotal-lowBuffer):0,maxTotal:items.length?Math.max(minimum,maxSubtotal+highBuffer):0,minimum,hasBuffer};
+ const rawMin=items.length?Math.max(0,minimum,minSubtotal-lowBuffer):0;
+ const rawMax=items.length?Math.max(minimum,maxSubtotal+highBuffer):0;
+ const minTotal=hasBuffer?Math.max(Math.ceil(minimum),Math.floor(rawMin)):rawMin;
+ const maxTotal=hasBuffer?Math.max(Math.ceil(minimum),Math.ceil(rawMax)):rawMax;
+ return {items,ps,frequencyIncrease,multiplier,minSubtotal,maxSubtotal,minTotal,maxTotal,minimum,hasBuffer};
 }
 function estimateHtml(){
  const p=price(),range=(lo,hi)=>Math.abs(hi-lo)<.005?money(lo):money(lo)+'–'+money(hi);
+ const totalRange=(lo,hi)=>p.hasBuffer?('£'+Math.round(lo)+(Math.abs(hi-lo)<.005?'':'–£'+Math.round(hi))):range(lo,hi);
  const breakdown=config.showPriceBreakdown&&p.items.length?'<div class="quote-breakdown" aria-label="Price breakdown">'+p.items.map(d=>{
   const qty=state.qty[d.id]||0,lo=qty*Number(p.ps.prices[d.id])*p.multiplier,hi=qty*(p.ps.modes[d.id]==='range'?Number(p.ps.max[d.id]):Number(p.ps.prices[d.id]))*p.multiplier;
   return '<div class="breakdown-row"><span>'+qty+' × '+esc(d.name)+'</span><strong>'+range(lo,hi)+'</strong></div>'
@@ -264,7 +269,7 @@ function estimateHtml(){
  const note=p.items.length&&p.minimum>0&&p.minTotal>=p.minimum&&p.minSubtotal<p.minimum?'<div class="fine">Minimum charge applies</div>':'';
  const bufferNote=p.hasBuffer?'<div class="fine">Estimated range allows for variations in the work described. Final price subject to confirmation.</div>':'';
  const frequencyNote=p.frequencyIncrease>0?'<div class="fine">Includes '+p.frequencyIncrease+'% increase for selected cleaning frequency.</div>':'';
- return '<div class="row"><div><div class="fine">Your live estimate</div><div class="money">'+(p.items.length?range(p.minTotal,p.maxTotal):'£0.00')+'</div></div><div class="fine">'+(state.frequency?esc(frequencies.find(([k])=>k===state.frequency)?.[1]||''):'Example prices')+'</div></div>'+breakdown+note+frequencyNote+bufferNote+(!p.items.length?'<div class="fine">Add at least one window or extra to calculate your estimate.</div>':'');
+ return '<div class="row"><div><div class="fine">Your live estimate</div><div class="money">'+(p.items.length?totalRange(p.minTotal,p.maxTotal):'£0.00')+'</div></div><div class="fine">'+(state.frequency?esc(frequencies.find(([k])=>k===state.frequency)?.[1]||''):'Example prices')+'</div></div>'+breakdown+note+frequencyNote+bufferNote+(!p.items.length?'<div class="fine">Add at least one window or extra to calculate your estimate.</div>':'');
 }
 function renderFrequency(){$('frequencyOptions').innerHTML=frequencies.filter(([id])=>config.frequencies[id]).map(([id,label])=>`<button type="button" data-frequency="${id}" class="frequency ${state.frequency===id?'selected':''}">${label}</button>`).join('')}
 function renderContacts(){const rule=config.contactRule;$('phoneStar').classList.toggle('hidden',rule==='email');$('emailStar').classList.toggle('hidden',rule==='mobile');$('contactPhone').required=rule==='mobile'||rule==='both';$('contactEmail').required=rule==='email'||rule==='both';}
