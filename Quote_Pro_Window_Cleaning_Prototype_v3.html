@@ -108,6 +108,10 @@
 .admin .frequency-admin-percent{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
 .admin .frequency-admin-percent input{margin:0;width:70px;min-width:60px;padding:7px 8px}
 @media(max-width:500px){.admin .frequency-admin-adjust{align-items:flex-start;flex-wrap:wrap}.admin .frequency-admin-top{flex-wrap:wrap}.admin .frequency-admin-top [data-frequency-label]{flex-basis:100%}}
+/* Keep enquiry-display toggles and their labels aligned inside the admin form. */
+.admin .estimate-toggle{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:100%;cursor:pointer;line-height:1.4}
+.admin .estimate-toggle input[type="checkbox"]{display:block;flex:0 0 20px;width:20px!important;min-width:20px;height:20px;margin:0;padding:0}
+.admin .estimate-toggle span{display:block;flex:1;min-width:0}
 </style></head><body><svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
 <filter id="quote-icon-light" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
 <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -0.2126 -0.7152 -0.0722 0 1"/>
@@ -131,9 +135,9 @@
 <div class="adminsec"><h3>How should windows be counted?</h3><div class="settings"><label class="field">Standard windows<select id="windowMode"><option value="sizes">Small / medium / large</option><option value="panes">Individual glass panes</option></select></label><label class="field">Conservatory windows<select id="conMode"><option value="sizes">Small / medium / large conservatory</option><option value="panes">Individual glass panes</option></select></label><label class="field">Patio / French doors<select id="patioMode"><option value="door">Per complete door</option><option value="panes">Per glass pane</option></select></label><label class="field">Skylights<select id="skylightMode"><option value="flat">Flat rate per skylight</option><option value="sizes">Small / medium / large</option></select></label></div><p class="fine">The customer only sees the method you select.</p></div>
 <div class="adminsec"><h3>Example prices and visibility</h3><p class="fine">For each item, choose a fixed price (for example £2 per window) or a price range (£2–£4 per window). Enter both minimum and maximum for ranges. Disabled items do not need prices. £0 is allowed.</p><div id="adminPrices"></div></div>
 <div class="adminsec"><h3>Estimate display</h3>
-<label class="check"><input id="showPriceBreakdown" type="checkbox"> Show customers an itemised price breakdown</label>
+<label class="check estimate-toggle"><input id="showPriceBreakdown" type="checkbox"><span>Show customers an itemised price breakdown</span></label>
 <p class="fine">When enabled, the live estimate lists the selected items, quantities and their calculated prices. Off shows the total only.</p>
-<div style="margin-top:16px"><label class="check"><input id="enableEstimateBuffer" type="checkbox"> Add an estimate buffer (price range)</label>
+<div style="margin-top:16px"><label class="check estimate-toggle"><input id="enableEstimateBuffer" type="checkbox"><span>Add an estimate buffer (price range)</span></label>
 <div class="row" style="justify-content:flex-start;gap:7px;margin-top:6px">
 <span class="fine">Estimate buffer</span><button type="button" id="bufferHelpToggle" aria-label="What is an estimate buffer?" aria-expanded="false" aria-controls="bufferHelp" style="border:1px solid var(--stroke);border-radius:50%;width:24px;height:24px;min-width:24px;padding:0;background:var(--panel2);color:var(--ink);font-size:12px;font-weight:800">i</button></div>
 <p id="bufferHelp" class="fine hidden" style="background:var(--panel2);padding:12px;border-radius:9px;margin-top:8px">An estimate buffer creates a natural minimum–maximum price range to allow for misunderstandings when customers count or describe their windows. For example, a £25 estimate with a 10% buffer becomes £22–£28. The lower end is rounded down to the nearest whole pound and the upper end rounded up, so customers never see pennies in the buffered estimate. It is not an extra charge; it communicates an estimated range, with the final price subject to confirmation. Existing item price ranges are included first, then the buffer is applied to the total.</p>
