@@ -99,7 +99,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 </div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
 <section id="admin" hidden>
 <div class="eyebrow">QUOTE PRO · PROPERTY SIZE</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
-<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Use navy &amp; light-blue theme</button></div>
+<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Restore default colours</button></div>
 <div class="adminsec"><h2>Property size pricing</h2><p class="adminhelp">Set a fixed price or a minimum–maximum range for each property size. Customers never see prices on the selection buttons.</p><div id="admin-houses"></div><button type="button" class="linkaction" id="addHouse">+ Add property size</button></div>
 <div class="adminsec"><h2>Additional items</h2><p class="adminhelp">Each add-on is priced once per property — no window counting. Conservatory windows have separate Small, Medium and Large prices, each fixed or ranged.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
 <div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
@@ -124,7 +124,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 "use strict";
 var $=id=>document.getElementById(id);
 var defaults={
- colors:{bg:"#0b2345",text:"#ffffff",card:"#17324f",selector:"#0d2258",outline:"#405a88",accent:"#58bff0"},
+ colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb"},
  houses:[{id:"flat",name:"Flat / maisonette",on:true,mode:"fixed",lo:18,hi:18},
  {id:"small",name:"1–2 bedroom home",on:true,mode:"fixed",lo:23,hi:23},
  {id:"medium",name:"3–4 bedroom home",on:true,mode:"range",lo:28,hi:35},
