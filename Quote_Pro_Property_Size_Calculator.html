@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quote Pro — Property Size calculator</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:#071420;color:#eef6ff;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #58bff0;outline-offset:2px}
+.app{max-width:950px;margin:auto;padding:19px 14px 70px}
+header{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.5px}.brand span{color:#58bff0}
+.subbrand{font-size:12px;color:#acbecc}
+.tabs{display:flex;gap:8px}.tab,.btn{border:1px solid #36526a;color:#f5faff;background:#1a3145;border-radius:11px;font-weight:750;padding:11px 14px;min-height:44px}
+.tab.active,.btn.primary{background:#58bff0;color:#06243c;border-color:#58bff0}
+.notice{background:#192b38;border:1px solid #435668;border-radius:10px;color:#bed3e2;padding:11px 14px;font-size:12px;margin-bottom:14px}
+[hidden]{display:none!important}
+#customer{--c-bg:#0b2345;--c-text:#ffffff;--c-card:#17324f;--c-select:#0d2258;--c-outline:#405a88;--c-accent:#58bff0;--c-btn-text:#06243c;background:var(--c-bg);color:var(--c-text);border-radius:20px;padding:18px}
+.hero{padding:23px 27px 0;margin-bottom:22px}.eyebrow{color:var(--c-accent);font-size:11px;letter-spacing:1.3px;font-weight:850}
+h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-size:21px;line-height:1.27;margin:4px 0 7px}h3{font-size:16px;margin:0 0 11px}
+.caption{color:#b9cbd9;font-size:13px;margin:0 0 16px}
+.panel{padding:clamp(16px,3vw,24px);border:1px solid #34516c;border-radius:19px}
+.steps{display:flex;gap:8px;margin-bottom:19px}.step{flex:1;min-width:0;border-bottom:3px solid #40556a;padding:3px 3px 9px;color:#b1c6d7;text-align:center;font-weight:700;font-size:12px}
+.step.active{border-color:var(--c-accent);color:var(--c-text)}
+.section{padding:18px 0;border-bottom:1px solid #35516b}.section:first-child{padding-top:0}.section:last-child{padding-bottom:0;border:0}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.house{min-height:76px;padding:14px 12px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:13px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;line-height:1.25}
+.house.selected,.frequency.selected{outline:2px solid var(--c-accent);outline-offset:-2px;border-color:var(--c-accent)}
+.extra{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:12px;margin-top:9px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);cursor:pointer}
+.extra span{flex:1;line-height:1.35}.extra input{appearance:auto;accent-color:var(--c-accent);width:20px;height:20px;flex:0 0 20px;margin:0}
+.frequency{display:block;width:100%;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:11px;padding:13px 15px;margin:8px 0;text-align:left;min-height:47px;font-weight:750}
+.estimate{background:var(--c-card);border:1px solid var(--c-accent);border-radius:14px;padding:16px}.estimate .amount{font-size:clamp(27px,5vw,38px);font-weight:900;line-height:1.25}
+.estimate-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.estimate .fine{font-size:12px;opacity:.8}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:start;font-size:13px;padding:6px 0}.line strong{text-align:right;white-space:nowrap}
+.item-breakdown{border-top:1px solid #586c82;margin-top:12px;padding-top:7px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;font-size:13px;font-weight:700}.field.wide{grid-column:1/-1}
+.field input,.field textarea,.field select{display:block;width:100%;padding:11px 12px;margin-top:6px;color:#f4faff;background:#0a192a;border:1px solid #51708c;border-radius:9px;min-width:0}
+.field textarea{resize:vertical}.req{color:#ffda74}.muted{opacity:.76;font-size:12px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap}.navright{display:flex;gap:8px}
+.nav .btn.primary,#customer .btn.primary{background:var(--c-accent);border-color:var(--c-accent);color:var(--c-btn-text)}
+.error{color:#ffb3b3;font-size:13px;margin-top:12px}
+.review-card{border:1px solid var(--c-outline);background:var(--c-card);padding:15px;border-radius:13px;margin:12px 0}
+.review-row{display:grid;grid-template-columns:36% minmax(0,1fr);gap:10px;font-size:13px;padding:5px 0}
+.review-row .key{opacity:.76}.review-row span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+.disclaimer{border-left:3px solid var(--c-accent);padding:10px 12px;font-size:13px;margin:14px 0;white-space:pre-wrap;background:var(--c-card)}
+.powered{text-align:center;font-size:11px;opacity:.74;margin:16px auto 0}.powered strong{color:var(--c-accent)}
+#admin{border:1px solid #38546a;border-radius:18px;background:#101e2b;padding:20px}
+.adminsec{border-bottom:1px solid #304555;padding:16px 0}.adminsec:first-of-type{padding-top:0}.adminsec:last-of-type{border:0}
+.adminsec h2{font-size:19px}.adminhelp{font-size:12px;color:#b4c5d4;margin:3px 0 14px}
+.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.price-row{border:1px solid #3c5368;border-radius:12px;padding:13px;margin:9px 0;background:#172a39}
+.price-row .rowtop{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
+.price-row .rowtop .field{flex:1;min-width:155px}.priceline{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:9px}
+.price-row .field input,.price-row .field select{padding:9px}
+.check{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
+.check input[type=checkbox]{appearance:auto;width:19px;height:19px;margin:0;flex:0 0 19px;accent-color:#58bff0}
+.pickergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:10px 0}
+.pickergrid label{font-size:12px;color:#cfdeed;font-weight:650}.pickergrid input{display:block;width:100%;height:42px;margin-top:7px;cursor:pointer;border:1px solid #50687c;border-radius:8px;background:#172b3a;padding:4px}
+#admin .field{color:#c6d6e3}#admin .field input,#admin .field textarea,#admin .field select{background:#0a1725}
+.adminactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.linkaction{color:#8fd5f6;text-decoration:none;background:transparent;border:0;padding:6px 0}
+.footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
+@media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
+</style></head><body><div class="app">
+<header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Property Size calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
+<div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
+<section id="customer"><div class="hero"><div class="eyebrow">PROPERTY SIZE CALCULATOR</div><h1>Get your instant estimate</h1><div class="muted">Choose your property size, add any extras and select a cleaning frequency.</div></div>
+<div class="panel">
+<div class="steps" id="steps"></div>
+<section id="step-property"><div class="section"><div class="eyebrow">YOUR PROPERTY</div><h2>What size is your property?</h2><p class="caption">Choose the option that best describes your home.</p><div id="houses" class="choices"></div></div>
+<div class="section"><div class="eyebrow">ADDITIONAL ITEMS</div><h2>Anything extra?</h2><p class="caption">Select any additional services you'd like included. No window counting required.</p><div id="extras"></div></div><div id="estimate-property" class="section"></div></section>
+<section id="step-frequency" hidden><div class="section"><div class="eyebrow">CLEANING FREQUENCY</div><h2>How often would you like your windows cleaned?</h2><div id="frequencies"></div></div><div id="estimate-frequency" class="section"></div></section>
+<section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Please enter your details so we can review your enquiry.</p>
+<form id="contacts" novalidate><div class="formgrid">
+<label class="field">Full name <span class="req">*</span><input id="name" autocomplete="name" required placeholder="Your full name"></label>
+<label class="field">Mobile number <span id="phoneRequired" class="req">*</span><input id="phone" type="tel" autocomplete="tel" placeholder="Mobile number"></label>
+<label class="field">Email address <span id="emailRequired" class="req" hidden>*</span><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+<label class="field wide">Property address <span class="req">*</span><textarea id="address" rows="2" placeholder="Property address"></textarea></label>
+<label class="field wide">Additional notes <span class="muted">(optional)</span><textarea id="notes" rows="3" placeholder="Anything else we should know?"></textarea></label>
+</div></form></div><div id="estimate-contact" class="section"></div></section>
+<section id="step-review" hidden><div class="section"><div class="eyebrow">FINAL STEP</div><h2>Review your enquiry</h2><p class="caption">Please check your choices and contact details before submitting.</p><div id="review-details"></div><div id="review-amount"></div><p id="review-disclaimer" class="disclaimer"></p><p class="muted">Private prototype: the button demonstrates submission without sending personal data.</p>
+<div class="nav"><button id="reviewEdit" class="btn" type="button">← Edit details</button><button id="submit" class="btn primary" type="button">Submit my enquiry →</button></div></div></section>
+<section id="step-done" hidden><div class="section"><div class="eyebrow">DEMO COMPLETE</div><h2>Enquiry preview finished</h2><p>This demonstration has completed. <strong>No personal information has been submitted or stored.</strong></p><button id="restart" class="btn primary" type="button">Start again</button></div></section>
+<p class="error" id="error" role="alert" hidden></p>
+<div class="nav" id="navigation"><button class="btn" type="button" id="back">← Back</button><div class="navright"><button class="btn" type="button" id="reset">Reset</button><button class="btn primary" type="button" id="next">Continue →</button></div></div>
+</div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
+<section id="admin" hidden>
+<div class="eyebrow">QUOTE PRO · PROPERTY SIZE</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
+<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Use navy &amp; light-blue theme</button></div>
+<div class="adminsec"><h2>Property size pricing</h2><p class="adminhelp">Set a fixed price or a minimum–maximum range for each property size. Customers never see prices on the selection buttons.</p><div id="admin-houses"></div><button type="button" class="linkaction" id="addHouse">+ Add property size</button></div>
+<div class="adminsec"><h2>Additional items</h2><p class="adminhelp">Each add-on is a simple Yes/No selection priced once per property. Use fixed prices or ranges — no quantity or pane counting.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
+<div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
+<div class="adminsec"><h2>Estimate settings</h2><div class="settings">
+<label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
+<label class="field">Estimate buffer<select id="bufferMode"><option value="off">Off</option><option value="percent">Percentage ±%</option><option value="amount">Fixed amount ±£</option></select></label>
+<label class="field">Buffer value<input type="number" min="0" step=".01" id="bufferValue"></label>
+<label class="field">Contact details position<select id="contactPosition"><option value="end">At the end</option><option value="start">At the start</option></select></label>
+<label class="field">When to show estimated price<select id="estimateTiming"><option value="live">Live throughout</option><option value="end">Final review only</option></select></label>
+<label class="field">Required contact details<select id="contactRule"><option value="mobile">Mobile required; email optional</option><option value="email">Email required; mobile optional</option><option value="both">Both mobile and email required</option></select></label>
+</div><p class="adminhelp">A buffer creates a natural range for possible differences in the work described. For example, £25 ±10% is displayed as £22–£28 (rounded outward to whole pounds). It is not an additional charge. Your minimum charge is respected.</p>
+<label class="check"><input id="showBreakdown" type="checkbox"> Show itemised prices in live estimate and quote summary</label>
+<p class="adminhelp">When off, customers see only the total estimate, never individual prices. Property and extra selection buttons never show prices.</p>
+<label class="check"><input id="showDisclaimer" type="checkbox"> Show final estimate disclaimer</label>
+<label class="field" style="margin-top:10px">Disclaimer wording<textarea id="disclaimerText" rows="2"></textarea></label>
+</div>
+<div class="adminactions"><button id="save" type="button" class="btn primary">Save settings</button><button id="preview" type="button" class="btn">Preview calculator</button></div><p class="adminhelp" role="status" id="admin-message"></p></section>
+<div class="footer">Quote Pro by JobCaddy · Property Size private prototype</div>
+</div>
+<script>
+(function(){
+"use strict";
+var $=id=>document.getElementById(id);
+var defaults={
+ colors:{bg:"#0b2345",text:"#ffffff",card:"#17324f",selector:"#0d2258",outline:"#405a88",accent:"#58bff0"},
+ houses:[{id:"flat",name:"Flat / maisonette",on:true,mode:"fixed",lo:18,hi:18},
+ {id:"small",name:"1–2 bedroom home",on:true,mode:"fixed",lo:23,hi:23},
+ {id:"medium",name:"3–4 bedroom home",on:true,mode:"range",lo:28,hi:35},
+ {id:"large",name:"5+ bedroom home",on:true,mode:"range",lo:40,hi:55}],
+ extras:[{id:"conservatory",name:"Conservatory windows",on:true,mode:"range",lo:12,hi:18},
+ {id:"patio",name:"Patio / French doors",on:true,mode:"fixed",lo:5,hi:5},
+ {id:"skylights",name:"Skylights",on:true,mode:"range",lo:6,hi:10}],
+ frequencies:[{id:"4",name:"Every 4 weeks",on:true,inc:false,pct:0},{id:"8",name:"Every 8 weeks",on:true,inc:false,pct:0},
+ {id:"12",name:"Every 12 weeks",on:true,inc:false,pct:0},{id:"once",name:"One-off clean",on:true,inc:false,pct:0}],
+ minimum:18,bufferMode:"off",bufferValue:10,contactPosition:"end",estimateTiming:"live",contactRule:"mobile",
+ showBreakdown:false,showDisclaimer:true,disclaimerText:"This is an estimate. Final price is subject to confirmation."
+};
+var clone=obj=>JSON.parse(JSON.stringify(obj));
+var config=clone(defaults);
+try{var saved=JSON.parse(localStorage.getItem("quotepro-property-size-v1")||"null");if(saved&&typeof saved==="object")config=Object.assign(clone(defaults),saved)}catch(e){}
+var state={step:"property",house:null,extras:[],frequency:null};
+var esc=value=>String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+var money=value=>"£"+Number(value).toFixed(2);
+function order(){return config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"]}
+function label(step){return ({property:"Property",frequency:"Frequency",contact:"Contact"})[step]}
+function color(hex){return /^#[0-9a-f]{6}$/i.test(hex||"")?hex:"#58bff0"}
+function applyTheme(){
+ var customer=$("customer"),cs=config.colors||defaults.colors;
+ for(var pair of [["bg","--c-bg"],["text","--c-text"],["card","--c-card"],["selector","--c-select"],["outline","--c-outline"],["accent","--c-accent"]])
+  customer.style.setProperty(pair[1],color(cs[pair[0]]));
+ var hex=color(cs.accent).slice(1),rgb=[0,2,4].map(i=>parseInt(hex.substring(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
+ customer.style.setProperty("--c-btn-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#051b2a":"#ffffff");
+}
+function calc(){
+ var house=config.houses.find(x=>x.id===state.house&&x.on);
+ var extras=config.extras.filter(x=>x.on&&state.extras.includes(x.id));
+ var items=[...(house?[house]:[]),...extras],freq=config.frequencies.find(x=>x.id===state.frequency);
+ var multiplier=freq&&freq.inc?1+Number(freq.pct)/100:1;
+ var lo=items.reduce((a,x)=>a+Number(x.lo),0)*multiplier;
+ var hi=items.reduce((a,x)=>a+Number(x.mode==="range"?x.hi:x.lo),0)*multiplier;
+ var minimum=Number(config.minimum)||0;
+ var buffer=config.bufferMode!=="off"&&items.length>0,val=Number(config.bufferValue)||0;
+ var lowBuffer=buffer?(config.bufferMode==="amount"?val:lo*val/100):0;
+ var highBuffer=buffer?(config.bufferMode==="amount"?val:hi*val/100):0;
+ return {items:items,lo:items.length?Math.max(minimum,buffer?Math.floor(lo-lowBuffer):lo):0,
+ hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer:buffer,multiplier:multiplier,house:house,extras:extras,freq:freq};
+}
+function formatted(v){return config.bufferMode!=="off"?"£"+Math.round(v):money(v)}
+function range(lo,hi){return Math.abs(lo-hi)<.005?formatted(lo):formatted(lo)+"–"+formatted(hi)}
+function quoteMarkup(){
+ var p=calc();if(!p.house)return '<p class="muted">Select a property size to see your estimate.</p>';
+ var parts=p.items.map(x=>{
+ var lo=Number(x.lo)*p.multiplier,hi=Number(x.mode==="range"?x.hi:x.lo)*p.multiplier;
+ return '<div class="line"><span>'+esc(x.name)+'</span><strong>'+money(lo)+(hi-lo>.005?'–'+money(hi):'')+'</strong></div>';
+ }).join("");
+ return '<div class="estimate"><div class="estimate-head"><div><div class="fine">YOUR ESTIMATED PRICE</div><div class="amount">'+range(p.lo,p.hi)+'</div></div><div class="fine">'+esc(p.freq?.name||"")+'</div></div>'+
+ (config.showBreakdown?'<div class="item-breakdown">'+parts+'</div>':"")+
+ (p.buffer?'<p class="fine" style="margin:9px 0 0">This is an estimated range. Final price subject to confirmation.</p>':"")+'</div>';
+}
+function render(){
+ applyTheme();var steps=order(),current=state.step;
+ $("steps").innerHTML=steps.map((s,i)=>'<div class="step '+(s===current?"active":"")+'">'+(i+1)+' · '+label(s)+'</div>').join("");
+ for(var s of ["property","frequency","contact","review","done"])$("step-"+s).hidden=s!==current;
+ $("steps").hidden=current==="review"||current==="done";$("navigation").hidden=current==="review"||current==="done";
+ if(["review","done"].includes(current))return;
+ $("back").hidden=steps.indexOf(current)===0;
+ $("next").textContent=steps.indexOf(current)===steps.length-1?"Review my quote →":"Next: "+label(steps[steps.indexOf(current)+1])+" →";
+ $("houses").innerHTML=config.houses.filter(x=>x.on).map(x=>'<button type="button" class="house '+(x.id===state.house?"selected":"")+'" data-house="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
+ $("extras").innerHTML=config.extras.filter(x=>x.on).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No additional items offered.</p>';
+ $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
+ $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
+ var show=config.estimateTiming==="live"&&state.house!=null;
+ for(var step of ["property","frequency","contact"]){
+  $("estimate-"+step).hidden=!show;
+  if(show)$("estimate-"+step).innerHTML=quoteMarkup();
+ }
+ $("error").hidden=true;
+}
+function error(message){$("error").textContent=message;$("error").hidden=false;$("error").scrollIntoView({block:"nearest"})}
+function validateContact(){
+ var name=$("name").value.trim(),phone=$("phone").value.trim(),email=$("email").value.trim();
+ if(!name)return "Please enter your full name.";
+ if(!$("address").value.trim())return "Please enter your property address.";
+ if(["mobile","both"].includes(config.contactRule)&&!phone)return "Please enter your mobile number.";
+ if(["email","both"].includes(config.contactRule)&&!email)return "Please enter your email address.";
+ if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return "Please enter a valid email address.";
+ if(phone&&!/^[+\d\s()\-]{7,25}$/.test(phone))return "Please enter a valid mobile number.";
+ return null;
+}
+function next(){
+ var s=state.step;
+ if(s==="property"&&!state.house)return error("Please select a property size.");
+ if(s==="frequency"&&!state.frequency)return error("Please select a cleaning frequency.");
+ if(s==="contact"){var invalid=validateContact();if(invalid)return error(invalid)}
+ var steps=order(),i=steps.indexOf(s);
+ if(i===steps.length-1){state.step="review";renderReview()}else{state.step=steps[i+1];render();$("customer").scrollIntoView({block:"start"})}
+}
+function summaryRow(key,value){return '<div class="review-row"><span class="key">'+esc(key)+'</span><span>'+esc(value||"—")+'</span></div>'}
+function renderReview(){
+ render();var p=calc();
+ $("review-details").innerHTML='<div class="review-card"><h3>Your contact details</h3>'+
+ summaryRow("Full name",$("name").value.trim())+summaryRow("Mobile",$("phone").value.trim())+summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+summaryRow("Notes",$("notes").value.trim())+'</div>'+
+ '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Property size",p.house?.name||"—")+summaryRow("Additional items",p.extras.length?p.extras.map(x=>x.name).join(", "):"None")+summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
+ $("review-amount").innerHTML=quoteMarkup();
+ $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
+ $("review-disclaimer").hidden=!config.showDisclaimer;
+ $("customer").scrollIntoView({block:"start"});
+}
+$("houses").addEventListener("click",e=>{var b=e.target.closest("[data-house]");if(b){state.house=b.dataset.house;render()}});
+$("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);render()});
+$("frequencies").addEventListener("click",e=>{var b=e.target.closest("[data-frequency]");if(b){state.frequency=b.dataset.frequency;render()}});
+$("next").onclick=next;$("back").onclick=()=>{var steps=order(),i=steps.indexOf(state.step);if(i>0){state.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
+function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();render()}
+$("reset").onclick=reset;$("restart").onclick=reset;
+$("reviewEdit").onclick=()=>{state.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
+$("submit").onclick=()=>{state.step="done";render();$("customer").scrollIntoView({block:"start"})};
+function showAdmin(isAdmin){
+ $("admin").hidden=!isAdmin;$("customer").hidden=isAdmin;
+ $("adminTab").classList.toggle("active",isAdmin);$("customerTab").classList.toggle("active",!isAdmin);
+ if(isAdmin)renderAdmin();else{state.step=order()[0];render()}
+ window.scrollTo(0,0);
+}
+$("adminTab").onclick=()=>showAdmin(true);$("customerTab").onclick=()=>showAdmin(false);$("preview").onclick=()=>showAdmin(false);
+function priceRow(type,item){
+ var addition=type==="frequency",cols=addition?"":'<div class="priceline"><label class="field type">Pricing<select data-mode><option value="fixed" '+(item.mode!=="range"?"selected":"")+'>Fixed price</option><option value="range" '+(item.mode==="range"?"selected":"")+'>Price range</option></select></label><label class="field">Price / minimum (£)<input data-lo type="number" step=".01" min="0" value="'+esc(item.lo)+'"></label><label class="field" data-max-wrap '+(item.mode!=="range"?"hidden":"")+'>Maximum (£)<input data-hi type="number" step=".01" min="0" value="'+esc(item.hi)+'"></label></div>';
+ var extra=addition?'<div class="priceline"><label class="check"><input type="checkbox" data-inc '+(item.inc?"checked":"")+'> Increase frequency price</label><label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(item.pct||0)+'" '+(!item.inc?"disabled":"")+'></label></div>':"";
+ return '<div class="price-row" data-type="'+type+'" data-id="'+esc(item.id)+'"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label><button type="button" class="btn" data-remove style="padding:7px 9px;min-height:36px">Delete</button></div>'+cols+extra+'</div>';
+}
+function renderAdmin(){
+ var cs=config.colors||defaults.colors;
+ for(var key of ["Bg","Text","Card","Selector","Outline","Accent"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
+ for(var [k,container] of [["houses","admin-houses"],["extras","admin-extras"],["frequencies","admin-frequencies"]])
+  $(container).innerHTML=config[k].map(x=>priceRow(k==="frequencies"?"frequency":k,x)).join("");
+ for(var key of ["minimum","bufferMode","bufferValue","contactPosition","estimateTiming","contactRule"])$(key).value=config[key];
+ $("showBreakdown").checked=!!config.showBreakdown;$("showDisclaimer").checked=!!config.showDisclaimer;
+ $("disclaimerText").value=config.disclaimerText;
+ $("admin-message").textContent="";
+}
+$("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent"])$("color"+k[0].toUpperCase()+k.slice(1)).value=defaults.colors[k]};
+for(var id of ["addHouse","addExtra","addFrequency"])$(id).onclick=()=>{
+ var collection=id==="addHouse"?"houses":id==="addExtra"?"extras":"frequencies";
+ var type=collection==="frequencies"?"frequency":collection;
+ var item=collection==="frequencies"?{id:"f"+Date.now(),name:"",on:true,inc:false,pct:0}:{id:"i"+Date.now(),name:"",on:true,mode:"fixed",lo:0,hi:0};
+ $(collection==="houses"?"admin-houses":collection==="extras"?"admin-extras":"admin-frequencies").insertAdjacentHTML("beforeend",priceRow(type,item));
+};
+$("admin").addEventListener("click",e=>{var b=e.target.closest("[data-remove]");if(b)b.closest(".price-row").remove()});
+$("admin").addEventListener("change",e=>{
+ var row=e.target.closest(".price-row");if(!row)return;
+ if(e.target.matches("[data-mode]"))row.querySelector("[data-max-wrap]").hidden=e.target.value!=="range";
+ if(e.target.matches("[data-inc]"))row.querySelector("[data-pct]").disabled=!e.target.checked;
+});
+function readRows(container,type){
+ var rows=[...$(container).querySelectorAll(".price-row")],result=[],names=new Set();
+ for(var row of rows){
+ var name=row.querySelector("[data-name]").value.trim();
+ if(!name)throw Error("Give each "+type+" a name, or delete the empty row.");
+ if(names.has(name.toLowerCase()))throw Error("Duplicate "+type+" name: "+name);
+ names.add(name.toLowerCase());
+ var item={id:row.dataset.id,name:name,on:row.querySelector("[data-on]").checked};
+ if(type==="frequencies"){
+  item.inc=row.querySelector("[data-inc]").checked;
+  item.pct=Number(row.querySelector("[data-pct]").value);
+  if(item.inc&&(!Number.isFinite(item.pct)||item.pct<0||item.pct>500))throw Error("Invalid frequency increase for "+name);
+ }else{
+  item.mode=row.querySelector("[data-mode]").value;
+  var loText=row.querySelector("[data-lo]").value.trim(),hiText=row.querySelector("[data-hi]").value.trim();
+  item.lo=Number(loText);item.hi=item.mode==="range"?Number(hiText):item.lo;
+  if(item.on&&(loText===""||!Number.isFinite(item.lo)||item.lo<0))throw Error("Invalid price for "+name);
+  if(item.on&&item.mode==="range"&&(hiText===""||!Number.isFinite(item.hi)||item.hi<item.lo))throw Error("Invalid price range for "+name);
+ }
+ result.push(item);
+ }
+ return result;
+}
+$("save").onclick=()=>{
+ try{
+ var p={
+ colors:Object.fromEntries(["Bg","Text","Card","Selector","Outline","Accent"].map(k=>[k.toLowerCase(),$("color"+k).value])),
+ houses:readRows("admin-houses","houses"),extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),
+ minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
+ contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
+ showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimerText:$("disclaimerText").value.trim().slice(0,500)
+ };
+ if(!p.houses.some(x=>x.on))throw Error("Enable at least one property size.");
+ if(!p.frequencies.some(x=>x.on))throw Error("Enable at least one cleaning frequency.");
+ if(!Number.isFinite(p.minimum)||p.minimum<0)throw Error("Enter a valid minimum charge.");
+ if(!Number.isFinite(p.bufferValue)||p.bufferValue<0||(p.bufferMode==="percent"&&p.bufferValue>100))throw Error("Enter a valid buffer (0–100% for percentages).");
+ config=p;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
+ try{localStorage.setItem("quotepro-property-size-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
+ catch(e){$("admin-message").textContent="Settings applied for this session; local storage is unavailable."}
+ }catch(e){$("admin-message").textContent=e.message}
+};
+state.step=order()[0];render();
+})();
+</script></body></html>
