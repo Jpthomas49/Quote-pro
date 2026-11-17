@@ -27,6 +27,20 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 .house.selected,.frequency.selected{outline:2px solid var(--c-accent);outline-offset:-2px;border-color:var(--c-accent)}
 .extra{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:12px;margin-top:9px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);cursor:pointer}
 .extra span{flex:1;line-height:1.35}.extra input{appearance:auto;accent-color:var(--c-accent);width:20px;height:20px;flex:0 0 20px;margin:0}
+.extra-sizes{padding:14px 13px;margin:-1px 0 11px;background:var(--c-card);border:1px solid var(--c-outline);border-radius:0 0 13px 13px}
+.extra-sizes-title{font-size:13px;font-weight:750;margin:0 0 9px}
+.extra-sizes .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.extra-size-btn{min-height:45px;padding:10px 6px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);font-size:13px;font-weight:800;border-radius:9px}
+.extra-size-btn.selected{border-color:var(--c-accent);outline:2px solid var(--c-accent);outline-offset:-2px}
+.extra-needs-size{margin:10px 0 0;font-size:12px;opacity:.82}
+.admin-size-prices{margin-top:13px;padding:12px;border:1px solid #3b5874;border-radius:10px;background:#10283b}
+.admin-size-prices h4{margin:0 0 8px;font-size:13px}
+.admin-size-row{border-top:1px solid #35536c;padding:10px 0}
+.admin-size-row:first-of-type{border-top:0}
+.admin-size-row .size-heading{font-weight:780;font-size:13px;margin-bottom:8px}
+.admin-size-row .priceline{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:620px){.admin-size-row .priceline{grid-template-columns:1fr 1fr}.admin-size-row .priceline .type{grid-column:1/-1}}
+
 .frequency{display:block;width:100%;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:11px;padding:13px 15px;margin:8px 0;text-align:left;min-height:47px;font-weight:750}
 .estimate{background:var(--c-card);border:1px solid var(--c-accent);border-radius:14px;padding:16px}.estimate .amount{font-size:clamp(27px,5vw,38px);font-weight:900;line-height:1.25}
 .estimate-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.estimate .fine{font-size:12px;opacity:.8}
@@ -87,7 +101,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <div class="eyebrow">QUOTE PRO · PROPERTY SIZE</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
 <div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Use navy &amp; light-blue theme</button></div>
 <div class="adminsec"><h2>Property size pricing</h2><p class="adminhelp">Set a fixed price or a minimum–maximum range for each property size. Customers never see prices on the selection buttons.</p><div id="admin-houses"></div><button type="button" class="linkaction" id="addHouse">+ Add property size</button></div>
-<div class="adminsec"><h2>Additional items</h2><p class="adminhelp">Each add-on is a simple Yes/No selection priced once per property. Use fixed prices or ranges — no quantity or pane counting.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
+<div class="adminsec"><h2>Additional items</h2><p class="adminhelp">Each add-on is priced once per property — no window counting. Conservatory windows have separate Small, Medium and Large prices, each fixed or ranged.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
 <div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
 <div class="adminsec"><h2>Estimate settings</h2><div class="settings">
 <label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
@@ -115,7 +129,7 @@ var defaults={
  {id:"small",name:"1–2 bedroom home",on:true,mode:"fixed",lo:23,hi:23},
  {id:"medium",name:"3–4 bedroom home",on:true,mode:"range",lo:28,hi:35},
  {id:"large",name:"5+ bedroom home",on:true,mode:"range",lo:40,hi:55}],
- extras:[{id:"conservatory",name:"Conservatory windows",on:true,mode:"range",lo:12,hi:18},
+ extras:[{id:"conservatory",name:"Conservatory windows",on:true,mode:"range",lo:12,hi:18,sizes:[{id:"small",name:"Small",mode:"fixed",lo:10,hi:10},{id:"medium",name:"Medium",mode:"range",lo:12,hi:18},{id:"large",name:"Large",mode:"range",lo:20,hi:30}]},
  {id:"patio",name:"Patio / French doors",on:true,mode:"fixed",lo:5,hi:5},
  {id:"skylights",name:"Skylights",on:true,mode:"range",lo:6,hi:10}],
  frequencies:[{id:"4",name:"Every 4 weeks",on:true,inc:false,pct:0},{id:"8",name:"Every 8 weeks",on:true,inc:false,pct:0},
@@ -126,7 +140,7 @@ var defaults={
 var clone=obj=>JSON.parse(JSON.stringify(obj));
 var config=clone(defaults);
 try{var saved=JSON.parse(localStorage.getItem("quotepro-property-size-v1")||"null");if(saved&&typeof saved==="object")config=Object.assign(clone(defaults),saved)}catch(e){}
-var state={step:"property",house:null,extras:[],frequency:null};
+var state={step:"property",house:null,extras:[],conservatorySize:null,frequency:null};
 var esc=value=>String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 var money=value=>"£"+Number(value).toFixed(2);
 function order(){return config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"]}
@@ -141,7 +155,11 @@ function applyTheme(){
 }
 function calc(){
  var house=config.houses.find(x=>x.id===state.house&&x.on);
- var extras=config.extras.filter(x=>x.on&&state.extras.includes(x.id));
+ var extras=config.extras.filter(x=>x.on&&state.extras.includes(x.id)).flatMap(x=>{
+ if(x.id!=="conservatory")return [x];
+ var selected=(Array.isArray(x.sizes)&&x.sizes.length?x.sizes:defaults.extras[0].sizes).find(s=>s.id===state.conservatorySize);
+ return selected?[{...selected,name:x.name+" — "+selected.name}]:[];
+ });
  var items=[...(house?[house]:[]),...extras],freq=config.frequencies.find(x=>x.id===state.frequency);
  var multiplier=freq&&freq.inc?1+Number(freq.pct)/100:1;
  var lo=items.reduce((a,x)=>a+Number(x.lo),0)*multiplier;
@@ -174,7 +192,17 @@ function render(){
  $("back").hidden=steps.indexOf(current)===0;
  $("next").textContent=steps.indexOf(current)===steps.length-1?"Review my quote →":"Next: "+label(steps[steps.indexOf(current)+1])+" →";
  $("houses").innerHTML=config.houses.filter(x=>x.on).map(x=>'<button type="button" class="house '+(x.id===state.house?"selected":"")+'" data-house="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
- $("extras").innerHTML=config.extras.filter(x=>x.on).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No additional items offered.</p>';
+ $("extras").innerHTML=config.extras.filter(x=>x.on).map(x=>{
+  var checked=state.extras.includes(x.id);
+  var row='<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(checked?"checked":"")+'></label>';
+  if(x.id==="conservatory"&&checked){
+   var sizes=Array.isArray(x.sizes)&&x.sizes.length?x.sizes:defaults.extras[0].sizes;
+   row+='<div class="extra-sizes"><div class="extra-sizes-title">What size conservatory?</div><div class="choices">'+
+    sizes.map(s=>'<button type="button" class="extra-size-btn '+(state.conservatorySize===s.id?'selected':'')+'" data-conservatory-size="'+esc(s.id)+'" aria-pressed="'+(state.conservatorySize===s.id)+'">'+esc(s.name)+'</button>').join('')+
+    '</div>'+(state.conservatorySize?'':'<p class="extra-needs-size">Please select one size.</p>')+'</div>';
+  }
+  return row;
+ }).join("")||'<p class="muted">No additional items offered.</p>';
  $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
  $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
  var show=config.estimateTiming==="live"&&state.house!=null;
@@ -198,6 +226,7 @@ function validateContact(){
 function next(){
  var s=state.step;
  if(s==="property"&&!state.house)return error("Please select a property size.");
+ if(s==="property"&&state.extras.includes("conservatory")&&!state.conservatorySize)return error("Please choose Small, Medium or Large for the conservatory.");
  if(s==="frequency"&&!state.frequency)return error("Please select a cleaning frequency.");
  if(s==="contact"){var invalid=validateContact();if(invalid)return error(invalid)}
  var steps=order(),i=steps.indexOf(s);
@@ -215,10 +244,14 @@ function renderReview(){
  $("customer").scrollIntoView({block:"start"});
 }
 $("houses").addEventListener("click",e=>{var b=e.target.closest("[data-house]");if(b){state.house=b.dataset.house;render()}});
-$("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);render()});
+$("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);if(id==="conservatory"&&!e.target.checked)state.conservatorySize=null;render()});
+$("extras").addEventListener("click",e=>{
+ var button=e.target.closest("[data-conservatory-size]");if(!button)return;
+ state.conservatorySize=button.dataset.conservatorySize;render();
+});
 $("frequencies").addEventListener("click",e=>{var b=e.target.closest("[data-frequency]");if(b){state.frequency=b.dataset.frequency;render()}});
 $("next").onclick=next;$("back").onclick=()=>{var steps=order(),i=steps.indexOf(state.step);if(i>0){state.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
-function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();render()}
+function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],house:null,extras:[],conservatorySize:null,frequency:null};$("contacts").reset();render()}
 $("reset").onclick=reset;$("restart").onclick=reset;
 $("reviewEdit").onclick=()=>{state.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
 $("submit").onclick=()=>{state.step="done";render();$("customer").scrollIntoView({block:"start"})};
@@ -232,6 +265,15 @@ $("adminTab").onclick=()=>showAdmin(true);$("customerTab").onclick=()=>showAdmin
 function priceRow(type,item){
  var addition=type==="frequency",cols=addition?"":'<div class="priceline"><label class="field type">Pricing<select data-mode><option value="fixed" '+(item.mode!=="range"?"selected":"")+'>Fixed price</option><option value="range" '+(item.mode==="range"?"selected":"")+'>Price range</option></select></label><label class="field">Price / minimum (£)<input data-lo type="number" step=".01" min="0" value="'+esc(item.lo)+'"></label><label class="field" data-max-wrap '+(item.mode!=="range"?"hidden":"")+'>Maximum (£)<input data-hi type="number" step=".01" min="0" value="'+esc(item.hi)+'"></label></div>';
  var extra=addition?'<div class="priceline"><label class="check"><input type="checkbox" data-inc '+(item.inc?"checked":"")+'> Increase frequency price</label><label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(item.pct||0)+'" '+(!item.inc?"disabled":"")+'></label></div>':"";
+ if(type==="extras"&&item.id==="conservatory"){
+  var sizes=Array.isArray(item.sizes)&&item.sizes.length?item.sizes:defaults.extras[0].sizes;
+  var sizeRows=sizes.map(s=>'<div class="admin-size-row" data-size-id="'+esc(s.id)+'"><div class="size-heading">'+esc(s.name)+' conservatory</div><div class="priceline">'+
+   '<label class="field type">Pricing<select data-size-mode><option value="fixed" '+(s.mode!=="range"?"selected":"")+'>Fixed price</option><option value="range" '+(s.mode==="range"?"selected":"")+'>Price range</option></select></label>'+
+   '<label class="field">Price / minimum (£)<input data-size-lo type="number" step=".01" min="0" value="'+esc(s.lo)+'"></label>'+
+   '<label class="field" data-size-max-wrap '+(s.mode!=="range"?"hidden":"")+'>Maximum (£)<input data-size-hi type="number" step=".01" min="0" value="'+esc(s.hi)+'"></label></div></div>').join("");
+  return '<div class="price-row" data-type="extras" data-id="conservatory"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label></div>'+
+   '<div class="admin-size-prices"><h4>Conservatory sizes &amp; prices</h4>'+sizeRows+'</div></div>';
+ }
  return '<div class="price-row" data-type="'+type+'" data-id="'+esc(item.id)+'"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label><button type="button" class="btn" data-remove style="padding:7px 9px;min-height:36px">Delete</button></div>'+cols+extra+'</div>';
 }
 function renderAdmin(){
@@ -255,6 +297,7 @@ $("admin").addEventListener("click",e=>{var b=e.target.closest("[data-remove]");
 $("admin").addEventListener("change",e=>{
  var row=e.target.closest(".price-row");if(!row)return;
  if(e.target.matches("[data-mode]"))row.querySelector("[data-max-wrap]").hidden=e.target.value!=="range";
+ if(e.target.matches("[data-size-mode]"))e.target.closest(".admin-size-row").querySelector("[data-size-max-wrap]").hidden=e.target.value!=="range";
  if(e.target.matches("[data-inc]"))row.querySelector("[data-pct]").disabled=!e.target.checked;
 });
 function readRows(container,type){
@@ -265,7 +308,17 @@ function readRows(container,type){
  if(names.has(name.toLowerCase()))throw Error("Duplicate "+type+" name: "+name);
  names.add(name.toLowerCase());
  var item={id:row.dataset.id,name:name,on:row.querySelector("[data-on]").checked};
- if(type==="frequencies"){
+ if(type==="extras"&&item.id==="conservatory"){
+  item.sizes=[...row.querySelectorAll(".admin-size-row")].map(srow=>{
+   var id=srow.dataset.sizeId,name=({small:"Small",medium:"Medium",large:"Large"})[id]||id;
+   var mode=srow.querySelector("[data-size-mode]").value;
+   var loText=srow.querySelector("[data-size-lo]").value.trim(),hiText=srow.querySelector("[data-size-hi]").value.trim();
+   var lo=Number(loText),hi=mode==="range"?Number(hiText):lo;
+   if(item.on&&(loText===""||!Number.isFinite(lo)||lo<0))throw Error("Invalid "+name+" conservatory price.");
+   if(item.on&&mode==="range"&&(hiText===""||!Number.isFinite(hi)||hi<lo))throw Error("Invalid "+name+" conservatory price range.");
+   return {id:id,name:name,mode:mode,lo:lo,hi:hi};
+  });
+ }else if(type==="frequencies"){
   item.inc=row.querySelector("[data-inc]").checked;
   item.pct=Number(row.querySelector("[data-pct]").value);
   if(item.inc&&(!Number.isFinite(item.pct)||item.pct<0||item.pct>500))throw Error("Invalid frequency increase for "+name);
@@ -293,7 +346,7 @@ $("save").onclick=()=>{
  if(!p.frequencies.some(x=>x.on))throw Error("Enable at least one cleaning frequency.");
  if(!Number.isFinite(p.minimum)||p.minimum<0)throw Error("Enter a valid minimum charge.");
  if(!Number.isFinite(p.bufferValue)||p.bufferValue<0||(p.bufferMode==="percent"&&p.bufferValue>100))throw Error("Enter a valid buffer (0–100% for percentages).");
- config=p;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
+ config=p;state={step:order()[0],house:null,extras:[],conservatorySize:null,frequency:null};$("contacts").reset();applyTheme();
  try{localStorage.setItem("quotepro-property-size-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
  catch(e){$("admin-message").textContent="Settings applied for this session; local storage is unavailable."}
  }catch(e){$("admin-message").textContent=e.message}
