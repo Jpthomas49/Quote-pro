@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quote Pro — Business Homepage Settings</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071420;color:#f6faff;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #73bceb;outline-offset:2px}
+.wrap{max-width:1100px;margin:auto;padding:22px 16px 70px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:13px;flex-wrap:wrap;margin-bottom:22px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.45px}.brand b{color:#73bceb}.subtitle{font-size:12px;color:#a7bed1}
+.top a{background:#213a50;border:1px solid #4b6580;color:white;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:750}
+.intro{border:1px solid #34516c;border-radius:18px;background:#0b2345;padding:25px;margin-bottom:18px}
+.eyebrow{color:#73bceb;font-size:11px;letter-spacing:1.5px;font-weight:850}
+h1{font-size:clamp(27px,4vw,34px);line-height:1.15;margin:9px 0}
+h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
+.lead{color:#b9cbd9;margin:0}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,330px);gap:18px;align-items:start}
+.settings{background:#101f30;border:1px solid #34516c;border-radius:18px;padding:19px}
+.section{padding:20px 0;border-top:1px solid #34516c}.section:first-child{padding-top:0;border:0}
+.help{color:#b8cadb;font-size:12px;margin:0 0 14px}
+.field{display:block;font-size:13px;color:#d5e5f3;font-weight:750;margin:12px 0}
+.field input,.field select,.field textarea{display:block;width:100%;min-width:0;margin-top:6px;color:#f5faff;background:#071625;border:1px solid #53708a;border-radius:9px;padding:11px}
+.field textarea{resize:vertical}
+.check{display:flex;align-items:center;gap:11px;font-size:14px;padding:12px 13px;border:1px solid #35546e;border-radius:11px;background:#14293f;cursor:pointer;margin:9px 0}
+.check input{width:20px;height:20px;flex:0 0 20px;margin:0;accent-color:#73bceb}
+.check span{flex:1}
+.pickers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:13px}
+.pickers label{font-size:12px;font-weight:700;color:#bcd5e8;min-width:0}
+.pickers input{display:block;width:100%;height:42px;padding:4px;margin-top:6px;border:1px solid #4d6881;border-radius:9px;background:#192b3c;cursor:pointer}
+.btn{background:#1f3951;color:white;padding:11px 14px;border:1px solid #466683;border-radius:10px;font-weight:800}
+.btn.primary{background:#73bceb;color:#08233a;border-color:#73bceb}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.status{font-size:13px;color:#a4e8b5;min-height:18px;margin:10px 0 0}
+.service-links{display:grid;gap:9px}.service-links a{display:flex;justify-content:space-between;gap:9px;border:1px solid #395e7c;border-radius:10px;padding:12px;color:#eaf6ff;text-decoration:none;background:#132d46;font-weight:730;font-size:13px}
+.service-links a:hover{text-decoration:underline;border-color:#73bceb}
+.preview{position:sticky;top:15px;border-radius:18px;overflow:hidden;border:1px solid #385975;background:#071420}
+.previewbar{padding:12px 15px;background:#11283e;color:#9fb9d0;font-size:12px;font-weight:750}
+.previewbody{padding:22px 16px}
+.previewbody .heading{font-size:21px;font-weight:850;line-height:1.23;margin:10px 0}
+.previewbody .subheading{font-size:12px;margin-bottom:17px}
+.previewtiles{display:grid;gap:9px}
+.previewtile{border:1px solid;border-radius:10px;padding:11px}
+.previewtile strong{display:block;font-size:13px}
+.previewtile span{font-size:11px;display:block;margin-bottom:9px}
+.previewtile .previewbutton{display:block;text-align:center;font-size:11px;font-weight:850;border-radius:8px;padding:9px}
+.note{color:#a9bfd1;font-size:12px;line-height:1.5;padding:12px 16px}
+.footer{font-size:11px;color:#8ca7bc;margin-top:23px;text-align:center}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.preview{position:static}.pickers{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:450px){.pickers{grid-template-columns:repeat(2,minmax(0,1fr))}.intro{padding:19px}.settings{padding:16px}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div><div class="brand">Job<b>Caddy</b> / Quote Pro</div><div class="subtitle">Business dashboard · Homepage and module settings</div></div><a href="./?preview=1">View customer homepage →</a></header>
+<div class="intro"><div class="eyebrow">BUSINESS OWNER PREVIEW</div><h1>Customise your Quote Pro homepage.</h1><p class="lead">Choose your window-cleaning form, arrange which subscribed services appear and make the whole homepage match your branding.</p></div>
+<div class="layout"><div class="settings">
+<section class="section">
+<h2>Homepage wording</h2><p class="help">This text appears on the customer-facing homepage, not in Business Settings.</p>
+<label class="field">Business display name<input type="text" id="businessName" maxlength="70" placeholder="Your business name"></label>
+<label class="field">Homepage headline<input type="text" id="headline" maxlength="110" placeholder="Which service would you like a quote for?"></label>
+<label class="field">Short introduction<textarea id="description" rows="3" maxlength="300"></textarea></label>
+</section>
+<section class="section">
+<h2>Window Cleaning form</h2><p class="help">Choose ONE window-cleaning pricing method. Customers never see this choice.</p>
+<label class="field">Pricing method<select id="windowMethod"><option value="property">Property Size — quick standard calculator</option><option value="count">Window Count — detailed calculator</option></select></label>
+</section>
+<section class="section">
+<h2>Services displayed on the homepage</h2>
+<p class="help">These checkboxes are for prototype preview only. At launch, subscription permissions will determine which modules the business can enable.</p>
+<label class="check"><input type="checkbox" id="serviceWindow"><span>Window Cleaning</span></label>
+<label class="check"><input type="checkbox" id="serviceGutter"><span>Gutter Cleaning</span></label>
+<label class="check"><input type="checkbox" id="servicePressure"><span>Pressure Washing</span></label>
+<label class="check"><input type="checkbox" id="serviceSoffit"><span>Soffit &amp; Fascia Cleaning</span></label>
+<label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
+</section>
+<section class="section">
+<h2>Homepage colours</h2><p class="help">Control all primary homepage colours independently. This is a separate palette from the pricing calculators, so you can configure each design.</p>
+<div class="pickers">
+<label>Page background<input type="color" id="colorBg"></label>
+<label>Header / hero<input type="color" id="colorTop"></label>
+<label>Deep background<input type="color" id="colorDeep"></label>
+<label>Main text<input type="color" id="colorText"></label>
+<label>Secondary text<input type="color" id="colorMuted"></label>
+<label>Service card colour<input type="color" id="colorCard"></label>
+<label>Inner card colour<input type="color" id="colorCard2"></label>
+<label>Accent / buttons<input type="color" id="colorAccent"></label>
+<label>Card outlines<input type="color" id="colorBorder"></label>
+<label>Button text<input type="color" id="colorButtontext"></label>
+<label>Small headings<input type="color" id="colorSmallheading"></label>
+<label>Service icon colour<input type="color" id="colorIcon"></label>
+</div><button type="button" class="btn" id="restore">Restore default navy and light-blue colours</button>
+</section>
+<section class="section">
+<h2>Each calculator's own settings</h2><p class="help">Open pricing, extras, minimum charges, form-specific colours and quote options. All five calculators currently have their own settings.</p>
+<div class="service-links">
+<a href="./Quote_Pro_Property_Size_Calculator.html?admin=1">Window Cleaning — Property Size <span>↗</span></a>
+<a href="./Quote_Pro_Window_Cleaning_Prototype_v3.html?admin=1">Window Cleaning — Window Count <span>↗</span></a>
+<a href="./Quote_Pro_Gutter_Cleaning_Calculator.html?admin=1">Gutter Cleaning <span>↗</span></a>
+<a href="./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html?admin=1">Soffit &amp; Fascia Cleaning <span>↗</span></a>
+<a href="./Quote_Pro_Pressure_Washing_v2.html?admin=1">Pressure Washing (surface-specific £/m² pricing) <span>↗</span></a>
+</div></section>
+<div class="actions"><button class="btn primary" type="button" id="save">Save homepage settings</button><a class="btn" style="text-decoration:none" href="./?preview=1">Preview customer homepage</a></div>
+<div id="status" class="status" role="status"></div>
+</div>
+<aside class="preview"><div class="previewbar">LIVE HOMEPAGE COLOUR PREVIEW</div><div class="previewbody" id="miniHome">
+<div class="eyebrow" id="miniLabel">INSTANT ONLINE ESTIMATES</div><div class="heading" id="miniHeading">Which service would you like a quote for?</div><p class="subheading" id="miniDescription"></p>
+<div class="previewtiles" id="miniCards"></div></div>
+<div class="note">Your edits appear here before saving. Choose Save homepage settings to store them in this browser.</div></aside>
+</div>
+<p class="footer"><strong>Prototype owner settings only.</strong> This URL is not authenticated or private yet. Before a real launch, account login, server-side owner permissions and business-hosted settings are required. No customer enquiry data is stored by this demo.</p>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
+const defaults={bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#132c47",card2:"#0e2036",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"};
+const oldDefaults={bg:"#0b2345",top:"#193f69",deep:"#071826",text:"#f7fbff",muted:"#b8cce0",card:"#173b64",card2:"#112c4d",accent:"#58bff0",border:"#3d6087",buttontext:"#061c30",smallheading:"#ffdb61",icon:"#245782"};
+const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
+const names={bg:"Bg",top:"Top",deep:"Deep",text:"Text",muted:"Muted",card:"Card",card2:"Card2",accent:"Accent",border:"Border",buttontext:"Buttontext",smallheading:"Smallheading",icon:"Icon"};
+function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
+function initialColours(){const saved=fromStorage(colourKey);if(!saved||typeof saved!=="object")return {...defaults};
+const isOld=Object.keys(oldDefaults).every(k=>saved[k]===oldDefaults[k]);
+return isOld?{...defaults}:{...defaults,...saved};
+}
+let colours=initialColours(),config={...appDefaults,...fromStorage(homeKey)},windowMethod="property";
+if(!config.services||typeof config.services!=="object")config.services={...appDefaults.services};
+try{windowMethod=localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){}
+const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning"};
+function load(){
+ $("businessName").value=config.businessName||appDefaults.businessName;
+ $("headline").value=config.headline||appDefaults.headline;
+ $("description").value=config.description||appDefaults.description;
+ $("windowMethod").value=windowMethod;
+ for(const k of Object.keys(serviceLabels))$("service"+k[0].toUpperCase()+k.slice(1)).checked=config.services[k]!==false;
+ $("autoOpenSingle").checked=config.autoOpenSingle!==false;
+ for(const [k,suffix] of Object.entries(names))$("color"+suffix).value=colours[k]||defaults[k];
+ preview();
+}
+function preview(){
+ const read=(key)=>$("color"+names[key]).value;
+ const p=$("miniHome");
+ p.style.background=read("deep");p.style.color=read("text");p.style.borderTop="3px solid "+read("border");
+ $("miniLabel").style.color=read("smallheading");
+ $("miniHeading").textContent=$("headline").value||appDefaults.headline;
+ $("miniDescription").textContent=$("description").value||appDefaults.description;
+ $("miniDescription").style.color=read("muted");
+ let active=Object.keys(serviceLabels).filter(k=>$("service"+k[0].toUpperCase()+k.slice(1)).checked);
+ $("miniCards").replaceChildren();
+ for(const key of active){
+  let tile=document.createElement("div"),title=document.createElement("strong"),small=document.createElement("span"),button=document.createElement("div");
+  tile.className="previewtile";tile.style.background=read("card");tile.style.borderColor=read("border");
+  title.textContent=serviceLabels[key];small.textContent="Instant quote";small.style.color=read("muted");
+  button.className="previewbutton";button.textContent="Get a quote";button.style.background=read("accent");button.style.color=read("buttontext");
+  tile.append(title,small,button);$("miniCards").append(tile);
+ }
+}
+for(const id of ["businessName","headline","description","windowMethod","autoOpenSingle",...Object.keys(serviceLabels).map(k=>"service"+k[0].toUpperCase()+k.slice(1)),...Object.values(names).map(s=>"color"+s)])
+ $(id).addEventListener("input",preview);
+$("restore").onclick=()=>{colours={...defaults};for(const [key,suffix] of Object.entries(names))$("color"+suffix).value=colours[key];preview();$("status").textContent="Default colours selected. Save to apply them to the homepage."};
+$("save").onclick=()=>{
+ const active=Object.fromEntries(Object.keys(serviceLabels).map(k=>[k,$("service"+k[0].toUpperCase()+k.slice(1)).checked]));
+ if(!Object.values(active).some(Boolean)){$("status").textContent="Enable at least one service to display.";return}
+ const businessName=$("businessName").value.trim(),headline=$("headline").value.trim(),description=$("description").value.trim();
+ if(!businessName||!headline){$("status").textContent="Enter a business display name and homepage headline.";return}
+ const proposed={businessName,headline,description,services:active,autoOpenSingle:$("autoOpenSingle").checked};
+ const palette=Object.fromEntries(Object.entries(names).map(([k,s])=>[k,$("color"+s).value]));
+ try{
+  localStorage.setItem(colourKey,JSON.stringify(palette));
+  localStorage.setItem(windowKey,$("windowMethod").value);
+  localStorage.setItem(homeKey,JSON.stringify(proposed));
+  config=proposed;colours=palette;windowMethod=$("windowMethod").value;
+  $("status").textContent="Saved in this browser. Open Preview customer homepage to see the results.";
+ }catch(e){$("status").textContent="Could not save in browser storage. Your settings are not stored."}
+};
+load();
+})();
+</script></body></html>
