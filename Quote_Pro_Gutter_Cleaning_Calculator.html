@@ -86,7 +86,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <label class="field" for="gutterQuantity"><span id="quantityLabel">Approximate gutter length (metres)</span><input id="gutterQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
 <p class="muted" style="margin:9px 0 0">An estimate only — final price subject to access, height and confirmation.</p></div>
 <div class="section"><div class="eyebrow">GUTTER, SOFFIT &amp; FASCIA WASH</div>
-<label class="extra" id="washOption"><span><strong>Gutter, Soffit &amp; Fascia Wash</strong><small class="muted" style="display:block;margin-top:3px">Wash exterior guttering, soffits and fascias</small></span><input id="washSelected" type="checkbox"></label>
+<label class="extra" id="washOption"><span><strong>Gutter, Soffit &amp; Fascia Wash</strong><small class="muted" style="display:block;margin-top:3px">External PVC wash</small></span><input id="washSelected" type="checkbox"></label>
 <div id="washMeasureWrap" hidden style="margin-top:12px">
 <h3 id="washQuantityTitle">How much needs washing?</h3>
 <p id="washQuantityHelp" class="caption">Enter the approximate total length requiring washing.</p>
@@ -168,7 +168,7 @@ var defaults={
  colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb"},
  gutterPricingMethod:"metre",gutterRates:{metre:{mode:"range",lo:3,hi:4},side:{mode:"fixed",lo:25,hi:25}},
  washEnabled:true,washPricingMethod:"metre",washRates:{metre:{mode:"range",lo:5,hi:7},side:{mode:"range",lo:35,hi:50}},
- extras:[{id:"downpipe",name:"Additional downpipe clearance",on:true,mode:"fixed",lo:15,hi:15}],
+ extras:[{id:"downpipe",name:"Downpipe clearance",on:false,mode:"fixed",lo:15,hi:15}],
  frequencies:[{id:"once",name:"One-off clean",on:true,inc:false,pct:0},
  {id:"6m",name:"Every 6 months",on:true,inc:false,pct:0},
  {id:"12m",name:"Every 12 months",on:true,inc:false,pct:0}],
@@ -182,6 +182,7 @@ try{var saved=JSON.parse(localStorage.getItem("quotepro-gutter-cleaning-v1")||"n
   // Upgrade earlier demo settings without losing custom extras or gutting pricing.
   if(!("washEnabled" in saved))config.washEnabled=saved.extras?.find(x=>x.id==="exterior")?.on!==false;
   config.extras=(Array.isArray(saved.extras)?saved.extras:defaults.extras).filter(x=>x.id!=="exterior"&&x.id!=="soffit");
+  if(!saved.downpipeDefaultV2)config.extras=config.extras.map(x=>x.id==="downpipe"?{...x,on:false,name:"Downpipe clearance"}:x);
  }}catch(e){}
 
 var state={step:"property",quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};
@@ -412,7 +413,7 @@ $("save").onclick=()=>{
  washPricingMethod:$("washPricingMethod").value,
  gutterRates:readServiceRates("gutter"),
  washRates:readServiceRates("wash"),
- extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),
+ extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),downpipeDefaultV2:true,
  minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
  contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
  showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimerText:$("disclaimerText").value.trim().slice(0,500)
