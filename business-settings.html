@@ -113,11 +113,14 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 "use strict";
 const $=id=>document.getElementById(id);
 const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
-const defaults=window.QuoteProTheme.defaults;
+const defaults=window.QuoteProTheme?.defaults||{bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#17324f",card2:"#0d2258",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"};
 const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
 const names={bg:"Bg",top:"Top",deep:"Deep",text:"Text",muted:"Muted",card:"Card",card2:"Card2",accent:"Accent",border:"Border",buttontext:"Buttontext",smallheading:"Smallheading",icon:"Icon"};
 function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
-function initialColours(){return window.QuoteProTheme.get();}
+function initialColours(){
+ if(window.QuoteProTheme)return window.QuoteProTheme.get();
+ const saved=fromStorage(colourKey);return saved&&typeof saved==="object"?{...defaults,...saved}:{...defaults};
+}
 let colours=initialColours(),config={...appDefaults,...fromStorage(homeKey)},windowMethod="property";
 if(!config.services||typeof config.services!=="object")config.services={...appDefaults.services};
 try{windowMethod=localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){}
@@ -163,7 +166,7 @@ $("save").onclick=()=>{
  const proposed={businessName,headline,description,services:active,autoOpenSingle:$("autoOpenSingle").checked};
  const palette=Object.fromEntries(Object.entries(names).map(([k,s])=>[k,$("color"+s).value]));
  try{
-  window.QuoteProTheme.save(palette);
+  if(window.QuoteProTheme)window.QuoteProTheme.save(palette);else localStorage.setItem(colourKey,JSON.stringify(palette));
   localStorage.setItem(windowKey,$("windowMethod").value);
   localStorage.setItem(homeKey,JSON.stringify(proposed));
   config=proposed;colours=palette;windowMethod=$("windowMethod").value;
