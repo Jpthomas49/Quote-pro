@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quote Pro — Get an instant quote</title>
+<style>
+:root{color-scheme:dark;--qp-bg:#071420;--qp-top:#0b2345;--qp-deep:#081625;--qp-text:#ffffff;--qp-muted:#b9cbd9;--qp-card:#132c47;--qp-card2:#0e2036;--qp-accent:#73bceb;--qp-border:#35516d;--qp-buttontext:#06243c;--qp-smallheading:#73bceb;--qp-icon:#183b5e}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--qp-bg);color:var(--qp-text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}a:focus-visible{outline:3px solid var(--qp-accent);outline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 13px 65px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:13px;flex-wrap:wrap;padding:6px 5px 18px}
+.top .brand{font-size:23px;font-weight:850;letter-spacing:-.7px;line-height:1.2}
+.top .tagline{font-size:12px;color:var(--qp-muted);margin-top:6px}
+.top .mark{color:var(--qp-accent);font-weight:800;font-size:12px;letter-spacing:.6px}
+.notice{font-size:12px;color:var(--qp-muted);padding:11px 14px;border:1px solid var(--qp-border);background:var(--qp-card2);border-radius:10px;margin:0 0 17px}
+.panel{background:var(--qp-top);border:1px solid var(--qp-border);border-radius:20px;padding:clamp(17px,4vw,33px);box-shadow:0 18px 35px rgba(0,0,0,.08)}
+.eyebrow{color:var(--qp-smallheading);font-size:11px;font-weight:850;letter-spacing:1.7px}
+.hero{padding:0 0 27px;border-bottom:1px solid var(--qp-border)}
+h1{font-size:clamp(30px,5vw,41px);line-height:1.16;letter-spacing:-.7px;margin:11px 0}
+.hero p{color:var(--qp-muted);font-size:15px;line-height:1.6;margin:0;max-width:680px}
+.section{margin-top:24px}
+h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
+.section>p{margin:0 0 17px;color:var(--qp-muted);font-size:13px}
+.service-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.service{background:var(--qp-card);border:1px solid var(--qp-border);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:13px;min-width:0;min-height:239px}
+.service:hover{border-color:var(--qp-accent)}
+.service-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.icon{width:49px;height:49px;background:var(--qp-icon);color:var(--qp-accent);display:grid;place-items:center;border-radius:12px;font-weight:900;font-size:25px}
+.gutter-art{width:106px;height:52px;display:grid;place-items:center;overflow:hidden}
+.gutter-art img{width:100%;max-height:54px;object-fit:contain}
+.number{font-size:11px;opacity:.73;font-weight:780;letter-spacing:1px}
+.service h3{font-size:20px;line-height:1.24;letter-spacing:-.25px;margin:0}
+.service p{font-size:13px;line-height:1.55;color:var(--qp-muted);margin:6px 0 0;flex:1}
+.service .action{background:var(--qp-accent);color:var(--qp-buttontext);border:1px solid var(--qp-accent);padding:12px;border-radius:10px;text-align:center;font-weight:840;text-decoration:none;display:block;min-height:47px}
+.service .action:hover{filter:brightness(1.07)}
+.service .action:focus-visible{outline-offset:3px}
+.service .foot{font-size:11px;color:var(--qp-muted);margin:0}
+.footer{font-size:12px;text-align:center;color:var(--qp-muted);padding:23px 8px 0}
+.footer strong{color:var(--qp-accent)}
+.small{font-size:11px}
+@media(max-width:650px){.wrap{padding:14px 10px 40px}.top{padding:8px 5px 14px}.top .brand{font-size:21px}.panel{padding:19px 15px}.hero{padding-bottom:22px}.section{margin-top:18px}.service-grid{grid-template-columns:1fr}.service{min-height:0;padding:18px;gap:12px}.service h3{font-size:19px}h1{font-size:30px}.hero p{font-size:14px}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div><div class="brand" id="businessName">JobCaddy / Quote Pro</div><div class="tagline">Professional quoting, made simple.</div></div><div class="mark">INSTANT QUOTES</div></header>
+<div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> Enquiries are not sent or stored. Your estimate will be confirmed by the business.</div>
+<main class="panel">
+<div class="hero"><div class="eyebrow">INSTANT ONLINE ESTIMATES</div><h1 id="headline">Which service would you like a quote for?</h1><p id="description">Choose the service you need to get a personalised estimate.</p></div>
+<section class="section"><div class="eyebrow">CHOOSE A SERVICE</div><h2>Select a service to continue</h2><p>Choose the service you're interested in to start your instant estimate.</p>
+<div class="service-grid" id="services"></div></section>
+</main>
+<div class="footer">Powered by <strong>JobCaddy · Quote Pro</strong><div class="small" style="margin-top:6px">Final prices are subject to confirmation, property conditions and safe access.</div></div>
+</div>
+<script>
+(function(){
+"use strict";
+const coloursKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
+const palette={bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#132c47",card2:"#0e2036",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"};
+const oldPalette={bg:"#0b2345",top:"#193f69",deep:"#071826",text:"#f7fbff",muted:"#b8cce0",card:"#173b64",card2:"#112c4d",accent:"#58bff0",border:"#3d6087",buttontext:"#061c30",smallheading:"#ffdb61",icon:"#245782"};
+const defaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
+function read(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
+const savedColour=read(coloursKey);
+let chosen={...palette};
+if(savedColour&&typeof savedColour==="object"){
+ const old=Object.keys(oldPalette).every(k=>savedColour[k]===oldPalette[k]);
+ if(!old)chosen={...chosen,...savedColour};
+}
+for(const [key,value] of Object.entries(chosen)){document.documentElement.style.setProperty("--qp-"+key,/^#[0-9a-f]{6}$/i.test(value)?value:palette[key])}
+const stored=read(homeKey),cfg={...defaults,...(stored&&typeof stored==="object"?stored:{})};
+if(!cfg.services||typeof cfg.services!=="object")cfg.services={...defaults.services};
+function choice(){try{return localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){return "property"}}
+const services=[
+{id:"window",name:"Window Cleaning",description:"Professional window cleaning for your property.",icon:"▦",foot:"Windows, doors and extras",href:()=>choice()==="count"?"./Quote_Pro_Window_Cleaning_Prototype_v3.html":"./Quote_Pro_Property_Size_Calculator.html"},
+{id:"gutter",name:"Gutter Cleaning",description:"Gutter emptying, plus an optional gutter, soffit and fascia wash.",icon:"gutter",foot:"Emptying and external PVC wash",href:()=> "./Quote_Pro_Gutter_Cleaning_Calculator.html"},
+{id:"pressure",name:"Pressure Washing",description:"Patios, driveways and other surfaces. Enter your m² or calculate length × width.",icon:"▧",foot:"Surface-specific £/m² estimates",href:()=> "./Quote_Pro_Pressure_Washing_v2.html"},
+{id:"soffit",name:"Soffit & Fascia Cleaning",description:"An exterior PVC wash, with gutter emptying offered as an extra.",icon:"▤",foot:"Exterior PVC cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"}
+];
+const enabled=services.filter(s=>cfg.services[s.id]!==false);
+if(enabled.length===1&&cfg.autoOpenSingle!==false&&!new URLSearchParams(location.search).has("preview")){
+ location.replace(enabled[0].href());return;
+}
+document.getElementById("businessName").textContent=cfg.businessName||defaults.businessName;
+document.getElementById("headline").textContent=cfg.headline||defaults.headline;
+document.getElementById("description").textContent=cfg.description||defaults.description;
+const list=document.getElementById("services");
+for(let i=0;i<enabled.length;i++){
+ const s=enabled[i],card=document.createElement("article"),top=document.createElement("div"),ico=document.createElement("div"),number=document.createElement("span"),content=document.createElement("div"),title=document.createElement("h3"),desc=document.createElement("p"),a=document.createElement("a"),foot=document.createElement("div");
+ card.className="service";top.className="service-top";ico.className=s.icon==="gutter"?"gutter-art":"icon";ico.setAttribute("aria-hidden","true");
+ if(s.icon==="gutter"){let img=document.createElement("img");img.src="./gutter_service_cover.svg";img.alt="";img.loading="lazy";ico.append(img)}
+ else ico.textContent=s.icon;
+ number.className="number";number.textContent=String(i+1).padStart(2,"0");top.append(ico,number);
+ title.textContent=s.name;desc.textContent=s.description;content.append(title,desc);
+ a.className="action";a.href=s.href();a.textContent="Get a quote →";foot.className="foot";foot.textContent=s.foot;
+ card.append(top,content,a,foot);list.append(card);
+}
+})();
+</script></body></html>
