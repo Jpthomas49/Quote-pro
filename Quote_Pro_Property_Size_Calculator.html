@@ -75,6 +75,11 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 .footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
 @media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
 #adminTab,#customerTab{display:none}body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
+#customer .caption{color:var(--c-secondary)}
+#customer .panel,#customer .section{border-color:var(--c-border)}
+#customer .estimate{background:var(--c-estimate)}
+#customer .btn.primary{background:var(--c-button);border-color:var(--c-button);color:var(--c-button-text)}
+#customer .muted{color:var(--c-secondary)}
 </style></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Property Size calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
@@ -100,7 +105,13 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 </div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
 <section id="admin" hidden>
 <div class="eyebrow">QUOTE PRO · PROPERTY SIZE</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
-<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Restore default colours</button></div>
+<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label>
+<label>Page background<input id="colorPage" type="color"></label>
+<label>Secondary text<input id="colorSecondary" type="color"></label>
+<label>Primary buttons<input id="colorButton" type="color"></label>
+<label>Button text<input id="colorButtonText" type="color"></label>
+<label>Panel borders<input id="colorBorder" type="color"></label>
+<label>Live estimate box<input id="colorEstimate" type="color"></label></div><button class="btn" type="button" id="paletteReset">Restore default colours</button></div>
 <div class="adminsec"><h2>Property size pricing</h2><p class="adminhelp">Set a fixed price or a minimum–maximum range for each property size. Customers never see prices on the selection buttons.</p><div id="admin-houses"></div><button type="button" class="linkaction" id="addHouse">+ Add property size</button></div>
 <div class="adminsec"><h2>Additional items</h2><p class="adminhelp">Each add-on is priced once per property — no window counting. Conservatory windows have separate Small, Medium and Large prices, each fixed or ranged.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
 <div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
@@ -125,7 +136,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 "use strict";
 var $=id=>document.getElementById(id);
 var defaults={
- colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb"},
+ colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb",page:"#071420",secondary:"#b9cbd9",button:"#73bceb",buttontext:"#06243c",border:"#34516c",estimate:"#1d314c"},
  houses:[{id:"flat",name:"Flat / maisonette",on:true,mode:"fixed",lo:18,hi:18},
  {id:"small",name:"1–2 bedroom home",on:true,mode:"fixed",lo:23,hi:23},
  {id:"medium",name:"3–4 bedroom home",on:true,mode:"range",lo:28,hi:35},
@@ -148,9 +159,10 @@ function order(){return config.contactPosition==="start"?["contact","property","
 function label(step){return ({property:"Property",frequency:"Frequency",contact:"Contact"})[step]}
 function color(hex){return /^#[0-9a-f]{6}$/i.test(hex||"")?hex:"#58bff0"}
 function applyTheme(){
- var customer=$("customer"),cs=config.colors||defaults.colors;
- for(var pair of [["bg","--c-bg"],["text","--c-text"],["card","--c-card"],["selector","--c-select"],["outline","--c-outline"],["accent","--c-accent"]])
+ var customer=$("customer"),cs={...defaults.colors,...(config.colors||{})};
+ for(var pair of [["bg","--c-bg"],["text","--c-text"],["card","--c-card"],["selector","--c-select"],["outline","--c-outline"],["accent","--c-accent"],["secondary","--c-secondary"],["button","--c-button"],["buttontext","--c-button-text"],["border","--c-border"],["estimate","--c-estimate"]])
   customer.style.setProperty(pair[1],color(cs[pair[0]]));
+ document.body.style.background=color(cs.page||defaults.colors.page);
  var hex=color(cs.accent).slice(1),rgb=[0,2,4].map(i=>parseInt(hex.substring(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
  customer.style.setProperty("--c-btn-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#051b2a":"#ffffff");
 }
@@ -279,7 +291,7 @@ function priceRow(type,item){
 }
 function renderAdmin(){
  var cs=config.colors||defaults.colors;
- for(var key of ["Bg","Text","Card","Selector","Outline","Accent"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
+ for(var key of ["Bg","Text","Card","Selector","Outline","Accent","Page","Secondary","Button","ButtonText","Border","Estimate"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
  for(var [k,container] of [["houses","admin-houses"],["extras","admin-extras"],["frequencies","admin-frequencies"]])
   $(container).innerHTML=config[k].map(x=>priceRow(k==="frequencies"?"frequency":k,x)).join("");
  for(var key of ["minimum","bufferMode","bufferValue","contactPosition","estimateTiming","contactRule"])$(key).value=config[key];
@@ -287,7 +299,7 @@ function renderAdmin(){
  $("disclaimerText").value=config.disclaimerText;
  $("admin-message").textContent="";
 }
-$("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent"])$("color"+k[0].toUpperCase()+k.slice(1)).value=defaults.colors[k]};
+$("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent","page","secondary","button","buttontext","border","estimate"])$("color"+(k==="buttontext"?"ButtonText":k[0].toUpperCase()+k.slice(1))).value=defaults.colors[k]};
 for(var id of ["addHouse","addExtra","addFrequency"])$(id).onclick=()=>{
  var collection=id==="addHouse"?"houses":id==="addExtra"?"extras":"frequencies";
  var type=collection==="frequencies"?"frequency":collection;
@@ -337,7 +349,7 @@ function readRows(container,type){
 $("save").onclick=()=>{
  try{
  var p={
- colors:Object.fromEntries(["Bg","Text","Card","Selector","Outline","Accent"].map(k=>[k.toLowerCase(),$("color"+k).value])),
+ colors:Object.fromEntries(["Bg","Text","Card","Selector","Outline","Accent","Page","Secondary","Button","ButtonText","Border","Estimate"].map(k=>[k.toLowerCase(),$("color"+k).value])),
  houses:readRows("admin-houses","houses"),extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),
  minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
  contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
