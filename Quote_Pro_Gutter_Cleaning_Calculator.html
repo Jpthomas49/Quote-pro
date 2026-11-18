@@ -80,8 +80,12 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <section id="customer"><div class="hero"><div class="eyebrow">GUTTER CLEANING</div><h1>Get your gutter cleaning estimate</h1><div class="muted">Choose your property size, select optional extras and tell us how often you’d like your gutters cleaned.</div></div>
 <div class="panel">
 <div class="steps" id="steps"></div>
-<section id="step-property"><div class="section"><div class="eyebrow">YOUR PROPERTY</div><h2>What size is your property?</h2><p class="caption">Select the closest property type. The basic estimate covers gutter emptying.</p><div id="houses" class="choices"></div></div>
-<div class="section"><div class="eyebrow">EXTRA GUTTER SERVICES</div><h2>Would you like anything else?</h2><p class="caption">Gutter emptying is included. Select any other services you would like priced — no gutter measurements needed.</p><div id="extras"></div></div><div id="estimate-property" class="section"></div></section>
+<section id="step-property">
+<div class="section"><div class="eyebrow">GUTTER EMPTYING</div><h2 id="quantityTitle">How much guttering needs cleaning?</h2>
+<p id="quantityHelp" class="caption">Enter the approximate length of guttering. We’ll confirm the final details.</p>
+<label class="field" for="gutterQuantity"><span id="quantityLabel">Approximate gutter length (metres)</span><input id="gutterQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
+<p class="muted" style="margin:9px 0 0">An estimate only — final price subject to access, height and confirmation.</p></div>
+<div class="section"><div class="eyebrow">EXTRA GUTTER SERVICES</div><h2>Anything extra?</h2><p class="caption">Choose optional services you'd also like priced. No images or pane counting.</p><div id="extras"></div></div><div id="estimate-property" class="section"></div></section>
 <section id="step-frequency" hidden><div class="section"><div class="eyebrow">CLEANING FREQUENCY</div><h2>How often would you like your gutters cleaned?</h2><div id="frequencies"></div></div><div id="estimate-frequency" class="section"></div></section>
 <section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Please enter your contact details and any access notes so we can review your gutter enquiry.</p>
 <form id="contacts" novalidate><div class="formgrid">
@@ -100,7 +104,21 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <section id="admin" hidden>
 <div class="eyebrow">QUOTE PRO · GUTTER CLEANING</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
 <div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Restore default colours</button></div>
-<div class="adminsec"><h2>Property size pricing</h2><p class="adminhelp">Set the gutter-emptying price for each property size: fixed price or range. Customers never see individual prices on selection buttons.</p><div id="admin-houses"></div><button type="button" class="linkaction" id="addHouse">+ Add property size</button></div>
+<div class="adminsec"><h2>Gutter emptying prices</h2>
+<p class="adminhelp">Choose how the business prices gutter emptying. Customers see only the chosen measurement, never the unit prices on selection controls.</p>
+<label class="field" style="max-width:430px">Pricing method<select id="gutterPricingMethod"><option value="metre">Price per metre</option><option value="side">Price per side of the property</option></select></label>
+<div class="price-row" style="margin-top:14px"><h3>Per-metre rates</h3><div class="priceline">
+<label class="field type">Pricing<select id="gutterMeterMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label>
+<label class="field">Price / minimum per metre (£)<input id="gutterMeterLo" type="number" min="0" step=".01"></label>
+<label class="field" id="gutterMeterHiWrap">Maximum per metre (£)<input id="gutterMeterHi" type="number" min="0" step=".01"></label>
+</div></div>
+<div class="price-row"><h3>Per-side rates</h3><div class="priceline">
+<label class="field type">Pricing<select id="gutterSideMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label>
+<label class="field">Price / minimum per side (£)<input id="gutterSideLo" type="number" min="0" step=".01"></label>
+<label class="field" id="gutterSideHiWrap">Maximum per side (£)<input id="gutterSideHi" type="number" min="0" step=".01"></label>
+</div></div>
+<p class="adminhelp">Both sets of rates are saved. Switching methods changes which quantity the customer enters and which rate Quote Pro calculates.</p>
+</div>
 <div class="adminsec"><h2>Additional gutter services</h2><p class="adminhelp">Each extra is priced once per property. Offer exterior gutter washing, downpipe clearing or other add-ons, each at a fixed price or range.</p><div id="admin-extras"></div><button type="button" class="linkaction" id="addExtra">+ Add extra</button></div>
 <div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
 <div class="adminsec"><h2>Estimate settings</h2><div class="settings">
@@ -125,10 +143,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 var $=id=>document.getElementById(id);
 var defaults={
  colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb"},
- houses:[{id:"flat",name:"Flat / maisonette",on:true,mode:"fixed",lo:30,hi:30},
- {id:"small",name:"1–2 bedroom home",on:true,mode:"fixed",lo:40,hi:40},
- {id:"medium",name:"3–4 bedroom home",on:true,mode:"range",lo:55,hi:70},
- {id:"large",name:"5+ bedroom home",on:true,mode:"range",lo:80,hi:110}],
+ gutterPricingMethod:"metre",gutterRates:{metre:{mode:"range",lo:3,hi:4},side:{mode:"fixed",lo:25,hi:25}},
  extras:[{id:"exterior",name:"Exterior gutter washing",on:true,mode:"range",lo:30,hi:45},
  {id:"downpipe",name:"Additional downpipe clearance",on:true,mode:"fixed",lo:15,hi:15},
  {id:"soffit",name:"Soffit & fascia washing",on:true,mode:"range",lo:40,hi:70}],
@@ -141,7 +156,7 @@ var defaults={
 var clone=obj=>JSON.parse(JSON.stringify(obj));
 var config=clone(defaults);
 try{var saved=JSON.parse(localStorage.getItem("quotepro-gutter-cleaning-v1")||"null");if(saved&&typeof saved==="object")config=Object.assign(clone(defaults),saved)}catch(e){}
-var state={step:"property",house:null,extras:[],frequency:null};
+var state={step:"property",quantity:null,extras:[],frequency:null};
 var esc=value=>String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 var money=value=>"£"+Number(value).toFixed(2);
 function order(){return config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"]}
@@ -155,10 +170,14 @@ function applyTheme(){
  customer.style.setProperty("--c-btn-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#051b2a":"#ffffff");
 }
 function calc(){
- var house=config.houses.find(x=>x.id===state.house&&x.on);
+ var method=config.gutterPricingMethod==="side"?"side":"metre";
+ var rates=config.gutterRates?.[method]||defaults.gutterRates[method];
+ var qty=Number(state.quantity)||0;
+ var validQty=Number.isFinite(qty)&&qty>=1&&qty<=5000&&(method==="metre"||Number.isInteger(qty));
+ var unit=method==="metre"?"m":"side"+(qty===1?"":"s");
+ var base=validQty?{name:"Gutter emptying · "+qty+" "+unit,mode:rates.mode,lo:qty*Number(rates.lo),hi:qty*Number(rates.mode==="range"?rates.hi:rates.lo)}:null;
  var extras=config.extras.filter(x=>x.on&&state.extras.includes(x.id));
- var items=[...(house?[{name:"Gutter emptying · "+house.name,mode:house.mode,lo:house.lo,hi:house.hi}]:[]),...extras],
- freq=config.frequencies.find(x=>x.id===state.frequency&&x.on);
+ var items=[...(base?[base]:[]),...(base?extras:[])],freq=config.frequencies.find(x=>x.id===state.frequency&&x.on);
  var multiplier=freq&&freq.inc?1+Number(freq.pct)/100:1;
  var lo=items.reduce((a,x)=>a+Number(x.lo),0)*multiplier;
  var hi=items.reduce((a,x)=>a+Number(x.mode==="range"?x.hi:x.lo),0)*multiplier;
@@ -167,12 +186,12 @@ function calc(){
  var lowBuffer=buffer?(config.bufferMode==="amount"?val:lo*val/100):0;
  var highBuffer=buffer?(config.bufferMode==="amount"?val:hi*val/100):0;
  return {items,lo:items.length?Math.max(minimum,buffer?Math.floor(lo-lowBuffer):lo):0,
- hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer,multiplier,house,extras,freq};
+ hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer,multiplier,extras,freq,validQty,qty,method};
 }
 function formatted(v){return config.bufferMode!=="off"?"£"+Math.round(v):money(v)}
 function range(lo,hi){return Math.abs(lo-hi)<.005?formatted(lo):formatted(lo)+"–"+formatted(hi)}
 function quoteMarkup(){
- var p=calc();if(!p.house)return '<p class="muted">Select a property size to see your estimate.</p>';
+ var p=calc();if(!p.validQty)return '<p class="muted">Enter the amount of guttering to calculate your estimate.</p>';
  var parts=p.items.map(x=>{
  var lo=Number(x.lo)*p.multiplier,hi=Number(x.mode==="range"?x.hi:x.lo)*p.multiplier;
  return '<div class="line"><span>'+esc(x.name)+'</span><strong>'+money(lo)+(hi-lo>.005?'–'+money(hi):'')+'</strong></div>';
@@ -189,11 +208,18 @@ function render(){
  if(["review","done"].includes(current))return;
  $("back").hidden=steps.indexOf(current)===0;
  $("next").textContent=steps.indexOf(current)===steps.length-1?"Review my quote →":"Next: "+label(steps[steps.indexOf(current)+1])+" →";
- $("houses").innerHTML=config.houses.filter(x=>x.on).map(x=>'<button type="button" class="house '+(x.id===state.house?"selected":"")+'" data-house="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
+ var side=config.gutterPricingMethod==="side";
+ $("quantityTitle").textContent=side?"How many sides need gutter emptying?":"Approximately how many metres need cleaning?";
+ $("quantityLabel").textContent=side?"Number of property sides":"Gutter length in metres";
+ $("quantityHelp").textContent=side?"Count each side of your property requiring gutter emptying (for example, front and rear = 2 sides).":"Enter the approximate total gutter length in metres. Exact measurements can be confirmed later.";
+ $("gutterQuantity").step=side?"1":"0.5";
+ $("gutterQuantity").max=side?"20":"5000";
+ $("gutterQuantity").placeholder=side?"e.g. 2":"e.g. 15";
+ $("gutterQuantity").value=state.quantity==null?"":state.quantity;
  $("extras").innerHTML=config.extras.filter(x=>x.on).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No optional extras offered.</p>';
  $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
  $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
- var show=config.estimateTiming==="live"&&state.house!=null;
+ var show=config.estimateTiming==="live"&&calc().validQty;
  for(var step of ["property","frequency","contact"]){
   $("estimate-"+step).hidden=!show;
   if(show)$("estimate-"+step).innerHTML=quoteMarkup();
@@ -213,7 +239,7 @@ function validateContact(){
 }
 function next(){
  var s=state.step;
- if(s==="property"&&!state.house)return error("Please select a property size.");
+ if(s==="property"&&!calc().validQty)return error(config.gutterPricingMethod==="side"?"Please enter a whole number of sides (1–20).":"Please enter a gutter length in metres (minimum 1).");
  
  if(s==="frequency"&&!state.frequency)return error("Please select a cleaning frequency.");
  if(s==="contact"){var invalid=validateContact();if(invalid)return error(invalid)}
@@ -225,17 +251,17 @@ function renderReview(){
  render();var p=calc();
  $("review-details").innerHTML='<div class="review-card"><h3>Your contact details</h3>'+
  summaryRow("Full name",$("name").value.trim())+summaryRow("Mobile",$("phone").value.trim())+summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+summaryRow("Notes",$("notes").value.trim())+'</div>'+
- '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Property size",p.house?.name||"—")+summaryRow("Included service","Gutter emptying")+summaryRow("Additional services",p.extras.length?p.extras.map(x=>x.name).join(", "):"None")+summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
+ '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Pricing method",p.method==="side"?"Per side":"Per metre")+summaryRow("Gutter quantity",p.qty+" "+(p.method==="side"?"sides":"metres"))+summaryRow("Included service","Gutter emptying")+summaryRow("Additional services",p.extras.length?p.extras.map(x=>x.name).join(", "):"None")+summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
  $("review-amount").innerHTML=quoteMarkup();
  $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
  $("review-disclaimer").hidden=!config.showDisclaimer;
  $("customer").scrollIntoView({block:"start"});
 }
-$("houses").addEventListener("click",e=>{var b=e.target.closest("[data-house]");if(b){state.house=b.dataset.house;render()}});
+$("gutterQuantity").addEventListener("input",e=>{state.quantity=e.target.value===""?null:Number(e.target.value);render()});
 $("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);render()});
 $("frequencies").addEventListener("click",e=>{var b=e.target.closest("[data-frequency]");if(b){state.frequency=b.dataset.frequency;render()}});
 $("next").onclick=next;$("back").onclick=()=>{var steps=order(),i=steps.indexOf(state.step);if(i>0){state.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
-function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();render()}
+function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],quantity:null,extras:[],frequency:null};$("contacts").reset();render()}
 $("reset").onclick=reset;$("restart").onclick=reset;
 $("reviewEdit").onclick=()=>{state.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
 $("submit").onclick=()=>{state.step="done";render();$("customer").scrollIntoView({block:"start"})};
@@ -254,21 +280,29 @@ function priceRow(type,item){
 function renderAdmin(){
  var cs=config.colors||defaults.colors;
  for(var key of ["Bg","Text","Card","Selector","Outline","Accent"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
- for(var [k,container] of [["houses","admin-houses"],["extras","admin-extras"],["frequencies","admin-frequencies"]])
+ for(var [k,container] of [["extras","admin-extras"],["frequencies","admin-frequencies"]])
   $(container).innerHTML=config[k].map(x=>priceRow(k==="frequencies"?"frequency":k,x)).join("");
+ $("gutterPricingMethod").value=config.gutterPricingMethod||"metre";
+ for(var type of ["Meter","Side"]){var rate=config.gutterRates?.[type.toLowerCase()==="meter"?"metre":"side"]||defaults.gutterRates[type.toLowerCase()==="meter"?"metre":"side"];
+  $("gutter"+type+"Mode").value=rate.mode;
+  $("gutter"+type+"Lo").value=rate.lo;
+  $("gutter"+type+"Hi").value=rate.hi;
+  $("gutter"+type+"HiWrap").hidden=rate.mode!=="range";
+ }
  for(var key of ["minimum","bufferMode","bufferValue","contactPosition","estimateTiming","contactRule"])$(key).value=config[key];
  $("showBreakdown").checked=!!config.showBreakdown;$("showDisclaimer").checked=!!config.showDisclaimer;
  $("disclaimerText").value=config.disclaimerText;
  $("admin-message").textContent="";
 }
 $("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent"])$("color"+k[0].toUpperCase()+k.slice(1)).value=defaults.colors[k]};
-for(var id of ["addHouse","addExtra","addFrequency"])$(id).onclick=()=>{
- var collection=id==="addHouse"?"houses":id==="addExtra"?"extras":"frequencies";
+for(var id of ["addExtra","addFrequency"])$(id).onclick=()=>{
+ var collection=id==="addExtra"?"extras":"frequencies";
  var type=collection==="frequencies"?"frequency":collection;
  var item=collection==="frequencies"?{id:"f"+Date.now(),name:"",on:true,inc:false,pct:0}:{id:"i"+Date.now(),name:"",on:true,mode:"fixed",lo:0,hi:0};
- $(collection==="houses"?"admin-houses":collection==="extras"?"admin-extras":"admin-frequencies").insertAdjacentHTML("beforeend",priceRow(type,item));
+ $(collection==="extras"?"admin-extras":"admin-frequencies").insertAdjacentHTML("beforeend",priceRow(type,item));
 };
 $("admin").addEventListener("click",e=>{var b=e.target.closest("[data-remove]");if(b)b.closest(".price-row").remove()});
+for(var type of ["Meter","Side"]){$("gutter"+type+"Mode").addEventListener("change",e=>{$("gutter"+type+"HiWrap").hidden=e.target.value!=="range"})}
 $("admin").addEventListener("change",e=>{
  var row=e.target.closest(".price-row");if(!row)return;
  if(e.target.matches("[data-mode]"))row.querySelector("[data-max-wrap]").hidden=e.target.value!=="range";
@@ -302,17 +336,26 @@ $("save").onclick=()=>{
  try{
  var p={
  colors:Object.fromEntries(["Bg","Text","Card","Selector","Outline","Accent"].map(k=>[k.toLowerCase(),$("color"+k).value])),
- houses:readRows("admin-houses","houses"),extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),
+ gutterPricingMethod:$("gutterPricingMethod").value,
+ gutterRates:Object.fromEntries(["Meter","Side"].map(type=>{
+  var key=type==="Meter"?"metre":"side";
+  var mode=$("gutter"+type+"Mode").value;
+  var loText=$("gutter"+type+"Lo").value.trim(),hiText=$("gutter"+type+"Hi").value.trim();
+  var lo=Number(loText),hi=mode==="range"?Number(hiText):lo;
+  if(loText===""||!Number.isFinite(lo)||lo<0)throw Error("Enter a valid price for "+key+".");
+  if(mode==="range"&&(hiText===""||!Number.isFinite(hi)||hi<lo))throw Error("Enter a valid "+key+" maximum price.");
+  return [key,{mode,lo,hi}];
+ })),
+ extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),
  minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
  contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
  showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimerText:$("disclaimerText").value.trim().slice(0,500)
  };
- if(!p.houses.some(x=>x.on))throw Error("Enable at least one property size.");
  if(!p.frequencies.some(x=>x.on))throw Error("Enable at least one cleaning frequency.");
  if(!Number.isFinite(p.minimum)||p.minimum<0)throw Error("Enter a valid minimum charge.");
  if(!Number.isFinite(p.bufferValue)||p.bufferValue<0||(p.bufferMode==="percent"&&p.bufferValue>100))throw Error("Enter a valid buffer (0–100% for percentages).");
- config=p;state={step:order()[0],house:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
- try{localStorage.setItem("quotepro-property-size-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
+ config=p;state={step:order()[0],quantity:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
+ try{localStorage.setItem("quotepro-gutter-cleaning-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
  catch(e){$("admin-message").textContent="Settings applied for this session; local storage is unavailable."}
  }catch(e){$("admin-message").textContent=e.message}
 };
