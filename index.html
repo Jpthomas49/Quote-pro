@@ -10,24 +10,50 @@
 .launch:focus-visible,.method-switch:focus-visible,.method a:focus-visible{outline:3px solid #ffdb61;outline-offset:3px}
 .meta{margin-top:14px;color:#98b7d6;font-size:12px}.method-picker{border:1px solid #3d6087;background:#0e2a48;border-radius:14px;margin-top:16px;padding:16px}.method-picker h3{margin:0 0 5px;font-size:17px}.method-picker p{color:#bed4eb;font-size:12px;margin:0 0 13px}
 .methods{display:grid;grid-template-columns:1fr 1fr;gap:9px}.method{display:flex;flex-direction:column;justify-content:space-between;border:1px solid #426b96;border-radius:10px;padding:14px;background:#173b62;gap:12px}.method strong{display:block}.method .description{display:block;color:#bad2eb;font-size:12px;margin-top:4px}.method a{color:#081c2b;background:#91d5f4;text-decoration:none;font-weight:800;padding:10px;border-radius:8px;text-align:center}
-.notice{border:1px solid #536075;background:#152b42;border-radius:12px;padding:13px 16px;margin-top:24px;color:#bfcde2;font-size:13px}
+.adminpanel{border:1px solid #3d6087;background:#101e2f;border-radius:16px;padding:20px;margin:25px 0}.adminpanel h2{margin:3px 0 8px;font-size:23px}.adminpanel label{display:block;font-weight:800;margin:16px 0 7px}.adminpanel select{width:min(100%,450px);background:#0d223a;color:#f6fbff;border:1px solid #4b6d94;border-radius:11px;padding:13px;font:inherit}.adminpanel p{color:#b6cee7}.adminlink{color:#b8dfff;text-decoration:underline;text-underline-offset:3px;background:none;border:0;font:inherit;cursor:pointer}.adminpanel button{margin-top:15px;width:auto}.notice{border:1px solid #536075;background:#152b42;border-radius:12px;padding:13px 16px;margin-top:24px;color:#bfcde2;font-size:13px}
 [hidden]{display:none!important}
 @media(max-width:680px){.cards,.methods{grid-template-columns:1fr}.wrap{padding:18px 14px 40px}.main{padding-top:32px}.card{min-height:250px}.main p{font-size:15px}header{align-items:flex-start}.brand{font-size:20px}}
 </style></head><body><div class="wrap">
 <header><div class="brand">Job<em>Caddy</em> / Quote Pro</div><div class="pill">PRIVATE PROTOTYPE</div></header>
-<main><div class="main"><div class="eyebrow">INSTANT ONLINE ESTIMATES</div><h1>Which service would you like a quote for?</h1><p>Choose a service below to get started. Your estimate will be subject to confirmation by the business.</p></div>
+<main>
+<div id="businessSettings" class="adminpanel" hidden>
+ <div class="eyebrow">BUSINESS SETTINGS · SERVICE CONFIGURATION</div>
+ <h2>Window Cleaning calculator</h2>
+ <p>Select the single form your customers should see when they choose Window Cleaning. This is a business setting, not a customer choice.</p>
+ <label for="windowMethod">Choose window cleaning pricing method</label>
+ <select id="windowMethod"><option value="property">Property Size — standard calculator</option><option value="count">Window Count — detailed calculator</option></select>
+ <p style="font-size:12px">Prototype only: this choice is saved in this browser. Publishing a business-wide choice for all visitors will require business-hosted settings in the final plugin.</p>
+ <button class="launch" type="button" id="saveWindowMethod">Save window form</button><p id="methodStatus" role="status" aria-live="polite"></p>
+ <button class="adminlink" type="button" id="closeBusinessSettings">← Back to customer preview</button>
+</div>
+<div id="customerServices">
+<div class="main"><div class="eyebrow">INSTANT ONLINE ESTIMATES</div><h1>Which service would you like a quote for?</h1><p>Choose a service below to get started. Your estimate will be subject to confirmation by the business.</p></div>
 <div class="cards">
-<article class="card"><div class="icon" aria-hidden="true">▦</div><h2>Window Cleaning</h2><p>Get a window cleaning estimate using either property size or individual window counts.</p><button class="method-switch" type="button" id="showWindowMethods" aria-expanded="false" aria-controls="windowMethods">Choose window cleaning →</button><div class="meta">Two pricing methods available in this prototype</div></article>
+<article class="card"><div class="icon" aria-hidden="true">▦</div><h2>Window Cleaning</h2><p>Get a window cleaning estimate tailored to your property.</p><a class="launch" id="windowLink" href="./Quote_Pro_Property_Size_Calculator.html">Get a window cleaning quote →</a><div class="meta">Window cleaning calculator</div></article>
 <article class="card"><div class="icon gutter-icon" aria-hidden="true"><img src="./gutter_service_cover.svg" alt="" loading="lazy"></div><h2>Gutter Cleaning</h2><p>Price gutter emptying and an optional Gutter, Soffit &amp; Fascia Wash by metre or property side, plus extra downpipe services.</p><a class="launch" href="./Quote_Pro_Gutter_Cleaning_Calculator.html">Get a gutter cleaning quote →</a><div class="meta">Dedicated gutter calculator</div></article>
 <article class="card"><div class="icon" aria-hidden="true">▰</div><h2>Soffit &amp; Fascia Cleaning</h2><p>External PVC wash with fixed or ranged per-metre or per-side pricing. Add gutter emptying, then optional downpipe clearance.</p><a class="launch" href="./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html">Get a soffit &amp; fascia quote →</a><div class="meta">Dedicated soffit and fascia calculator</div></article>
 </div>
-<div id="windowMethods" class="method-picker" hidden><h3>How would you like to estimate window cleaning?</h3><p>These are two alternatives for the same service. A business will choose its preferred method when we introduce module configuration.</p>
-<div class="methods">
-<div class="method"><div><strong>Property Size</strong><span class="description">Quick house-size estimate with optional extras. No pane counting.</span></div><a href="./Quote_Pro_Property_Size_Calculator.html">Open Property Size →</a></div>
-<div class="method"><div><strong>Window Count</strong><span class="description">Detailed estimate based on the number and types of windows.</span></div><a href="./Quote_Pro_Window_Cleaning_Prototype_v3.html">Open Window Count →</a></div>
-</div></div>
-<div class="notice"><strong>Prototype only:</strong> All prices are fictional examples. Enquiries are not sent or stored, and the service options are not yet subscription-controlled. Business settings remain separate and save locally in your browser. Pressure Washing is the next core calculator to develop.</div>
+<div class="notice"><strong>Prototype only:</strong> All prices are fictional examples. Enquiries are not sent or stored, and the service options are not yet subscription-controlled. Business settings remain separate and save locally in your browser. Pressure Washing is currently being developed.</div>
+</div>
+<div style="margin-top:15px;text-align:right"><button id="openBusinessSettings" type="button" class="adminlink">Business settings (prototype) ⚙</button></div>
 </main></div><script>
-const toggle=document.getElementById('showWindowMethods'),methods=document.getElementById('windowMethods');
-toggle.addEventListener('click',()=>{methods.hidden=!methods.hidden;toggle.setAttribute('aria-expanded',String(!methods.hidden));toggle.textContent=methods.hidden?'Choose window cleaning →':'Hide window cleaning options ↑';if(!methods.hidden)methods.scrollIntoView({block:'nearest',behavior:'smooth'})});
-</script></body></html>
+(function(){
+"use strict";
+var key="quotepro-window-method-v1";
+var $=id=>document.getElementById(id);
+function choice(){try{return localStorage.getItem(key)==="count"?"count":"property"}catch(e){return "property"}}
+function updateLink(){ $("windowLink").href=choice()==="count"?"./Quote_Pro_Window_Cleaning_Prototype_v3.html":"./Quote_Pro_Property_Size_Calculator.html"; }
+function showSettings(yes){
+ $("businessSettings").hidden=!yes; $("customerServices").hidden=yes;
+ $("windowMethod").value=choice();window.scrollTo(0,0);
+}
+$("saveWindowMethod").onclick=()=>{
+ try{localStorage.setItem(key,$("windowMethod").value);$("methodStatus").textContent="Saved for this browser. Customer preview now opens the selected Window Cleaning form."}
+ catch(e){$("methodStatus").textContent="Storage unavailable: choice could not be saved."}
+ updateLink();
+};
+$("openBusinessSettings").onclick=()=>showSettings(true);
+$("closeBusinessSettings").onclick=()=>showSettings(false);
+updateLink();
+if(new URLSearchParams(location.search).get("admin")==="1")showSettings(true);
+})();</script></body></html>
