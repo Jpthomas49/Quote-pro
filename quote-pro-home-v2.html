@@ -36,7 +36,7 @@ h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
 .footer strong{color:var(--qp-accent)}
 .small{font-size:11px}
 @media(max-width:650px){.wrap{padding:14px 10px 40px}.top{padding:8px 5px 14px}.top .brand{font-size:21px}.panel{padding:19px 15px}.hero{padding:19px}.section{margin-top:18px}.service-grid{grid-template-columns:1fr}.service{min-height:0;padding:18px;gap:12px}.service h3{font-size:19px}h1{font-size:30px}.hero p{font-size:14px}}
-</style></head>
+</style><script src="./quote-pro-theme.js"></script></head>
 <body><div class="wrap">
 <header class="top"><div><div class="brand" id="businessName">JobCaddy / Quote Pro</div><div class="tagline">Professional quoting, made simple.</div></div><div class="mark">INSTANT QUOTES</div></header>
 <div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> Enquiries are not sent or stored. Your estimate will be confirmed by the business.</div>
@@ -51,17 +51,9 @@ h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
 (function(){
 "use strict";
 const coloursKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
-const palette={bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#132c47",card2:"#0e2036",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"};
-const oldPalette={bg:"#0b2345",top:"#193f69",deep:"#071826",text:"#f7fbff",muted:"#b8cce0",card:"#173b64",card2:"#112c4d",accent:"#58bff0",border:"#3d6087",buttontext:"#061c30",smallheading:"#ffdb61",icon:"#245782"};
 const defaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
 function read(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
-const savedColour=read(coloursKey);
-let chosen={...palette};
-if(savedColour&&typeof savedColour==="object"){
- const old=Object.keys(oldPalette).every(k=>savedColour[k]===oldPalette[k]);
- if(!old)chosen={...chosen,...savedColour};
-}
-for(const [key,value] of Object.entries(chosen)){document.documentElement.style.setProperty("--qp-"+key,/^#[0-9a-f]{6}$/i.test(value)?value:palette[key])}
+window.QuoteProTheme.applyHomepage();
 const stored=read(homeKey),cfg={...defaults,...(stored&&typeof stored==="object"?stored:{})};
 if(!cfg.services||typeof cfg.services!=="object")cfg.services={...defaults.services};
 function choice(){try{return localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){return "property"}}
