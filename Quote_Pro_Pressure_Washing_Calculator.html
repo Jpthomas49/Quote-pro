@@ -224,8 +224,8 @@ function theme(){
  root.style.setProperty("--button-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#061a28":"#ffffff");
 }
 function updateEstimate(){
- var x=calculate();$("areaOutput").textContent=x.valid?numberArea(x.area)+" m²":"— m²";
- $("areaHint").textContent=x.valid?st.method==="dimensions"?"Calculated from "+st.length+" m × "+st.width+" m":"Entered total surface area":"Enter a valid area of up to 50,000 m².";
+ var measured=measure(),x=calculate();$("areaOutput").textContent=measured.valid?numberArea(measured.area)+" m²":"— m²";
+ $("areaHint").textContent=measured.valid?st.method==="dimensions"?"Calculated from "+st.length+" m × "+st.width+" m":"Entered total surface area":"Enter a valid area of up to 50,000 m².";
  var show=cfg.timing==="live";
  for(var part of ["area","contact"]){
   $("estimate-"+part).hidden=!show;
