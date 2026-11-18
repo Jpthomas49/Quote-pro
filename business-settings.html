@@ -73,24 +73,15 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
 </section>
 <section class="section">
-<h2>Shared Quote Pro colour theme</h2><p class="help"><strong>One set of colours controls every customer-facing page:</strong> the service-selection homepage, both Window Cleaning methods, Gutter Cleaning, Soffit &amp; Fascia Cleaning and Pressure Washing. Save once, then reopen any calculator to see the matching theme. Individual service pricing settings remain independent.</p>
+<h2>Shared Quote Pro colour theme</h2><p class="help"><strong>Three colours control every customer-facing page:</strong> the service-selection homepage, both Window Cleaning methods, Gutter Cleaning, Soffit &amp; Fascia Cleaning and Pressure Washing. Text, borders, buttons and secondary colours are chosen automatically. Save once and every calculator uses the same theme. Service pricing remains independent.</p>
 <div class="pickers">
-<label>Page background<input type="color" id="colorBg"></label>
-<label>Header / hero<input type="color" id="colorTop"></label>
-<label>Deep background<input type="color" id="colorDeep"></label>
-<label>Main text<input type="color" id="colorText"></label>
-<label>Secondary text<input type="color" id="colorMuted"></label>
-<label>Service card colour<input type="color" id="colorCard"></label>
-<label>Inner card colour<input type="color" id="colorCard2"></label>
-<label>Accent / buttons<input type="color" id="colorAccent"></label>
-<label>Card outlines<input type="color" id="colorBorder"></label>
-<label>Button text<input type="color" id="colorButtontext"></label>
-<label>Small headings<input type="color" id="colorSmallheading"></label>
-<label>Service icon colour<input type="color" id="colorIcon"></label>
+<label>Background<input type="color" id="colorTop"></label>
+<label>Cards &amp; selection boxes<input type="color" id="colorCard"></label>
+<label>Accent colour<input type="color" id="colorAccent"></label>
 </div><button type="button" class="btn" id="restore">Restore shared navy and light-blue theme</button>
 </section>
 <section class="section">
-<h2>Each calculator's own settings</h2><p class="help">Open pricing, extras, minimum charges, form-specific colours and quote options. All five calculators currently have their own settings.</p>
+<h2>Each calculator's own settings</h2><p class="help">Open pricing, extras, minimum charges and quote options. All five calculators currently have their own settings.</p>
 <div class="service-links">
 <a href="./Quote_Pro_Property_Size_Calculator.html?admin=1">Window Cleaning — Property Size <span>↗</span></a>
 <a href="./Quote_Pro_Window_Cleaning_Prototype_v3.html?admin=1">Window Cleaning — Window Count <span>↗</span></a>
@@ -104,7 +95,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <aside class="preview"><div class="previewbar">LIVE SHARED THEME PREVIEW</div><div class="previewbody" id="miniHome">
 <div class="eyebrow" id="miniLabel">INSTANT ONLINE ESTIMATES</div><div class="heading" id="miniHeading">Which service would you like a quote for?</div><p class="subheading" id="miniDescription"></p>
 <div class="previewtiles" id="miniCards"></div></div>
-<div class="note">Your edits appear here before saving. These same colours will apply to every calculator in this browser.</div></aside>
+<div class="note">Your three selected colours preview here. Other colours are worked out automatically and applied to every calculator in this browser.</div></aside>
 </div>
 <p class="footer"><strong>Prototype owner settings only.</strong> This URL is not authenticated or private yet. Before a real launch, account login, server-side owner permissions and business-hosted settings are required. No customer enquiry data is stored by this demo.</p>
 </div>
@@ -113,13 +104,13 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 "use strict";
 const $=id=>document.getElementById(id);
 const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
-const defaults=window.QuoteProTheme?.defaults||{bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#17324f",card2:"#0d2258",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"};
+const defaults=window.QuoteProTheme?.defaults||{top:"#0b2345",card:"#17324f",accent:"#73bceb"};
 const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
-const names={bg:"Bg",top:"Top",deep:"Deep",text:"Text",muted:"Muted",card:"Card",card2:"Card2",accent:"Accent",border:"Border",buttontext:"Buttontext",smallheading:"Smallheading",icon:"Icon"};
+const names={top:"Top",card:"Card",accent:"Accent"};
 function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
 function initialColours(){
  if(window.QuoteProTheme)return window.QuoteProTheme.get();
- const saved=fromStorage(colourKey);return saved&&typeof saved==="object"?{...defaults,...saved}:{...defaults};
+ const saved=fromStorage(colourKey);return saved&&typeof saved==="object"?{...defaults,...Object.fromEntries(Object.keys(defaults).filter(k=>saved[k]).map(k=>[k,saved[k]]))}:{...defaults};
 }
 let colours=initialColours(),config={...appDefaults,...fromStorage(homeKey)},windowMethod="property";
 if(!config.services||typeof config.services!=="object")config.services={...appDefaults.services};
@@ -136,9 +127,11 @@ function load(){
  preview();
 }
 function preview(){
- const read=(key)=>$("color"+names[key]).value;
- const p=$("miniHome");
- p.style.background=read("top");p.style.color=read("text");p.style.borderTop="3px solid "+read("border");
+ const input=Object.fromEntries(Object.entries(names).map(([key,name])=>[key,$("color"+name).value]));
+ const p=window.QuoteProTheme?.derive(input)||{...input,deep:input.top,text:"#ffffff",muted:"#b9cbd9",border:"#35516d",smallheading:input.accent,buttontext:"#06243c"};
+ const read=key=>p[key];
+ const box=$("miniHome");
+ box.style.background=read("top");box.style.color=read("text");box.style.borderTop="3px solid "+read("border");
  $("miniHeading").style.background=read("deep");$("miniHeading").style.border="1px solid "+read("border");
  $("miniHeading").style.padding="12px";$("miniHeading").style.borderRadius="10px";
  $("miniLabel").style.color=read("smallheading");
@@ -166,10 +159,11 @@ $("save").onclick=()=>{
  const proposed={businessName,headline,description,services:active,autoOpenSingle:$("autoOpenSingle").checked};
  const palette=Object.fromEntries(Object.entries(names).map(([k,s])=>[k,$("color"+s).value]));
  try{
-  if(window.QuoteProTheme)window.QuoteProTheme.save(palette);else localStorage.setItem(colourKey,JSON.stringify(palette));
+  const savedTheme=window.QuoteProTheme?window.QuoteProTheme.save(palette):palette;
+  if(!window.QuoteProTheme)localStorage.setItem(colourKey,JSON.stringify(palette));
   localStorage.setItem(windowKey,$("windowMethod").value);
   localStorage.setItem(homeKey,JSON.stringify(proposed));
-  config=proposed;colours=palette;windowMethod=$("windowMethod").value;
+  config=proposed;colours=savedTheme;windowMethod=$("windowMethod").value;
   $("status").textContent="Saved! The homepage and all Quote Pro calculators now use this colour theme in this browser."
  }catch(e){$("status").textContent="Could not save in browser storage. Your settings are not stored."}
 };
