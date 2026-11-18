@@ -272,10 +272,10 @@ function render(){
  $("extras").innerHTML=config.extras.filter(x=>x.on).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No optional extras offered.</p>';
  $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
  $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
- var show=config.estimateTiming==="live"&&calc().validQty&&calc().validWashQty;
+ var show=config.estimateTiming==="live";
  for(var step of ["property","frequency","contact"]){
   $("estimate-"+step).hidden=!show;
-  if(show)$("estimate-"+step).innerHTML=quoteMarkup();
+  if(show)$("estimate-"+step).innerHTML='<div class="eyebrow" style="margin-bottom:8px">YOUR LIVE ESTIMATE</div>'+(calc().validQty&&calc().validWashQty?quoteMarkup():'<div class="estimate"><p class="muted">Complete the measurements above to calculate your estimate.</p></div>');
  }
  $("error").hidden=true;
 }
