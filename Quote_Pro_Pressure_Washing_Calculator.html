@@ -63,19 +63,24 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .footer{text-align:center;color:#8199ad;font-size:11px;margin-top:19px}
 @media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}h1{font-size:29px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.nav-right{margin-left:auto}.method{font-size:12px}}
+.surface-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.surface-choice{background:var(--select);color:var(--text);border:1px solid var(--outline);border-radius:12px;min-height:61px;padding:12px;font-weight:800;text-align:center}
+.surface-choice.selected{outline:2px solid var(--accent);outline-offset:-2px;border-color:var(--accent)}
 </style></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Pressure Washing calculator · Professional quoting, made simple.</div></div>
 <div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> No enquiries are sent or stored. Business settings save only in this browser.</div>
 <section id="customer"><div class="hero"><div class="eyebrow">PRESSURE WASHING</div><h1>Get your instant pressure washing estimate</h1><div class="muted">Calculate your surface area, choose any additional treatments and review your estimate.</div></div>
 <div class="panel"><div id="steps" class="steps"></div>
-<section id="step-area"><div class="section"><div class="eyebrow">YOUR SURFACE</div><h2>How large is the area you want cleaned?</h2>
+<section id="step-area"><div class="section"><div class="eyebrow">SURFACE TYPE</div><h2>What are you having cleaned?</h2><p class="caption">Choose the closest surface type. Joint sanding is offered only for block paving.</p>
+<div id="surfaceTypes" class="surface-grid"></div></div>
+<div class="section"><div class="eyebrow">YOUR SURFACE</div><h2>How large is the area you want cleaned?</h2>
 <p class="caption">Enter the area directly or calculate it from the length and width.</p>
 <div class="method-row"><button type="button" class="method selected" data-mode="direct" aria-pressed="true">Enter total m²</button><button type="button" class="method" data-mode="dimensions" aria-pressed="false">Calculate length × width</button></div>
 <div id="directInputs"><label class="field" for="squareMetres">Total area (m²)<input id="squareMetres" type="number" inputmode="decimal" min="0.01" max="50000" step="any" placeholder="e.g. 35" autocomplete="off"></label></div>
 <div id="dimensionInputs" hidden><div class="formgrid"><label class="field" for="length">Length (metres)<input id="length" type="number" inputmode="decimal" min="0.01" max="1000" step="any" placeholder="e.g. 7" autocomplete="off"></label><label class="field" for="width">Width (metres)<input id="width" type="number" inputmode="decimal" min="0.01" max="1000" step="any" placeholder="e.g. 5" autocomplete="off"></label></div></div>
 <div class="calc-area" aria-live="polite"><div class="eyebrow">CALCULATED SURFACE AREA</div><div class="area-amount" id="areaOutput">— m²</div><div class="hint" id="areaHint">Enter a surface area to calculate your estimate.</div></div></div>
-<div class="section"><div class="eyebrow">ADDITIONAL TREATMENTS</div><h2>Would you like any extras?</h2><p class="caption">Select any additional treatments for your surface. Prices are calculated using the same m² area.</p><div id="extras"></div></div>
+<div class="section"><div class="eyebrow">ADDITIONAL TREATMENTS</div><h2>Would you like any extras?</h2><p class="caption">Select optional treatments. Each is priced per m²; joint sanding is available for block paving only.</p><div id="extras"></div></div>
 <div id="estimate-area" class="section"></div></section>
 <section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Enter your contact details and tell us about the surface that needs cleaning.</p>
 <div class="formgrid">
@@ -120,7 +125,7 @@ var defaults={
  base:{mode:"fixed",lo:4,hi:4},minimum:125,
  extras:[
   {id:"chemical",name:"Chemical application",on:true,mode:"fixed",lo:1,hi:1},
-  {id:"sand",name:"Kiln-dried jointing sand (block paving)",on:true,mode:"fixed",lo:2,hi:2},
+  {id:"sand",name:"Kiln-dried joint sand",on:true,mode:"fixed",lo:2,hi:2,blockOnly:true},
   {id:"sealant",name:"Sealant application",on:true,mode:"fixed",lo:3.5,hi:3.5}
  ],
  timing:"live",contactPosition:"end",contactRule:"mobile",bufferMode:"off",bufferValue:10,
@@ -128,7 +133,9 @@ var defaults={
 };
 var copy=x=>JSON.parse(JSON.stringify(x)),cfg=copy(defaults);
 try{var stored=JSON.parse(localStorage.getItem(key)||"null");if(stored&&typeof stored==="object")cfg={...copy(defaults),...stored}}catch(e){}
-var st={step:"area",method:"direct",direct:"",length:"",width:"",extras:[]};
+var st={step:"area",method:"direct",direct:"",length:"",width:"",extras:[],surface:null};
+var surfaces=[{id:"patio",name:"Patio"},{id:"driveway",name:"Driveway"},{id:"block",name:"Block paving"},{id:"other",name:"Path / other"}];
+function permitted(x){return x.on && (st.surface==="block"||!(x.blockOnly===true||(x.id==="sand"&&x.blockOnly!==false)))}
 var esc=x=>String(x==null?"":x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 var money=x=>"£"+Number(x).toFixed(2);
 function order(){return cfg.contactPosition==="start"?["contact","area"]:["area","contact"]}
@@ -149,7 +156,7 @@ function measure(){
 }
 function calculate(){
  var measured=measure(),area=measured.valid?measured.area:0;
- var items=measured.valid?[{name:"Pressure washing",...cfg.base},...cfg.extras.filter(x=>x.on&&st.extras.includes(x.id))]:[];
+ var items=measured.valid?[{name:"Pressure washing",...cfg.base},...cfg.extras.filter(x=>permitted(x)&&st.extras.includes(x.id))]:[];
  var loRate=items.reduce((a,x)=>a+Number(x.lo),0);
  var hiRate=items.reduce((a,x)=>a+Number(x.mode==="range"?x.hi:x.lo),0);
  var lo=area*loRate,hi=area*hiRate,min=Number(cfg.minimum)||0;
@@ -180,7 +187,7 @@ function theme(){
 function updateEstimate(){
  var x=calculate();$("areaOutput").textContent=x.valid?numberArea(x.area)+" m²":"— m²";
  $("areaHint").textContent=x.valid?st.method==="dimensions"?"Calculated from "+st.length+" m × "+st.width+" m":"Entered total surface area":"Enter a valid area of up to 50,000 m².";
- var show=cfg.timing==="live"&&x.valid;
+ var show=cfg.timing==="live"&&x.valid&&!!st.surface;
  for(var part of ["area","contact"]){
   $("estimate-"+part).hidden=!show;
   if(show)$("estimate-"+part).innerHTML=estimate();
@@ -198,8 +205,9 @@ function render(){
   var selected=button.dataset.mode===st.method;button.classList.toggle("selected",selected);button.setAttribute("aria-pressed",String(selected));
  }
  $("directInputs").hidden=st.method!=="direct";$("dimensionInputs").hidden=st.method!=="dimensions";
+ $("surfaceTypes").innerHTML=surfaces.map(s=>'<button class="surface-choice '+(st.surface===s.id?"selected":"")+'" type="button" data-surface="'+esc(s.id)+'" aria-pressed="'+(st.surface===s.id)+'">'+esc(s.name)+'</button>').join("");
  $("squareMetres").value=st.direct;$("length").value=st.length;$("width").value=st.width;
- $("extras").innerHTML=cfg.extras.filter(x=>x.on).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(st.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No additional treatments offered.</p>';
+ $("extras").innerHTML=cfg.extras.filter(permitted).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(st.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No additional treatments offered.</p>';
  $("phoneRequired").hidden=cfg.contactRule==="email";$("emailRequired").hidden=cfg.contactRule==="mobile";
  $("error").hidden=true;
  updateEstimate();
@@ -216,6 +224,7 @@ function validateContact(){
  return null;
 }
 function next(){
+ if(st.step==="area"&&!st.surface)return error("Please select the type of surface first.");
  if(st.step==="area"&&!measure().valid)return error("Please enter a valid area in m², or a length and width (each greater than zero).");
  if(st.step==="contact"){var e=validateContact();if(e)return error(e)}
  var steps=order(),i=steps.indexOf(st.step);
@@ -228,23 +237,29 @@ function review(){
  row("Full name",$("name").value.trim())+row("Mobile",$("phone").value.trim())+row("Email",$("email").value.trim())+
  row("Address",$("address").value.trim())+row("Notes",$("notes").value.trim())+'</div>'+
  '<div class="review-card"><h3>Your surface</h3>'+
- row("Measuring method",st.method==="direct"?"Total area entered":"Length × width")+
+ row("Surface type",surfaces.find(s=>s.id===st.surface)?.name||"—")+row("Measuring method",st.method==="direct"?"Total area entered":"Length × width")+
  (st.method==="dimensions"?row("Dimensions",st.length+" m × "+st.width+" m"):"")+
  row("Total surface area",numberArea(x.area)+" m²")+
- row("Additional treatments",st.extras.length?cfg.extras.filter(y=>y.on&&st.extras.includes(y.id)).map(y=>y.name).join(", "):"None")+'</div>';
+ row("Additional treatments",st.extras.length?cfg.extras.filter(y=>permitted(y)&&st.extras.includes(y.id)).map(y=>y.name).join(", "):"None")+'</div>';
  $("reviewEstimate").innerHTML=estimate();
  $("reviewDisclaimer").textContent=cfg.disclaimer||defaults.disclaimer;
  $("reviewDisclaimer").hidden=!cfg.showDisclaimer;
  $("customer").scrollIntoView({block:"start"});
 }
-document.querySelectorAll("[data-mode]").forEach(btn=>btn.onclick=()=>{st.method=btn.dataset.mode;render()});
+document.querySelectorAll("button[data-mode]").forEach(btn=>btn.onclick=()=>{st.method=btn.dataset.mode;render()});
+$("surfaceTypes").addEventListener("click",e=>{
+ var btn=e.target.closest("[data-surface]");if(!btn)return;
+ st.surface=btn.dataset.surface;
+ st.extras=st.extras.filter(id=>{var x=cfg.extras.find(y=>y.id===id);return x&&permitted(x)});
+ render();
+});
 for(var field of [["squareMetres","direct"],["length","length"],["width","width"]]){
  (function(inputId,key){$(inputId).addEventListener("input",e=>{st[key]=e.target.value;updateEstimate()})})(field[0],field[1]);
 }
 $("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;st.extras=e.target.checked?[...new Set([...st.extras,id])]:st.extras.filter(x=>x!==id);updateEstimate()});
 $("next").onclick=next;
 $("back").onclick=()=>{var steps=order(),i=steps.indexOf(st.step);if(i>0){st.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
-function newState(){st={step:order()[0],method:"direct",direct:"",length:"",width:"",extras:[]}}
+function newState(){st={step:order()[0],method:"direct",direct:"",length:"",width:"",extras:[],surface:null}}
 function reset(){if(!confirm("Reset customer selections?"))return;newState();for(var id of ["name","phone","email","address","notes"])$(id).value="";render()}
 $("reset").onclick=reset;$("restart").onclick=reset;
 $("edit").onclick=()=>{st.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
@@ -260,7 +275,7 @@ function extraRow(x){
  return '<div class="price-row" data-id="'+esc(x.id)+'"><div class="rowtop"><label class="field">Treatment name<input data-name maxlength="100" value="'+esc(x.name)+'"></label>'+
  '<label class="check"><input data-enabled type="checkbox" '+(x.on?"checked":"")+'> Show</label>'+
  '<button type="button" class="btn" data-remove style="padding:8px 10px;min-height:36px">Delete</button></div>'+
- priceFields(x.mode,x.lo,x.hi)+'</div>';
+ priceFields(x.mode,x.lo,x.hi)+'<label class="check" style="margin-top:11px"><input type="checkbox" data-block-only '+((x.blockOnly===true||(x.id==="sand"&&x.blockOnly!==false))?"checked":"")+'> Block paving only</label></div>';
 }
 function renderAdmin(){
  var colors=cfg.colors||defaults.colors;
@@ -296,7 +311,7 @@ $("save").onclick=()=>{
    names.add(name.toLowerCase());
    var on=el.querySelector("[data-enabled]").checked;
    var rates=validatePrices(el.querySelector("[data-mode]").value,el.querySelector("[data-lo]").value.trim(),el.querySelector("[data-hi]").value.trim(),name);
-   extras.push({id:el.dataset.id,name,on,...rates});
+   extras.push({id:el.dataset.id,name,on,blockOnly:el.querySelector("[data-block-only]").checked,...rates});
   }
   var minimumText=$("minimum").value.trim(),minimum=Number(minimumText),bufferText=$("bufferValue").value.trim(),bufferValue=Number(bufferText);
   if(minimumText===""||!Number.isFinite(minimum)||minimum<0)throw Error("Enter a valid minimum charge.");
