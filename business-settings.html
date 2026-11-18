@@ -139,7 +139,9 @@ function load(){
 function preview(){
  const read=(key)=>$("color"+names[key]).value;
  const p=$("miniHome");
- p.style.background=read("deep");p.style.color=read("text");p.style.borderTop="3px solid "+read("border");
+ p.style.background=read("top");p.style.color=read("text");p.style.borderTop="3px solid "+read("border");
+ $("miniHeading").style.background=read("deep");$("miniHeading").style.border="1px solid "+read("border");
+ $("miniHeading").style.padding="12px";$("miniHeading").style.borderRadius="10px";
  $("miniLabel").style.color=read("smallheading");
  $("miniHeading").textContent=$("headline").value||appDefaults.headline;
  $("miniDescription").textContent=$("description").value||appDefaults.description;
