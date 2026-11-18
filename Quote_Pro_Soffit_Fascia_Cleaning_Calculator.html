@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quote Pro — Soffit & Fascia Cleaning calculator</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:#071420;color:#eef6ff;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #58bff0;outline-offset:2px}
+.app{max-width:950px;margin:auto;padding:19px 14px 70px}
+header{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.5px}.brand span{color:#58bff0}
+.subbrand{font-size:12px;color:#acbecc}
+.tabs{display:flex;gap:8px}.tab,.btn{border:1px solid #36526a;color:#f5faff;background:#1a3145;border-radius:11px;font-weight:750;padding:11px 14px;min-height:44px}
+.tab.active,.btn.primary{background:#58bff0;color:#06243c;border-color:#58bff0}
+.notice{background:#192b38;border:1px solid #435668;border-radius:10px;color:#bed3e2;padding:11px 14px;font-size:12px;margin-bottom:14px}
+[hidden]{display:none!important}
+#customer{--c-bg:#09131f;--c-text:#ffffff;--c-card:#1d314c;--c-select:#131d29;--c-outline:#131d29;--c-accent:#73bceb;--c-btn-text:#06243c;background:var(--c-bg);color:var(--c-text);border-radius:20px;padding:18px}
+.hero{padding:23px 27px 0;margin-bottom:22px}.eyebrow{color:var(--c-accent);font-size:11px;letter-spacing:1.3px;font-weight:850}
+h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-size:21px;line-height:1.27;margin:4px 0 7px}h3{font-size:16px;margin:0 0 11px}
+.caption{color:#b9cbd9;font-size:13px;margin:0 0 16px}
+.panel{padding:clamp(16px,3vw,24px);border:1px solid #34516c;border-radius:19px}
+.steps{display:flex;gap:8px;margin-bottom:19px}.step{flex:1;min-width:0;border-bottom:3px solid #40556a;padding:3px 3px 9px;color:#b1c6d7;text-align:center;font-weight:700;font-size:12px}
+.step.active{border-color:var(--c-accent);color:var(--c-text)}
+.section{padding:18px 0;border-bottom:1px solid #35516b}.section:first-child{padding-top:0}.section:last-child{padding-bottom:0;border:0}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.house{min-height:76px;padding:14px 12px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:13px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;line-height:1.25}
+.house.selected,.frequency.selected{outline:2px solid var(--c-accent);outline-offset:-2px;border-color:var(--c-accent)}
+.extra{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:12px;margin-top:9px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);cursor:pointer}
+.extra span{flex:1;line-height:1.35}.extra input{appearance:auto;accent-color:var(--c-accent);width:20px;height:20px;flex:0 0 20px;margin:0}
+.extra-sizes{padding:14px 13px;margin:-1px 0 11px;background:var(--c-card);border:1px solid var(--c-outline);border-radius:0 0 13px 13px}
+.extra-sizes-title{font-size:13px;font-weight:750;margin:0 0 9px}
+.extra-sizes .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.extra-size-btn{min-height:45px;padding:10px 6px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);font-size:13px;font-weight:800;border-radius:9px}
+.extra-size-btn.selected{border-color:var(--c-accent);outline:2px solid var(--c-accent);outline-offset:-2px}
+.extra-needs-size{margin:10px 0 0;font-size:12px;opacity:.82}
+.admin-size-prices{margin-top:13px;padding:12px;border:1px solid #3b5874;border-radius:10px;background:#10283b}
+.admin-size-prices h4{margin:0 0 8px;font-size:13px}
+.admin-size-row{border-top:1px solid #35536c;padding:10px 0}
+.admin-size-row:first-of-type{border-top:0}
+.admin-size-row .size-heading{font-weight:780;font-size:13px;margin-bottom:8px}
+.admin-size-row .priceline{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:620px){.admin-size-row .priceline{grid-template-columns:1fr 1fr}.admin-size-row .priceline .type{grid-column:1/-1}}
+
+.frequency{display:block;width:100%;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:11px;padding:13px 15px;margin:8px 0;text-align:left;min-height:47px;font-weight:750}
+.estimate{background:var(--c-card);border:1px solid var(--c-accent);border-radius:14px;padding:16px}.estimate .amount{font-size:clamp(27px,5vw,38px);font-weight:900;line-height:1.25}
+.estimate-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.estimate .fine{font-size:12px;opacity:.8}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:start;font-size:13px;padding:6px 0}.line strong{text-align:right;white-space:nowrap}
+.item-breakdown{border-top:1px solid #586c82;margin-top:12px;padding-top:7px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;font-size:13px;font-weight:700}.field.wide{grid-column:1/-1}
+.field input,.field textarea,.field select{display:block;width:100%;padding:11px 12px;margin-top:6px;color:#f4faff;background:#0a192a;border:1px solid #51708c;border-radius:9px;min-width:0}
+.field textarea{resize:vertical}.req{color:#ffda74}.muted{opacity:.76;font-size:12px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap}.navright{display:flex;gap:8px}
+.nav .btn.primary,#customer .btn.primary{background:var(--c-accent);border-color:var(--c-accent);color:var(--c-btn-text)}
+.error{color:#ffb3b3;font-size:13px;margin-top:12px}
+.review-card{border:1px solid var(--c-outline);background:var(--c-card);padding:15px;border-radius:13px;margin:12px 0}
+.review-row{display:grid;grid-template-columns:36% minmax(0,1fr);gap:10px;font-size:13px;padding:5px 0}
+.review-row .key{opacity:.76}.review-row span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+.disclaimer{border-left:3px solid var(--c-accent);padding:10px 12px;font-size:13px;margin:14px 0;white-space:pre-wrap;background:var(--c-card)}
+.powered{text-align:center;font-size:11px;opacity:.74;margin:16px auto 0}.powered strong{color:var(--c-accent)}
+#admin{border:1px solid #38546a;border-radius:18px;background:#101e2b;padding:20px}
+.adminsec{border-bottom:1px solid #304555;padding:16px 0}.adminsec:first-of-type{padding-top:0}.adminsec:last-of-type{border:0}
+.adminsec h2{font-size:19px}.adminhelp{font-size:12px;color:#b4c5d4;margin:3px 0 14px}
+.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.price-row{border:1px solid #3c5368;border-radius:12px;padding:13px;margin:9px 0;background:#172a39}
+.price-row .rowtop{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
+.price-row .rowtop .field{flex:1;min-width:155px}.priceline{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:9px}
+.price-row .field input,.price-row .field select{padding:9px}
+.check{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
+.check input[type=checkbox]{appearance:auto;width:19px;height:19px;margin:0;flex:0 0 19px;accent-color:#58bff0}
+.pickergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:10px 0}
+.pickergrid label{font-size:12px;color:#cfdeed;font-weight:650}.pickergrid input{display:block;width:100%;height:42px;margin-top:7px;cursor:pointer;border:1px solid #50687c;border-radius:8px;background:#172b3a;padding:4px}
+#admin .field{color:#c6d6e3}#admin .field input,#admin .field textarea,#admin .field select{background:#0a1725}
+.adminactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.linkaction{color:#8fd5f6;text-decoration:none;background:transparent;border:0;padding:6px 0}
+.footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
+@media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
+</style></head><body><div class="app">
+<header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Soffit &amp; Fascia Cleaning calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
+<div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
+<section id="customer"><div class="hero"><div class="eyebrow">SOFFIT &amp; FASCIA CLEANING</div><h1>Get your exterior PVC wash estimate</h1><div class="muted">Select your soffit and fascia measurements and add gutter emptying if required.</div></div>
+<div class="panel">
+<div class="steps" id="steps"></div>
+<section id="step-property">
+<div class="section"><div class="eyebrow">EXTERNAL PVC WASH</div><h2 id="quantityTitle">How much soffit and fascia needs washing?</h2>
+<p id="quantityHelp" class="caption">Enter the approximate length. We’ll confirm the exact details.</p>
+<label class="field" for="gutterQuantity"><span id="quantityLabel">Soffit and fascia length (metres)</span><input id="gutterQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
+<p class="muted" style="margin:9px 0 0">Estimated prices are subject to safe access, height and confirmation.</p></div>
+<div class="section"><div class="eyebrow">RECOMMENDED ADD-ON</div>
+<label class="extra" id="washOption"><span><strong>Gutter Emptying</strong><small class="muted" style="display:block;margin-top:3px">Remove leaves, moss and debris from your gutters</small></span><input id="washSelected" type="checkbox"></label>
+<div id="washMeasureWrap" hidden style="margin-top:12px">
+<h3 id="washQuantityTitle">How much guttering needs emptying?</h3>
+<p id="washQuantityHelp" class="caption">Enter the approximate total length.</p>
+<label class="field" for="washQuantity"><span id="washQuantityLabel">Gutter length (metres)</span><input id="washQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
+<div id="downpipeWrap" hidden style="margin-top:15px"><p class="caption" style="margin:0 0 5px">Also available:</p><div id="extras"></div></div>
+</div></div><div id="estimate-property" class="section"></div></section>
+<section id="step-frequency" hidden><div class="section"><div class="eyebrow">CLEANING FREQUENCY</div><h2>How often would you like your soffits and fascias cleaned?</h2><div id="frequencies"></div></div><div id="estimate-frequency" class="section"></div></section>
+<section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Please enter your contact details and any access notes for the PVC cleaning.</p>
+<form id="contacts" novalidate><div class="formgrid">
+<label class="field">Full name <span class="req">*</span><input id="name" autocomplete="name" required placeholder="Your full name"></label>
+<label class="field">Mobile number <span id="phoneRequired" class="req">*</span><input id="phone" type="tel" autocomplete="tel" placeholder="Mobile number"></label>
+<label class="field">Email address <span id="emailRequired" class="req" hidden>*</span><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+<label class="field wide">Property address <span class="req">*</span><textarea id="address" rows="2" placeholder="Property address"></textarea></label>
+<label class="field wide">Additional notes <span class="muted">(optional)</span><textarea id="notes" rows="3" placeholder="e.g. access restrictions, height or heavy staining"></textarea></label>
+</div></form></div><div id="estimate-contact" class="section"></div></section>
+<section id="step-review" hidden><div class="section"><div class="eyebrow">FINAL STEP</div><h2>Review your enquiry</h2><p class="caption">Please check your choices and contact details before submitting.</p><div id="review-details"></div><div id="review-amount"></div><p id="review-disclaimer" class="disclaimer"></p><p class="muted">Private prototype: the button demonstrates submission without sending personal data.</p>
+<div class="nav"><button id="reviewEdit" class="btn" type="button">← Edit details</button><button id="submit" class="btn primary" type="button">Submit my enquiry →</button></div></div></section>
+<section id="step-done" hidden><div class="section"><div class="eyebrow">DEMO COMPLETE</div><h2>Enquiry preview finished</h2><p>This demonstration has completed. <strong>No personal information has been submitted or stored.</strong></p><button id="restart" class="btn primary" type="button">Start again</button></div></section>
+<p class="error" id="error" role="alert" hidden></p>
+<div class="nav" id="navigation"><button class="btn" type="button" id="back">← Back</button><div class="navright"><button class="btn" type="button" id="reset">Reset</button><button class="btn primary" type="button" id="next">Continue →</button></div></div>
+</div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
+<section id="admin" hidden>
+<div class="eyebrow">QUOTE PRO · SOFFIT &amp; FASCIA CLEANING</div><h1>Business settings</h1><p class="adminhelp">Set your prices, branding and customer journey. Click Save settings to apply your changes.</p>
+<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label></div><button class="btn" type="button" id="paletteReset">Restore default colours</button></div>
+<div class="adminsec"><h2>Soffit &amp; Fascia Cleaning prices</h2>
+<p class="adminhelp">Set the main cleaning price per metre or per property side, using a fixed price or range.</p>
+<label class="field" style="max-width:430px">Pricing method<select id="gutterPricingMethod"><option value="metre">Price per metre</option><option value="side">Price per side</option></select></label>
+<div class="price-row"><h3>Per-metre pricing</h3><div class="priceline"><label class="field type">Pricing<select id="gutterMeterMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/m)<input id="gutterMeterLo" type="number" min="0" step=".01"></label><label class="field" id="gutterMeterHiWrap">Maximum (£/m)<input id="gutterMeterHi" type="number" min="0" step=".01"></label></div></div>
+<div class="price-row"><h3>Per-side pricing</h3><div class="priceline"><label class="field type">Pricing<select id="gutterSideMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/side)<input id="gutterSideLo" type="number" min="0" step=".01"></label><label class="field" id="gutterSideHiWrap">Maximum (£/side)<input id="gutterSideHi" type="number" min="0" step=".01"></label></div></div></div>
+<div class="adminsec"><h2>Optional Gutter Emptying prices</h2><p class="adminhelp">Recommend gutter emptying beneath the PVC wash. Set its own rate per metre or per property side.</p>
+<label class="check"><input id="washEnabled" type="checkbox"> Offer gutter emptying</label>
+<label class="field" style="max-width:430px;margin-top:12px">Pricing method<select id="washPricingMethod"><option value="metre">Price per metre</option><option value="side">Price per side</option></select></label>
+<div class="price-row"><h3>Per-metre gutter rates</h3><div class="priceline"><label class="field type">Pricing<select id="washMeterMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/m)<input id="washMeterLo" type="number" min="0" step=".01"></label><label class="field" id="washMeterHiWrap">Maximum (£/m)<input id="washMeterHi" type="number" min="0" step=".01"></label></div></div>
+<div class="price-row"><h3>Per-side gutter rates</h3><div class="priceline"><label class="field type">Pricing<select id="washSideMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/side)<input id="washSideLo" type="number" min="0" step=".01"></label><label class="field" id="washSideHiWrap">Maximum (£/side)<input id="washSideHi" type="number" min="0" step=".01"></label></div></div></div>
+<div class="adminsec"><h2>Conditional Downpipe Clearance</h2><p class="adminhelp">Disabled by default. When enabled, the customer sees this option only after selecting Gutter Emptying.</p><div id="admin-extras"></div></div>
+<div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
+<div class="adminsec"><h2>Estimate settings</h2><div class="settings">
+<label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
+<label class="field">Estimate buffer<select id="bufferMode"><option value="off">Off</option><option value="percent">Percentage ±%</option><option value="amount">Fixed amount ±£</option></select></label>
+<label class="field">Buffer value<input type="number" min="0" step=".01" id="bufferValue"></label>
+<label class="field">Contact details position<select id="contactPosition"><option value="end">At the end</option><option value="start">At the start</option></select></label>
+<label class="field">When to show estimated price<select id="estimateTiming"><option value="live">Live throughout</option><option value="end">Final review only</option></select></label>
+<label class="field">Required contact details<select id="contactRule"><option value="mobile">Mobile required; email optional</option><option value="email">Email required; mobile optional</option><option value="both">Both mobile and email required</option></select></label>
+</div><p class="adminhelp">This estimate assumes gutters can be reached safely. Height, access and condition may affect the final quote. A buffer creates a natural range for possible differences in the work described. For example, £25 ±10% is displayed as £22–£28 (rounded outward to whole pounds). It is not an additional charge. Your minimum charge is respected.</p>
+<label class="check"><input id="showBreakdown" type="checkbox"> Show itemised prices in live estimate and quote summary</label>
+<p class="adminhelp">When off, customers see only the total estimate, never individual prices. Property and extra selection buttons never show individual prices.</p>
+<label class="check"><input id="showDisclaimer" type="checkbox"> Show final estimate disclaimer</label>
+<label class="field" style="margin-top:10px">Disclaimer wording<textarea id="disclaimerText" rows="2"></textarea></label>
+</div>
+<div class="adminactions"><button id="save" type="button" class="btn primary">Save settings</button><button id="preview" type="button" class="btn">Preview calculator</button></div><p class="adminhelp" role="status" id="admin-message"></p></section>
+<div class="footer">Quote Pro by JobCaddy · Soffit &amp; Fascia Cleaning private prototype</div>
+</div>
+<script>
+(function(){
+"use strict";
+var $=id=>document.getElementById(id);
+var defaults={
+ colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb"},
+ gutterPricingMethod:"metre",gutterRates:{metre:{mode:"range",lo:5,hi:7},side:{mode:"range",lo:35,hi:50}},
+ washEnabled:true,washPricingMethod:"metre",washRates:{metre:{mode:"range",lo:3,hi:4},side:{mode:"fixed",lo:25,hi:25}},
+ extras:[{id:"downpipe",name:"Downpipe clearance",on:false,mode:"fixed",lo:15,hi:15}],
+ frequencies:[{id:"once",name:"One-off clean",on:true,inc:false,pct:0},{id:"6m",name:"Every 6 months",on:true,inc:false,pct:0},{id:"12m",name:"Every 12 months",on:true,inc:false,pct:0}],
+ minimum:30,bufferMode:"off",bufferValue:10,contactPosition:"end",estimateTiming:"live",contactRule:"mobile",
+ showBreakdown:false,showDisclaimer:true,disclaimerText:"This is a provisional exterior PVC wash estimate. Final price depends on safe access, height, condition and confirmation by the service provider."
+};
+var clone=obj=>JSON.parse(JSON.stringify(obj));
+var config=clone(defaults);
+try{var saved=JSON.parse(localStorage.getItem("quotepro-soffit-fascia-v1")||"null");if(saved&&typeof saved==="object"){
+ config=Object.assign(clone(defaults),saved);
+ config.extras=(Array.isArray(saved.extras)?saved.extras:defaults.extras).filter(x=>x.id==="downpipe");
+ }}catch(e){}
+
+var state={step:"property",quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};
+var esc=value=>String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+var money=value=>"£"+Number(value).toFixed(2);
+function order(){return config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"]}
+function label(step){return ({property:"Property",frequency:"Frequency",contact:"Contact"})[step]}
+function color(hex){return /^#[0-9a-f]{6}$/i.test(hex||"")?hex:"#58bff0"}
+function applyTheme(){
+ var customer=$("customer"),cs=config.colors||defaults.colors;
+ for(var pair of [["bg","--c-bg"],["text","--c-text"],["card","--c-card"],["selector","--c-select"],["outline","--c-outline"],["accent","--c-accent"]])
+  customer.style.setProperty(pair[1],color(cs[pair[0]]));
+ var hex=color(cs.accent).slice(1),rgb=[0,2,4].map(i=>parseInt(hex.substring(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
+ customer.style.setProperty("--c-btn-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#051b2a":"#ffffff");
+}
+function amountValid(v,method){
+ var qty=Number(v);
+ return v!==null&&v!==""&&Number.isFinite(qty)&&qty>=1&&qty<=(method==="side"?20:5000)&&(method!=="side"||Number.isInteger(qty));
+}
+function calc(){
+ var method=config.gutterPricingMethod==="side"?"side":"metre";
+ var rates=config.gutterRates?.[method]||defaults.gutterRates[method];
+ var qty=Number(state.quantity)||0;
+ var validQty=amountValid(state.quantity,method);
+ var unit=method==="metre"?"m":"side"+(qty===1?"":"s");
+ var base=validQty?{name:"Soffit & Fascia Cleaning · "+qty+" "+unit,mode:rates.mode,lo:qty*Number(rates.lo),hi:qty*Number(rates.mode==="range"?rates.hi:rates.lo)}:null;
+ var washActive=!!config.washEnabled&&state.washSelected;
+ var washMethod=config.washPricingMethod==="side"?"side":"metre";
+ var washQty=Number(state.washQuantity)||0;
+ var validWashQty=!washActive||amountValid(state.washQuantity,washMethod);
+ var washRates=config.washRates?.[washMethod]||defaults.washRates[washMethod];
+ var washUnit=washMethod==="metre"?"m":"side"+(washQty===1?"":"s");
+ var wash=washActive&&validWashQty?{name:"Gutter Emptying · "+washQty+" "+washUnit,mode:washRates.mode,lo:washQty*Number(washRates.lo),hi:washQty*Number(washRates.mode==="range"?washRates.hi:washRates.lo)}:null;
+ var extras=config.extras.filter(x=>x.on&&x.id==="downpipe"&&washActive&&state.extras.includes(x.id));
+ var items=[...(base?[base]:[]),...(wash?[wash]:[]),...(base&&wash?extras:[])],freq=config.frequencies.find(x=>x.id===state.frequency&&x.on);
+ var multiplier=freq&&freq.inc?1+Number(freq.pct)/100:1;
+ var lo=items.reduce((a,x)=>a+Number(x.lo),0)*multiplier;
+ var hi=items.reduce((a,x)=>a+Number(x.mode==="range"?x.hi:x.lo),0)*multiplier;
+ var minimum=Number(config.minimum)||0;
+ var buffer=config.bufferMode!=="off"&&items.length>0,val=Number(config.bufferValue)||0;
+ var lowBuffer=buffer?(config.bufferMode==="amount"?val:lo*val/100):0;
+ var highBuffer=buffer?(config.bufferMode==="amount"?val:hi*val/100):0;
+ return {items,lo:items.length?Math.max(minimum,buffer?Math.floor(lo-lowBuffer):lo):0,
+ hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer,multiplier,extras,freq,validQty,qty,method,washActive,washMethod,washQty,validWashQty};
+}
+function formatted(v){return config.bufferMode!=="off"?"£"+Math.round(v):money(v)}
+function range(lo,hi){return Math.abs(lo-hi)<.005?formatted(lo):formatted(lo)+"–"+formatted(hi)}
+function quoteMarkup(){
+ var p=calc();if(!p.validQty)return '<p class="muted">Enter the soffit and fascia length to calculate your estimate.</p>';
+ if(!p.validWashQty)return '<p class="muted">Enter the gutter emptying measurement to calculate the combined estimate.</p>';
+ var parts=p.items.map(x=>{
+ var lo=Number(x.lo)*p.multiplier,hi=Number(x.mode==="range"?x.hi:x.lo)*p.multiplier;
+ return '<div class="line"><span>'+esc(x.name)+'</span><strong>'+money(lo)+(hi-lo>.005?'–'+money(hi):'')+'</strong></div>';
+ }).join("");
+ return '<div class="estimate"><div class="estimate-head"><div><div class="fine">YOUR ESTIMATED PRICE</div><div class="amount">'+range(p.lo,p.hi)+'</div></div><div class="fine">'+esc(p.freq?.name||"")+'</div></div>'+
+ (config.showBreakdown?'<div class="item-breakdown">'+parts+'</div>':"")+
+ (p.buffer?'<p class="fine" style="margin:9px 0 0">This is an estimated range. Final price subject to confirmation.</p>':"")+'</div>';
+}
+function render(){
+ applyTheme();var steps=order(),current=state.step;
+ $("steps").innerHTML=steps.map((s,i)=>'<div class="step '+(s===current?"active":"")+'">'+(i+1)+' · '+label(s)+'</div>').join("");
+ for(var s of ["property","frequency","contact","review","done"])$("step-"+s).hidden=s!==current;
+ $("steps").hidden=current==="review"||current==="done";$("navigation").hidden=current==="review"||current==="done";
+ if(["review","done"].includes(current))return;
+ $("back").hidden=steps.indexOf(current)===0;
+ $("next").textContent=steps.indexOf(current)===steps.length-1?"Review my quote →":"Next: "+label(steps[steps.indexOf(current)+1])+" →";
+ var side=config.gutterPricingMethod==="side";
+ $("quantityTitle").textContent=side?"How many sides need soffit and fascia cleaning?":"Approximately how many metres need washing?";
+ $("quantityLabel").textContent=side?"Number of sides to wash":"Soffit and fascia length (metres)";
+ $("quantityHelp").textContent=side?"Count property sides needing soffit and fascia cleaning (front and rear = 2 sides).":"Enter the approximate length of soffit and fascia to wash.";
+ $("gutterQuantity").step=side?"1":"0.5";
+ $("gutterQuantity").max=side?"20":"5000";
+ $("gutterQuantity").placeholder=side?"e.g. 2":"e.g. 15";
+ $("gutterQuantity").value=state.quantity==null?"":state.quantity;
+ var showWash=!!config.washEnabled,washSide=config.washPricingMethod==="side";
+ $("washOption").hidden=!showWash;
+ $("washSelected").checked=showWash&&state.washSelected;
+ $("washMeasureWrap").hidden=!showWash||!state.washSelected;
+ $("downpipeWrap").hidden=!showWash||!state.washSelected||!config.extras.some(x=>x.id==="downpipe"&&x.on);
+ $("washQuantityTitle").textContent=washSide?"How many sides need gutter emptying?":"How many metres of guttering need emptying?";
+ $("washQuantityLabel").textContent=washSide?"Number of sides with gutters":"Approximate gutter length (metres)";
+ $("washQuantityHelp").textContent=washSide?"Enter the number of property sides needing gutter emptying.":"Enter the approximate gutter length needing emptying.";
+ $("washQuantity").step=washSide?"1":"0.5";
+ $("washQuantity").max=washSide?"20":"5000";
+ $("washQuantity").placeholder=washSide?"e.g. 2":"e.g. 15";
+ $("washQuantity").value=state.washQuantity==null?"":state.washQuantity;
+ $("extras").innerHTML=config.extras.filter(x=>x.on&&x.id==="downpipe").map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No optional extras offered.</p>';
+ $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
+ $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
+ var show=config.estimateTiming==="live"&&calc().validQty&&calc().validWashQty;
+ for(var step of ["property","frequency","contact"]){
+  $("estimate-"+step).hidden=!show;
+  if(show)$("estimate-"+step).innerHTML=quoteMarkup();
+ }
+ $("error").hidden=true;
+}
+function error(message){$("error").textContent=message;$("error").hidden=false;$("error").scrollIntoView({block:"nearest"})}
+function validateContact(){
+ var name=$("name").value.trim(),phone=$("phone").value.trim(),email=$("email").value.trim();
+ if(!name)return "Please enter your full name.";
+ if(!$("address").value.trim())return "Please enter your property address.";
+ if(["mobile","both"].includes(config.contactRule)&&!phone)return "Please enter your mobile number.";
+ if(["email","both"].includes(config.contactRule)&&!email)return "Please enter your email address.";
+ if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return "Please enter a valid email address.";
+ if(phone&&!/^[+\d\s()\-]{7,25}$/.test(phone))return "Please enter a valid mobile number.";
+ return null;
+}
+function next(){
+ var s=state.step;
+ if(s==="property"&&!calc().validQty)return error(config.gutterPricingMethod==="side"?"Please enter whole number of sides to wash (1–20).":"Enter the soffit and fascia length (minimum 1 metre).");
+ if(s==="property"&&!calc().validWashQty)return error(config.washPricingMethod==="side"?"Please enter number of gutter sides (1–20).":"Enter the gutter emptying length (minimum 1 metre).");
+ 
+ if(s==="frequency"&&!state.frequency)return error("Please select a cleaning frequency.");
+ if(s==="contact"){var invalid=validateContact();if(invalid)return error(invalid)}
+ var steps=order(),i=steps.indexOf(s);
+ if(i===steps.length-1){state.step="review";renderReview()}else{state.step=steps[i+1];render();$("customer").scrollIntoView({block:"start"})}
+}
+function summaryRow(key,value){return '<div class="review-row"><span class="key">'+esc(key)+'</span><span>'+esc(value||"—")+'</span></div>'}
+function renderReview(){
+ render();var p=calc();
+ $("review-details").innerHTML='<div class="review-card"><h3>Your contact details</h3>'+
+ summaryRow("Full name",$("name").value.trim())+summaryRow("Mobile",$("phone").value.trim())+summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+summaryRow("Notes",$("notes").value.trim())+'</div>'+
+ '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Soffit & Fascia method",p.method==="side"?"Per side":"Per metre")+summaryRow("Soffit & Fascia quantity",p.qty+" "+(p.method==="side"?"sides":"metres"))+summaryRow("Included service","Soffit & Fascia Cleaning")+
+ (p.washActive?summaryRow("Gutter Emptying",p.washQty+" "+(p.washMethod==="side"?"sides":"metres")):summaryRow("Gutter Emptying","Not selected"))+
+ summaryRow("Downpipe clearance",p.extras.length?"Selected":"Not selected")+summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
+ $("review-amount").innerHTML=quoteMarkup();
+ $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
+ $("review-disclaimer").hidden=!config.showDisclaimer;
+ $("customer").scrollIntoView({block:"start"});
+}
+$("gutterQuantity").addEventListener("input",e=>{state.quantity=e.target.value===""?null:Number(e.target.value);render()});
+$("washSelected").addEventListener("change",e=>{state.washSelected=e.target.checked;if(!e.target.checked){state.washQuantity=null;state.extras=state.extras.filter(x=>x!=="downpipe")}render()});
+$("washQuantity").addEventListener("input",e=>{state.washQuantity=e.target.value===""?null:Number(e.target.value);render()});
+$("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);render()});
+$("frequencies").addEventListener("click",e=>{var b=e.target.closest("[data-frequency]");if(b){state.frequency=b.dataset.frequency;render()}});
+$("next").onclick=next;$("back").onclick=()=>{var steps=order(),i=steps.indexOf(state.step);if(i>0){state.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
+function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};$("contacts").reset();render()}
+$("reset").onclick=reset;$("restart").onclick=reset;
+$("reviewEdit").onclick=()=>{state.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
+$("submit").onclick=()=>{state.step="done";render();$("customer").scrollIntoView({block:"start"})};
+function showAdmin(isAdmin){
+ $("admin").hidden=!isAdmin;$("customer").hidden=isAdmin;
+ $("adminTab").classList.toggle("active",isAdmin);$("customerTab").classList.toggle("active",!isAdmin);
+ if(isAdmin)renderAdmin();else{state.step=order()[0];render()}
+ window.scrollTo(0,0);
+}
+$("adminTab").onclick=()=>showAdmin(true);$("customerTab").onclick=()=>showAdmin(false);$("preview").onclick=()=>showAdmin(false);
+function priceRow(type,item){
+ var addition=type==="frequency",cols=addition?"":'<div class="priceline"><label class="field type">Pricing<select data-mode><option value="fixed" '+(item.mode!=="range"?"selected":"")+'>Fixed price</option><option value="range" '+(item.mode==="range"?"selected":"")+'>Price range</option></select></label><label class="field">Price / minimum (£)<input data-lo type="number" step=".01" min="0" value="'+esc(item.lo)+'"></label><label class="field" data-max-wrap '+(item.mode!=="range"?"hidden":"")+'>Maximum (£)<input data-hi type="number" step=".01" min="0" value="'+esc(item.hi)+'"></label></div>';
+ var extra=addition?'<div class="priceline"><label class="check"><input type="checkbox" data-inc '+(item.inc?"checked":"")+'> Increase frequency price</label><label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(item.pct||0)+'" '+(!item.inc?"disabled":"")+'></label></div>':"";
+ return '<div class="price-row" data-type="'+type+'" data-id="'+esc(item.id)+'"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label><button type="button" class="btn" data-remove style="padding:7px 9px;min-height:36px">Delete</button></div>'+cols+extra+'</div>';
+}
+function renderAdmin(){
+ var cs=config.colors||defaults.colors;
+ for(var key of ["Bg","Text","Card","Selector","Outline","Accent"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
+ for(var [k,container] of [["extras","admin-extras"],["frequencies","admin-frequencies"]])
+  $(container).innerHTML=config[k].map(x=>priceRow(k==="frequencies"?"frequency":k,x)).join("");
+ $("gutterPricingMethod").value=config.gutterPricingMethod||"metre";
+ $("washEnabled").checked=!!config.washEnabled;
+ $("washPricingMethod").value=config.washPricingMethod||"metre";
+ for(var service of ["gutter","wash"]){
+  var key=service==="gutter"?"gutterRates":"washRates";
+  for(var type of ["Meter","Side"]){var method=type==="Meter"?"metre":"side",rate=config[key]?.[method]||defaults[key][method];
+   $(service+type+"Mode").value=rate.mode;
+   $(service+type+"Lo").value=rate.lo;
+   $(service+type+"Hi").value=rate.hi;
+   $(service+type+"HiWrap").hidden=rate.mode!=="range";
+  }
+ }
+ for(var key of ["minimum","bufferMode","bufferValue","contactPosition","estimateTiming","contactRule"])$(key).value=config[key];
+ $("showBreakdown").checked=!!config.showBreakdown;$("showDisclaimer").checked=!!config.showDisclaimer;
+ $("disclaimerText").value=config.disclaimerText;
+ $("admin-message").textContent="";
+}
+$("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent"])$("color"+k[0].toUpperCase()+k.slice(1)).value=defaults.colors[k]};
+for(var id of ["addFrequency"])$(id).onclick=()=>{
+ var collection=id==="addExtra"?"extras":"frequencies";
+ var type=collection==="frequencies"?"frequency":collection;
+ var item=collection==="frequencies"?{id:"f"+Date.now(),name:"",on:true,inc:false,pct:0}:{id:"i"+Date.now(),name:"",on:true,mode:"fixed",lo:0,hi:0};
+ $(collection==="extras"?"admin-extras":"admin-frequencies").insertAdjacentHTML("beforeend",priceRow(type,item));
+};
+$("admin").addEventListener("click",e=>{var b=e.target.closest("[data-remove]");if(b)b.closest(".price-row").remove()});
+for(var service of ["gutter","wash"])for(var type of ["Meter","Side"])$(service+type+"Mode").addEventListener("change",e=>{$(service+type+"HiWrap").hidden=e.target.value!=="range"});
+$("admin").addEventListener("change",e=>{
+ var row=e.target.closest(".price-row");if(!row)return;
+ if(e.target.matches("[data-mode]"))row.querySelector("[data-max-wrap]").hidden=e.target.value!=="range";
+ if(e.target.matches("[data-size-mode]"))e.target.closest(".admin-size-row").querySelector("[data-size-max-wrap]").hidden=e.target.value!=="range";
+ if(e.target.matches("[data-inc]"))row.querySelector("[data-pct]").disabled=!e.target.checked;
+});
+function readRows(container,type){
+ var rows=[...$(container).querySelectorAll(".price-row")],result=[],names=new Set();
+ for(var row of rows){
+ var name=row.querySelector("[data-name]").value.trim();
+ if(!name)throw Error("Give each "+type+" a name, or delete the empty row.");
+ if(names.has(name.toLowerCase()))throw Error("Duplicate "+type+" name: "+name);
+ names.add(name.toLowerCase());
+ var item={id:row.dataset.id,name:name,on:row.querySelector("[data-on]").checked};
+ if(type==="frequencies"){
+  item.inc=row.querySelector("[data-inc]").checked;
+  item.pct=Number(row.querySelector("[data-pct]").value);
+  if(item.inc&&(!Number.isFinite(item.pct)||item.pct<0||item.pct>500))throw Error("Invalid frequency increase for "+name);
+ }else{
+  item.mode=row.querySelector("[data-mode]").value;
+  var loText=row.querySelector("[data-lo]").value.trim(),hiText=row.querySelector("[data-hi]").value.trim();
+  item.lo=Number(loText);item.hi=item.mode==="range"?Number(hiText):item.lo;
+  if(item.on&&(loText===""||!Number.isFinite(item.lo)||item.lo<0))throw Error("Invalid price for "+name);
+  if(item.on&&item.mode==="range"&&(hiText===""||!Number.isFinite(item.hi)||item.hi<item.lo))throw Error("Invalid price range for "+name);
+ }
+ result.push(item);
+ }
+ return result;
+}
+function readServiceRates(service){
+ return Object.fromEntries(["Meter","Side"].map(type=>{
+  var key=type==="Meter"?"metre":"side",mode=$(service+type+"Mode").value;
+  var loText=$(service+type+"Lo").value.trim(),hiText=$(service+type+"Hi").value.trim();
+  var lo=Number(loText),hi=mode==="range"?Number(hiText):lo;
+  if(loText===""||!Number.isFinite(lo)||lo<0)throw Error("Enter a valid "+service+" price per "+key+".");
+  if(mode==="range"&&(hiText===""||!Number.isFinite(hi)||hi<lo))throw Error("Enter a valid "+service+" maximum price per "+key+".");
+  return [key,{mode,lo,hi}];
+ }));
+}
+$("save").onclick=()=>{
+ try{
+ var p={
+ colors:Object.fromEntries(["Bg","Text","Card","Selector","Outline","Accent"].map(k=>[k.toLowerCase(),$("color"+k).value])),
+ gutterPricingMethod:$("gutterPricingMethod").value,
+ washEnabled:$("washEnabled").checked,
+ washPricingMethod:$("washPricingMethod").value,
+ gutterRates:readServiceRates("gutter"),
+ washRates:readServiceRates("wash"),
+ extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),downpipeDefaultV2:true,
+ minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
+ contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
+ showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimerText:$("disclaimerText").value.trim().slice(0,500)
+ };
+ if(!p.frequencies.some(x=>x.on))throw Error("Enable at least one cleaning frequency.");
+ if(!Number.isFinite(p.minimum)||p.minimum<0)throw Error("Enter a valid minimum charge.");
+ if(!Number.isFinite(p.bufferValue)||p.bufferValue<0||(p.bufferMode==="percent"&&p.bufferValue>100))throw Error("Enter a valid buffer (0–100% for percentages).");
+ config=p;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
+ try{localStorage.setItem("quotepro-soffit-fascia-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
+ catch(e){$("admin-message").textContent="Settings applied for this session; local storage is unavailable."}
+ }catch(e){$("admin-message").textContent=e.message}
+};
+state.step=order()[0];render();
+})();
+</script></body></html>
