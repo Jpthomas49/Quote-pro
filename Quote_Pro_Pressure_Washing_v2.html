@@ -79,7 +79,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 #customer .method.selected,#customer .surface-choice.selected{border-color:var(--accent)}
 #adminTab,#customerTab{display:none}
 body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
-</style></head><body><div class="app">
+</style><script src="./quote-pro-theme.js"></script></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Pressure Washing calculator · Professional quoting, made simple.</div></div>
 <div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> No enquiries are sent or stored. Surface prices are configurable by the business.</div>
@@ -110,7 +110,9 @@ body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
 <div class="nav" id="navigation"><button type="button" class="btn" id="back">← Back</button><div class="nav-right"><button type="button" class="btn" id="reset">Reset</button><button type="button" class="btn primary" id="next">Continue →</button></div></div>
 </div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
 <section id="admin" hidden><a href="./business-settings.html" style="display:inline-block;margin:12px 0 15px;color:#73bceb;font-size:13px;font-weight:750;text-decoration:underline">← Main business dashboard</a><div class="eyebrow">QUOTE PRO · PRESSURE WASHING</div><h1>Business settings</h1><p class="help">Set pricing and optional treatments, then save. Prices are examples until configured by a business.</p>
-<div class="adminsec"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label>
+<div class="adminsec"><h2>Shared Quote Pro colour theme</h2>
+<p class="help">The homepage and every calculator now use one shared colour palette. To change it, open <a href="./business-settings.html" style="color:#8dd6fa;font-weight:800">Main Business Settings → Shared Colour Theme</a>. Price settings remain specific to each service.</p></div>
+<div class="adminsec" hidden style="display:none"><h2>Calculator colours</h2><div class="pickergrid"><label>Background<input id="colorBg" type="color"></label><label>Font colour<input id="colorText" type="color"></label><label>Card colour<input id="colorCard" type="color"></label><label>Selector boxes<input id="colorSelector" type="color"></label><label>Selector outlines<input id="colorOutline" type="color"></label><label>Accent colour<input id="colorAccent" type="color"></label>
 <label>Page background<input id="colorPage" type="color"></label>
 <label>Secondary text<input id="colorSecondary" type="color"></label>
 <label>Primary buttons<input id="colorButton" type="color"></label>
@@ -222,6 +224,7 @@ function theme(){
  document.body.style.background=/^#[0-9a-f]{6}$/i.test(styles.page||"")?styles.page:defaults.colors.page;
  var hex=(styles.accent||defaults.colors.accent).replace("#",""),rgb=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
  root.style.setProperty("--button-text",(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])>.179?"#061a28":"#ffffff");
+ window.QuoteProTheme?.applyCalculator(root,"pressure");
 }
 function updateEstimate(){
  var measured=measure(),x=calculate();$("areaOutput").textContent=measured.valid?numberArea(measured.area)+" m²":"— m²";
