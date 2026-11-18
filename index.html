@@ -36,7 +36,7 @@
 </div>
 <div class="notice"><strong>Prototype only:</strong> All prices are fictional examples. Enquiries are not sent or stored, and the service options are not yet subscription-controlled. Business settings remain separate and save locally in your browser. Area-based pricing and additional treatments can be configured separately in the Pressure Washing calculator.</div>
 </div>
-<div style="margin-top:15px;text-align:right"><button id="openBusinessSettings" type="button" class="adminlink">Business settings (prototype) ⚙</button></div>
+
 </main></div><script>
 (function(){
 "use strict";
@@ -53,7 +53,7 @@ $("saveWindowMethod").onclick=()=>{
  catch(e){$("methodStatus").textContent="Storage unavailable: choice could not be saved."}
  updateLink();
 };
-$("openBusinessSettings").onclick=()=>showSettings(true);
+
 $("closeBusinessSettings").onclick=()=>showSettings(false);
 updateLink();
 if(new URLSearchParams(location.search).get("admin")==="1")showSettings(true);
