@@ -7,36 +7,70 @@
 (function(){
  "use strict";
  const KEY="quotepro-landing-colours-v1";
- const defaults=Object.freeze({
-   bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",
-   muted:"#b9cbd9",card:"#17324f",card2:"#0d2258",
-   accent:"#73bceb",border:"#35516d",buttontext:"#06243c",
-   smallheading:"#73bceb",icon:"#183b5e"
- });
+ // Business owners only choose these three colours.
+ const defaults=Object.freeze({top:"#0b2345",card:"#17324f",accent:"#73bceb"});
  const previousDefaults=[
   {bg:"#0b2345",top:"#193f69",deep:"#071826",text:"#f7fbff",muted:"#b8cce0",card:"#173b64",card2:"#112c4d",accent:"#58bff0",border:"#3d6087",buttontext:"#061c30",smallheading:"#ffdb61",icon:"#245782"},
   {bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#132c47",card2:"#0e2036",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"}
  ];
  const valid=v=>typeof v==="string"&&/^#[0-9a-fA-F]{6}$/.test(v);
- function normalize(input){
+ const toRGB=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+ const hex=rgb=>"#"+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");
+ function blend(a,b,amount){
+  const x=toRGB(a),y=toRGB(b);
+  return hex(x.map((v,i)=>v*(1-amount)+y[i]*amount));
+ }
+ function luminance(col){
+  const values=toRGB(col).map(v=>v/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
+  return .2126*values[0]+.7152*values[1]+.0722*values[2];
+ }
+ function contrastText(col){
+  const l=luminance(col);
+  return (1.05/(l+.05))>=((l+.05)/.05)?"#ffffff":"#000000";
+ }
+ function onlyThree(input){
   const result={...defaults};
   if(input&&typeof input==="object"){
-   for(const key of Object.keys(defaults))if(valid(input[key]))result[key]=input[key].toLowerCase();
+   for(const key of Object.keys(defaults))
+    if(valid(input[key]))result[key]=input[key].toLowerCase();
   }
   return result;
+ }
+ function derive(input){
+  const p=onlyThree(input);
+  const text=contrastText(p.top);
+  const buttontext=contrastText(p.accent);
+  const contrastingCard=contrastText(p.card);
+  const muted=blend(text,p.top,.27);
+  const border=blend(p.card,contrastingCard,.23);
+  const heading=luminance(p.accent)>0&&((Math.max(luminance(p.accent),luminance(p.top))+.05)/(Math.min(luminance(p.accent),luminance(p.top))+.05))>=3?p.accent:text;
+  return {
+   bg:blend(p.top,"#000000",.28),
+   top:p.top,
+   deep:blend(p.top,"#000000",.13),
+   text,
+   muted,
+   card:p.card,
+   card2:blend(p.card,p.top,.35),
+   accent:p.accent,
+   border,
+   buttontext,
+   smallheading:heading,
+   icon:blend(p.card,p.accent,.18)
+  };
  }
  function get(){
   try{
    const saved=JSON.parse(localStorage.getItem(KEY)||"null");
-   if(!saved||typeof saved!=="object")return {...defaults};
-   if(previousDefaults.some(old=>Object.keys(defaults).every(k=>saved[k]===old[k])))return {...defaults};
-   return normalize(saved);
-  }catch(e){return {...defaults}}
+   if(!saved||typeof saved!=="object")return derive(defaults);
+   if(previousDefaults.some(old=>Object.keys(old).every(k=>saved[k]===old[k])))return derive(defaults);
+   return derive(saved);
+  }catch(e){return derive(defaults)}
  }
  function save(input){
-  const theme=normalize(input);
-  localStorage.setItem(KEY,JSON.stringify(theme));
-  return theme;
+  const palette=onlyThree(input);
+  localStorage.setItem(KEY,JSON.stringify(palette));
+  return derive(palette);
  }
  function setAll(node,pairs){
   if(!node)return;
@@ -79,5 +113,5 @@
   }
   return p;
  }
- window.QuoteProTheme=Object.freeze({key:KEY,defaults,get,save,applyHomepage,applyCalculator});
+ window.QuoteProTheme=Object.freeze({key:KEY,defaults,derive,get,save,applyHomepage,applyCalculator});
 })();
