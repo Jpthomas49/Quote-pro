@@ -166,7 +166,7 @@ var copy=x=>JSON.parse(JSON.stringify(x)),cfg=copy(defaults);
 try{var stored=JSON.parse(localStorage.getItem(key)||"null");if(stored&&typeof stored==="object"){
  cfg={...copy(defaults),...stored,colors:{...defaults.colors,...(stored.colors||{})}};
  if(!Array.isArray(cfg.surfaces))cfg.surfaces=copy(defaults.surfaces);
- cfg.surfaces=cfg.enabledSurfaces().map(s=>({...s,on:s.on!==false,pricing:s.pricing||"shared",mode:s.mode||"fixed",lo:Number(s.lo??4),hi:Number(s.hi??s.lo??4)}));
+ cfg.surfaces=cfg.surfaces.map(s=>({...s,on:s.on!==false,pricing:s.pricing||"shared",mode:s.mode||"fixed",lo:Number(s.lo??4),hi:Number(s.hi??s.lo??4)}));
 }}catch(e){}
 var st={step:"area",method:"direct",direct:"",length:"",width:"",extras:[],surface:null};
 function enabledSurfaces(){return (cfg.surfaces||defaults.surfaces).filter(x=>x.on!==false)}
@@ -244,7 +244,7 @@ function render(){
   var selected=button.dataset.mode===st.method;button.classList.toggle("selected",selected);button.setAttribute("aria-pressed",String(selected));
  }
  $("directInputs").hidden=st.method!=="direct";$("dimensionInputs").hidden=st.method!=="dimensions";
- $("surfaceTypes").innerHTML=surfaces.map(s=>'<button class="surface-choice '+(st.surface===s.id?"selected":"")+'" type="button" data-surface="'+esc(s.id)+'" aria-pressed="'+(st.surface===s.id)+'">'+esc(s.name)+'</button>').join("");
+ $("surfaceTypes").innerHTML=enabledSurfaces().map(s=>'<button class="surface-choice '+(st.surface===s.id?"selected":"")+'" type="button" data-surface="'+esc(s.id)+'" aria-pressed="'+(st.surface===s.id)+'">'+esc(s.name)+'</button>').join("");
  $("squareMetres").value=st.direct;$("length").value=st.length;$("width").value=st.width;
  $("extras").innerHTML=cfg.extras.filter(permitted).map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(st.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No additional treatments offered.</p>';
  $("phoneRequired").hidden=cfg.contactRule==="email";$("emailRequired").hidden=cfg.contactRule==="mobile";
