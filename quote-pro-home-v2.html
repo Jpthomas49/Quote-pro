@@ -53,7 +53,14 @@ h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
 const coloursKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
 const defaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
 function read(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
-window.QuoteProTheme.applyHomepage();
+if(window.QuoteProTheme)window.QuoteProTheme.applyHomepage();
+else{
+ // Works during a GitHub Pages rollout when the shared script is still unavailable.
+ const fallback=read(coloursKey);
+ if(fallback&&typeof fallback==="object")
+  for(const [key,value] of Object.entries(fallback))
+   if(/^#[0-9a-f]{6}$/i.test(value||""))document.documentElement.style.setProperty("--qp-"+key,value);
+}
 const stored=read(homeKey),cfg={...defaults,...(stored&&typeof stored==="object"?stored:{})};
 if(!cfg.services||typeof cfg.services!=="object")cfg.services={...defaults.services};
 function choice(){try{return localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){return "property"}}
