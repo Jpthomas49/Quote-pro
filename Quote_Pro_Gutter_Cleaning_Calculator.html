@@ -173,7 +173,7 @@ function calc(){
  var method=config.gutterPricingMethod==="side"?"side":"metre";
  var rates=config.gutterRates?.[method]||defaults.gutterRates[method];
  var qty=Number(state.quantity)||0;
- var validQty=Number.isFinite(qty)&&qty>=1&&qty<=5000&&(method==="metre"||Number.isInteger(qty));
+ var validQty=Number.isFinite(qty)&&qty>=1&&qty<=(method==="side"?20:5000)&&(method==="metre"||Number.isInteger(qty));
  var unit=method==="metre"?"m":"side"+(qty===1?"":"s");
  var base=validQty?{name:"Gutter emptying · "+qty+" "+unit,mode:rates.mode,lo:qty*Number(rates.lo),hi:qty*Number(rates.mode==="range"?rates.hi:rates.lo)}:null;
  var extras=config.extras.filter(x=>x.on&&state.extras.includes(x.id));
