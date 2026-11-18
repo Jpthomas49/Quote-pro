@@ -206,10 +206,10 @@ function render(){
  }).join("")||'<p class="muted">No additional items offered.</p>';
  $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
  $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
- var show=config.estimateTiming==="live"&&state.house!=null;
+ var show=config.estimateTiming==="live";
  for(var step of ["property","frequency","contact"]){
   $("estimate-"+step).hidden=!show;
-  if(show)$("estimate-"+step).innerHTML=quoteMarkup();
+  if(show)$("estimate-"+step).innerHTML='<div class="eyebrow" style="margin-bottom:8px">YOUR LIVE ESTIMATE</div>'+(state.house?quoteMarkup():'<div class="estimate"><p class="muted">Select a property size to see your estimate.</p></div>');
  }
  $("error").hidden=true;
 }
