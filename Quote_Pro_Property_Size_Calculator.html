@@ -74,6 +74,7 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 .linkaction{color:#8fd5f6;text-decoration:none;background:transparent;border:0;padding:6px 0}
 .footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
 @media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
+#adminTab,#customerTab{display:none}body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
 </style></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Property Size calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
@@ -352,5 +353,8 @@ $("save").onclick=()=>{
  }catch(e){$("admin-message").textContent=e.message}
 };
 state.step=order()[0];render();
+if(new URLSearchParams(location.search).get("admin")==="1"){
+ document.body.classList.add("owner-demo");showAdmin(true);
+}
 })();
 </script></body></html>
