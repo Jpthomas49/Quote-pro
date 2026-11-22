@@ -3,7 +3,7 @@
   width: 100px;
   height: 100px;
   flex: 0 0 100px;
-  background-color: var(--qp-accent);
+  background-color: var(--qp-icons, #fff);
   -webkit-mask: var(--service-art) center / contain no-repeat;
   mask: var(--service-art) center / contain no-repeat;
 }
