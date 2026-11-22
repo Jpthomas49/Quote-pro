@@ -83,10 +83,37 @@
   document.body.style.background=p.bg;
   return p;
  }
+ let selectionStylesAdded=false;
+ function addSelectionStyles(){
+  if(selectionStylesAdded)return;
+  const style=document.createElement("style");
+  style.textContent=`
+   #customer :is(button.selected:not(:disabled),label:where(.extra,.option):where(:has(input[type="checkbox"]:checked))) {
+    background:var(--qp-selection-fill)!important;
+    color:var(--qp-selection-ink)!important;
+    border-color:var(--qp-selection-fill)!important;
+    outline:2px solid var(--qp-selection-fill)!important;
+    outline-offset:-2px!important;
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--qp-selection-ink) 48%,transparent);
+   }
+   #customer button.selected:not(:disabled):focus-visible {outline-offset:3px!important}
+   #customer label:is(.extra,.option):has(input[type="checkbox"]:checked) :is(.muted,small) {
+    color:inherit;
+    opacity:.9;
+   }
+   #customer label:is(.extra,.option) input[type="checkbox"]:checked {
+    accent-color:var(--qp-selection-ink);
+   }
+  `;
+  document.head.append(style);
+  selectionStylesAdded=true;
+ }
  function applyCalculator(element,variant){
   if(!element)return get();
   const p=get();
   document.body.style.background=p.bg;
+  addSelectionStyles();
+  setAll(element,{"--qp-selection-fill":p.accent,"--qp-selection-ink":p.buttontext});
   if(variant==="window-count"){
    setAll(element,{
     "--qp-background":p.top,"--qp-font":p.text,"--qp-icons":p.icons,
