@@ -28,7 +28,6 @@ h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
 .service .action{background:var(--qp-accent);color:var(--qp-buttontext);border:1px solid var(--qp-accent);padding:12px;border-radius:10px;text-align:center;font-weight:840;text-decoration:none;display:block;min-height:47px}
 .service .action:hover{filter:brightness(1.07)}
 .service .action:focus-visible{outline-offset:3px}
-.service .foot{font-size:11px;color:var(--qp-muted);margin:0}
 .footer{font-size:12px;text-align:center;color:var(--qp-muted);padding:23px 8px 0}
 .footer strong{color:var(--qp-accent)}
 .small{font-size:11px}
@@ -64,11 +63,11 @@ if(stored?.services && typeof stored.services==="object"){
 }else cfg.services={...defaults.services};
 function choice(){try{return localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){return "property"}}
 const services=[
-{id:"window",name:"Window Cleaning",foot:"Windows, doors and extras",href:()=>choice()==="count"?"./Quote_Pro_Window_Cleaning_Prototype_v3.html":"./Quote_Pro_Property_Size_Calculator.html"},
-{id:"gutter",name:"Gutter Cleaning",foot:"Emptying and external PVC wash",href:()=> "./Quote_Pro_Gutter_Cleaning_Calculator.html"},
-{id:"pressure",name:"Pressure Washing",foot:"Surface-specific £/m² estimates",href:()=> "./Quote_Pro_Pressure_Washing_v2.html"},
-{id:"soffit",name:"Soffit & Fascia Cleaning",foot:"Exterior PVC cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"},
-{id:"conservatoryRoof",name:"Conservatory Roof Cleaning",foot:"Conservatory roof wash",href:()=> "./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html"}
+{id:"window",name:"Window Cleaning",href:()=>choice()==="count"?"./Quote_Pro_Window_Cleaning_Prototype_v3.html":"./Quote_Pro_Property_Size_Calculator.html"},
+{id:"gutter",name:"Gutter Cleaning",href:()=> "./Quote_Pro_Gutter_Cleaning_Calculator.html"},
+{id:"pressure",name:"Pressure Washing",href:()=> "./Quote_Pro_Pressure_Washing_v2.html"},
+{id:"soffit",name:"Soffit & Fascia Cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"},
+{id:"conservatoryRoof",name:"Conservatory Roof Cleaning",href:()=> "./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html"}
 ];
 const enabled=services.filter(s=>cfg.services[s.id]!==false);
 if(enabled.length===1&&cfg.autoOpenSingle!==false&&!new URLSearchParams(location.search).has("preview")){
@@ -79,7 +78,7 @@ document.getElementById("headline").textContent=cfg.headline||defaults.headline;
 document.getElementById("description").textContent=cfg.description||defaults.description;
 const list=document.getElementById("services");
 for(let i=0;i<enabled.length;i++){
- const s=enabled[i],card=document.createElement("article"),top=document.createElement("div"),ico=document.createElement("div"),number=document.createElement("span"),content=document.createElement("div"),title=document.createElement("h3"),a=document.createElement("a"),foot=document.createElement("div");
+ const s=enabled[i],card=document.createElement("article"),top=document.createElement("div"),ico=document.createElement("div"),number=document.createElement("span"),content=document.createElement("div"),title=document.createElement("h3"),a=document.createElement("a");
  card.className="service";
  top.className="service-top";
  ico.className="service-art";
@@ -96,8 +95,8 @@ for(let i=0;i<enabled.length;i++){
   paragraph.textContent=text;
   content.append(paragraph);
  }
- a.className="action";a.href=s.href();a.textContent="Get a quote →";foot.className="foot";foot.textContent=s.foot;
- card.append(top,content,a,foot);list.append(card);
+ a.className="action";a.href=s.href();a.textContent="Get a quote →";
+ card.append(top,content,a);list.append(card);
 }
 })();
 </script></body></html>
