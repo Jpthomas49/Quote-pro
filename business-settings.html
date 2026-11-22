@@ -43,7 +43,10 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 .previewtile{border:1px solid;border-radius:10px;padding:11px}
 .previewtile .service-art{width:52px;height:52px;margin-bottom:5px}
 .previewtile strong{display:block;font-size:13px}
-.previewtile span{font-size:11px;display:block;margin-bottom:9px}
+.previewtile strong{margin-bottom:9px}
+.previewtile .card-subheading{font-size:11px;margin:-4px 0 9px;white-space:pre-line;overflow-wrap:anywhere}
+.service-subheading .field{margin-left:12px}
+.service-subheading .field[hidden]{display:none}
 .previewtile .previewbutton{display:block;text-align:center;font-size:11px;font-weight:850;border-radius:8px;padding:9px}
 .note{color:#a9bfd1;font-size:12px;line-height:1.5;padding:12px 16px}
 .footer{font-size:11px;color:#8ca7bc;margin-top:23px;text-align:center}
@@ -73,6 +76,11 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <label class="check"><input type="checkbox" id="serviceSoffit"><span>Soffit &amp; Fascia Cleaning</span></label>
 <label class="check"><input type="checkbox" id="serviceConservatoryRoof"><span>Conservatory Roof Cleaning</span></label>
 <label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
+</section>
+<section class="section">
+<h2>Service card subheadings</h2>
+<p class="help">Add optional text under a service name. Turn it on for the services you want to describe.</p>
+<div id="serviceSubheadings"></div>
 </section>
 <section class="section">
 <h2>Shared Quote Pro colour theme</h2><p class="help">Choose the colours for the customer homepage and calculators. Icon colour applies to all service icons and window illustrations.</p>
@@ -123,6 +131,30 @@ if(savedHome?.services && typeof savedHome.services==="object"){
 }else config.services={...appDefaults.services};
 try{windowMethod=localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){}
 const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning",conservatoryRoof:"Conservatory Roof Cleaning"};
+const subheadingFields=new Map();
+for(const [key,name] of Object.entries(serviceLabels)){
+ const field=document.createElement("div"),toggle=document.createElement("label"),enabled=document.createElement("input");
+ const label=document.createElement("label"),text=document.createElement("textarea");
+ field.className="service-subheading";
+ toggle.className="check";
+ enabled.type="checkbox";
+ label.className="field";
+ label.id="service-subheading-"+key;
+ label.textContent=name+" subheading";
+ text.rows=2;
+ enabled.setAttribute("aria-controls",label.id);
+ toggle.append(enabled,name);
+ label.append(text);
+ field.append(toggle,label);
+ $("serviceSubheadings").append(field);
+ const saved=config.serviceSubheadings?.[key];
+ enabled.checked=saved?.enabled===true;
+ label.hidden=!enabled.checked;
+ text.value=typeof saved?.text==="string"?saved.text:"";
+ enabled.addEventListener("change",()=>{label.hidden=!enabled.checked;preview()});
+ text.addEventListener("input",preview);
+ subheadingFields.set(key,{enabled,text});
+}
 function load(){
  $("businessName").value=config.businessName||appDefaults.businessName;
  $("headline").value=config.headline||appDefaults.headline;
@@ -149,15 +181,25 @@ function preview(){
  let active=Object.keys(serviceLabels).filter(k=>$("service"+k[0].toUpperCase()+k.slice(1)).checked);
  $("miniCards").replaceChildren();
  for(const key of active){
-  let tile=document.createElement("div"),title=document.createElement("strong"),small=document.createElement("span"),button=document.createElement("div");
+  let tile=document.createElement("div"),title=document.createElement("strong"),button=document.createElement("div");
   tile.className="previewtile";tile.style.background=read("card");tile.style.borderColor=read("border");
-  title.textContent=serviceLabels[key];small.textContent="Instant quote";small.style.color=read("muted");
+  title.textContent=serviceLabels[key];
   button.className="previewbutton";button.textContent="Get a quote";button.style.background=read("accent");button.style.color=read("buttontext");
   const art=document.createElement("div");
   art.className="service-art";
   art.dataset.service=key;
   art.setAttribute("aria-hidden","true");
-  tile.append(art,title,small,button);$("miniCards").append(tile);
+  tile.append(art,title);
+  const fields=subheadingFields.get(key),text=fields.text.value.trim();
+  if(fields.enabled.checked&&text){
+   const paragraph=document.createElement("p");
+   paragraph.className="card-subheading";
+   paragraph.textContent=text;
+   paragraph.style.color=read("muted");
+   tile.append(paragraph);
+  }
+  tile.append(button);
+  $("miniCards").append(tile);
  }
 }
 for(const id of ["businessName","headline","description","windowMethod","autoOpenSingle",...Object.keys(serviceLabels).map(k=>"service"+k[0].toUpperCase()+k.slice(1)),...Object.values(names).map(s=>"color"+s)])
@@ -168,7 +210,8 @@ $("save").onclick=()=>{
  if(!Object.values(active).some(Boolean)){$("status").textContent="Enable at least one service to display.";return}
  const businessName=$("businessName").value.trim(),headline=$("headline").value.trim(),description=$("description").value.trim();
  if(!businessName||!headline){$("status").textContent="Enter a business display name and homepage headline.";return}
- const proposed={businessName,headline,description,services:active,autoOpenSingle:$("autoOpenSingle").checked};
+ const serviceSubheadings=Object.fromEntries([...subheadingFields].map(([key,{enabled,text}])=>[key,{enabled:enabled.checked,text:text.value.trim()}]));
+ const proposed={businessName,headline,description,services:active,serviceSubheadings,autoOpenSingle:$("autoOpenSingle").checked};
  const palette=Object.fromEntries(Object.entries(names).map(([k,s])=>[k,$("color"+s).value]));
  try{
   const savedTheme=window.QuoteProTheme?window.QuoteProTheme.save(palette):palette;
