@@ -25,7 +25,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 .check{display:flex;align-items:center;gap:11px;font-size:14px;padding:12px 13px;border:1px solid #35546e;border-radius:11px;background:#14293f;cursor:pointer;margin:9px 0}
 .check input{width:20px;height:20px;flex:0 0 20px;margin:0;accent-color:#73bceb}
 .check span{flex:1}
-.pickers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:13px}
+.pickers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-bottom:13px}
 .pickers label{font-size:12px;font-weight:700;color:#bcd5e8;min-width:0}
 .pickers input{display:block;width:100%;height:42px;padding:4px;margin-top:6px;border:1px solid #4d6881;border-radius:9px;background:#192b3c;cursor:pointer}
 .btn{background:#1f3951;color:white;padding:11px 14px;border:1px solid #466683;border-radius:10px;font-weight:800}
@@ -41,14 +41,15 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 .previewbody .subheading{font-size:12px;margin-bottom:17px}
 .previewtiles{display:grid;gap:9px}
 .previewtile{border:1px solid;border-radius:10px;padding:11px}
+.previewtile .service-art{width:52px;height:52px;margin-bottom:5px}
 .previewtile strong{display:block;font-size:13px}
 .previewtile span{font-size:11px;display:block;margin-bottom:9px}
 .previewtile .previewbutton{display:block;text-align:center;font-size:11px;font-weight:850;border-radius:8px;padding:9px}
 .note{color:#a9bfd1;font-size:12px;line-height:1.5;padding:12px 16px}
 .footer{font-size:11px;color:#8ca7bc;margin-top:23px;text-align:center}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.preview{position:static}.pickers{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.preview{position:static}}
 @media(max-width:450px){.pickers{grid-template-columns:repeat(2,minmax(0,1fr))}.intro{padding:19px}.settings{padding:16px}}
-</style><script src="./quote-pro-theme.js"></script></head>
+</style><link rel="stylesheet" href="./quote-pro-service-art.css?v=icon-colour"><script src="./quote-pro-theme.js?v=icon-colour"></script></head>
 <body><div class="wrap">
 <header class="top"><div><div class="brand">Job<b>Caddy</b> / Quote Pro</div><div class="subtitle">Business dashboard · Shared branding and service settings</div></div><a href="./?preview=1">View customer homepage →</a></header>
 <div class="intro"><div class="eyebrow">BUSINESS OWNER PREVIEW</div><h1>Customise all your Quote Pro pages.</h1><p class="lead">One colour theme for the homepage and every quote calculator. Choose your services, set the window-cleaning method and manage prices in each service.</p></div>
@@ -74,11 +75,12 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
 </section>
 <section class="section">
-<h2>Shared Quote Pro colour theme</h2><p class="help"><strong>Three colours control every customer-facing page:</strong> the service-selection homepage, both Window Cleaning methods, Gutter Cleaning, Soffit &amp; Fascia Cleaning, Pressure Washing and Conservatory Roof Cleaning. Text, borders, buttons and secondary colours are chosen automatically. Save once and every calculator uses the same theme. Service pricing remains independent.</p>
+<h2>Shared Quote Pro colour theme</h2><p class="help">Choose the colours for the customer homepage and calculators. Icon colour applies to all service icons and window illustrations.</p>
 <div class="pickers">
 <label>Background<input type="color" id="colorTop"></label>
 <label>Cards &amp; selection boxes<input type="color" id="colorCard"></label>
 <label>Accent colour<input type="color" id="colorAccent"></label>
+<label>Icon colour<input type="color" id="colorIcons" value="#ffffff"></label>
 </div><button type="button" class="btn" id="restore">Restore shared navy and light-blue theme</button>
 </section>
 <section class="section">
@@ -97,7 +99,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <aside class="preview"><div class="previewbar">LIVE SHARED THEME PREVIEW</div><div class="previewbody" id="miniHome">
 <div class="eyebrow" id="miniLabel">INSTANT ONLINE ESTIMATES</div><div class="heading" id="miniHeading">Which service would you like a quote for?</div><p class="subheading" id="miniDescription"></p>
 <div class="previewtiles" id="miniCards"></div></div>
-<div class="note">Your three selected colours preview here. Other colours are worked out automatically and applied to every calculator in this browser.</div></aside>
+<div class="note">Save to apply these colours across Quote Pro in this browser.</div></aside>
 </div>
 <p class="footer"><strong>Prototype owner settings only.</strong> This URL is not authenticated or private yet. Before a real launch, account login, server-side owner permissions and business-hosted settings are required. No customer enquiry data is stored by this demo.</p>
 </div>
@@ -106,12 +108,12 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 "use strict";
 const $=id=>document.getElementById(id);
 const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
-const defaults=window.QuoteProTheme?.defaults||{top:"#0b2345",card:"#17324f",accent:"#73bceb"};
+const defaults=window.QuoteProTheme?.defaults||{top:"#0b2345",card:"#17324f",accent:"#73bceb",icons:"#ffffff"};
 const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true,conservatoryRoof:true},autoOpenSingle:true};
-const names={top:"Top",card:"Card",accent:"Accent"};
+const names={top:"Top",card:"Card",accent:"Accent",icons:"Icons"};
 function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
 function initialColours(){
- if(window.QuoteProTheme)return window.QuoteProTheme.get();
+ if(window.QuoteProTheme)return {...defaults,...window.QuoteProTheme.get()};
  const saved=fromStorage(colourKey);return saved&&typeof saved==="object"?{...defaults,...Object.fromEntries(Object.keys(defaults).filter(k=>saved[k]).map(k=>[k,saved[k]]))}:{...defaults};
 }
 const savedHome=fromStorage(homeKey);
@@ -136,6 +138,7 @@ function preview(){
  const p=window.QuoteProTheme?.derive(input)||{...input,deep:input.top,text:"#ffffff",muted:"#b9cbd9",border:"#35516d",smallheading:input.accent,buttontext:"#06243c"};
  const read=key=>p[key];
  const box=$("miniHome");
+ box.style.setProperty("--qp-icons",input.icons);
  box.style.background=read("top");box.style.color=read("text");box.style.borderTop="3px solid "+read("border");
  $("miniHeading").style.background=read("deep");$("miniHeading").style.border="1px solid "+read("border");
  $("miniHeading").style.padding="12px";$("miniHeading").style.borderRadius="10px";
@@ -150,7 +153,11 @@ function preview(){
   tile.className="previewtile";tile.style.background=read("card");tile.style.borderColor=read("border");
   title.textContent=serviceLabels[key];small.textContent="Instant quote";small.style.color=read("muted");
   button.className="previewbutton";button.textContent="Get a quote";button.style.background=read("accent");button.style.color=read("buttontext");
-  tile.append(title,small,button);$("miniCards").append(tile);
+  const art=document.createElement("div");
+  art.className="service-art";
+  art.dataset.service=key;
+  art.setAttribute("aria-hidden","true");
+  tile.append(art,title,small,button);$("miniCards").append(tile);
  }
 }
 for(const id of ["businessName","headline","description","windowMethod","autoOpenSingle",...Object.keys(serviceLabels).map(k=>"service"+k[0].toUpperCase()+k.slice(1)),...Object.values(names).map(s=>"color"+s)])
