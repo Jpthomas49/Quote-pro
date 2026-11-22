@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quote Pro — Conservatory Roof Cleaning calculator</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:#071420;color:#eef6ff;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #58bff0;outline-offset:2px}
+.app{max-width:950px;margin:auto;padding:19px 14px 70px}
+header{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.5px}.brand span{color:#58bff0}
+.subbrand{font-size:12px;color:#acbecc}
+.tabs{display:flex;gap:8px}.tab,.btn{border:1px solid #36526a;color:#f5faff;background:#1a3145;border-radius:11px;font-weight:750;padding:11px 14px;min-height:44px}
+.tab.active,.btn.primary{background:#58bff0;color:#06243c;border-color:#58bff0}
+.notice{background:#192b38;border:1px solid #435668;border-radius:10px;color:#bed3e2;padding:11px 14px;font-size:12px;margin-bottom:14px}
+[hidden]{display:none!important}
+#customer{--c-bg:#09131f;--c-text:#ffffff;--c-card:#1d314c;--c-select:#131d29;--c-outline:#131d29;--c-accent:#73bceb;--c-btn-text:#06243c;--c-secondary:#b9cbd9;--c-border:#34516c;--c-estimate:#1d314c;--c-button:#73bceb;--c-button-text:#06243c;background:var(--c-bg);color:var(--c-text);border-radius:20px;padding:18px}
+.hero{padding:23px 27px 0;margin-bottom:22px}.eyebrow{color:var(--c-accent);font-size:11px;letter-spacing:1.3px;font-weight:850}
+h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-size:21px;line-height:1.27;margin:4px 0 7px}h3{font-size:16px;margin:0 0 11px}
+.caption{color:#b9cbd9;font-size:13px;margin:0 0 16px}
+.panel{padding:clamp(16px,3vw,24px);border:1px solid #34516c;border-radius:19px}
+.steps{display:flex;gap:8px;margin-bottom:19px}.step{flex:1;min-width:0;border-bottom:3px solid #40556a;padding:3px 3px 9px;color:#b1c6d7;text-align:center;font-weight:700;font-size:12px}
+.step.active{border-color:var(--c-accent);color:var(--c-text)}
+.section{padding:18px 0;border-bottom:1px solid #35516b}.section:first-child{padding-top:0}.section:last-child{padding-bottom:0;border:0}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.house{min-height:76px;padding:14px 12px;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:13px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;line-height:1.25}
+.house.selected,.frequency.selected{outline:2px solid var(--c-accent);outline-offset:-2px;border-color:var(--c-accent)}
+
+.frequency{display:block;width:100%;border:1px solid var(--c-outline);background:var(--c-select);color:var(--c-text);border-radius:11px;padding:13px 15px;margin:8px 0;text-align:left;min-height:47px;font-weight:750}
+.estimate{background:var(--c-card);border:1px solid var(--c-accent);border-radius:14px;padding:16px}.estimate .amount{font-size:clamp(27px,5vw,38px);font-weight:900;line-height:1.25}
+.estimate-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.estimate .fine{font-size:12px;opacity:.8}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:start;font-size:13px;padding:6px 0}.line strong{text-align:right;white-space:nowrap}
+.item-breakdown{border-top:1px solid #586c82;margin-top:12px;padding-top:7px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;font-size:13px;font-weight:700}.field.wide{grid-column:1/-1}
+.field input,.field textarea,.field select{display:block;width:100%;padding:11px 12px;margin-top:6px;color:#f4faff;background:#0a192a;border:1px solid #51708c;border-radius:9px;min-width:0}
+.field textarea{resize:vertical}.req{color:#ffda74}.muted{opacity:.76;font-size:12px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap}.navright{display:flex;gap:8px}
+.nav .btn.primary,#customer .btn.primary{background:var(--c-accent);border-color:var(--c-accent);color:var(--c-btn-text)}
+.error{color:#ffb3b3;font-size:13px;margin-top:12px}
+.review-card{border:1px solid var(--c-outline);background:var(--c-card);padding:15px;border-radius:13px;margin:12px 0}
+.review-row{display:grid;grid-template-columns:36% minmax(0,1fr);gap:10px;font-size:13px;padding:5px 0}
+.review-row .key{opacity:.76}.review-row span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+.disclaimer{border-left:3px solid var(--c-accent);padding:10px 12px;font-size:13px;margin:14px 0;white-space:pre-wrap;background:var(--c-card)}
+.powered{text-align:center;font-size:11px;opacity:.74;margin:16px auto 0}.powered strong{color:var(--c-accent)}
+#admin{border:1px solid #38546a;border-radius:18px;background:#101e2b;padding:20px}
+.adminsec{border-bottom:1px solid #304555;padding:16px 0}.adminsec:first-of-type{padding-top:0}.adminsec:last-of-type{border:0}
+.adminsec h2{font-size:19px}.adminhelp{font-size:12px;color:#b4c5d4;margin:3px 0 14px}
+.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.price-row{border:1px solid #3c5368;border-radius:12px;padding:13px;margin:9px 0;background:#172a39}
+.price-row .rowtop{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
+.price-row .rowtop .field{flex:1;min-width:155px}.priceline{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:9px}
+.price-row .field input,.price-row .field select{padding:9px}
+.check{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
+.check input[type=checkbox]{appearance:auto;width:19px;height:19px;margin:0;flex:0 0 19px;accent-color:#58bff0}
+#admin .field{color:#c6d6e3}#admin .field input,#admin .field textarea,#admin .field select{background:#0a1725}
+.adminactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.linkaction{color:#8fd5f6;text-decoration:none;background:transparent;border:0;padding:6px 0}
+.footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
+@media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
+.choices.roof-sizes{grid-template-columns:repeat(3,minmax(0,1fr))}
+.roof-sizes .house{min-height:52px;padding:10px 4px}
+#adminTab,#customerTab{display:none}body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
+#customer .caption{color:var(--c-secondary)}
+#customer .panel,#customer .section{border-color:var(--c-border)}
+#customer .estimate{background:var(--c-estimate)}
+#customer .btn.primary{background:var(--c-button);border-color:var(--c-button);color:var(--c-button-text)}
+#customer .muted{color:var(--c-secondary)}
+</style><script src="./quote-pro-theme.js"></script></head><body><div class="app">
+<header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Conservatory Roof Cleaning calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
+<div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
+<section id="customer"><div class="hero"><div class="eyebrow">CONSERVATORY ROOF CLEANING</div><h1>Get your conservatory roof cleaning estimate</h1><div class="muted">Tell us about your conservatory roof to get an estimate.</div></div>
+<div class="panel">
+<div class="steps" id="steps"></div>
+<section id="step-property">
+<div class="section">
+<div id="sizeChoice">
+<h2>What size is your conservatory roof?</h2>
+<div class="choices roof-sizes" role="group" aria-label="Conservatory roof size">
+<button type="button" class="house" data-size="small" aria-pressed="false">Small</button>
+<button type="button" class="house" data-size="medium" aria-pressed="false">Medium</button>
+<button type="button" class="house" data-size="large" aria-pressed="false">Large</button>
+</div>
+</div>
+<div id="panelChoice" hidden>
+<h2>How many roof panels need cleaning?</h2>
+<p class="caption" id="panelHelp">Count the separate glass or polycarbonate sections of the roof.</p>
+<label class="field">Number of roof panels<input id="panelCount" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 8" aria-describedby="panelHelp"></label>
+</div>
+</div><div id="estimate-property" class="section" aria-live="polite"></div></section>
+<section id="step-frequency" hidden><div class="section"><div class="eyebrow">CLEANING FREQUENCY</div><h2>How often would you like your conservatory roof cleaned?</h2><div id="frequencies"></div></div><div id="estimate-frequency" class="section"></div></section>
+<section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Please enter your contact details and any notes about the roof or access.</p>
+<form id="contacts" novalidate><div class="formgrid">
+<label class="field">Full name <span class="req">*</span><input id="name" autocomplete="name" required placeholder="Your full name"></label>
+<label class="field">Mobile number <span id="phoneRequired" class="req">*</span><input id="phone" type="tel" autocomplete="tel" placeholder="Mobile number"></label>
+<label class="field">Email address <span id="emailRequired" class="req" hidden>*</span><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+<label class="field wide">Property address <span class="req">*</span><textarea id="address" autocomplete="street-address" rows="2" required placeholder="Property address"></textarea></label>
+<label class="field wide">Additional notes <span class="muted">(optional)</span><textarea id="notes" rows="3" placeholder="e.g. access restrictions, height or heavy staining"></textarea></label>
+</div></form></div><div id="estimate-contact" class="section"></div></section>
+<section id="step-review" hidden><div class="section"><div class="eyebrow">FINAL STEP</div><h2>Review your enquiry</h2><p class="caption">Please check your choices and contact details before submitting.</p><div id="review-details"></div><div id="review-amount"></div><p id="review-disclaimer" class="disclaimer"></p><p class="muted">Private prototype: the button demonstrates submission without sending personal data.</p>
+<div class="nav"><button id="reviewEdit" class="btn" type="button">← Edit details</button><button id="submit" class="btn primary" type="button">Submit my enquiry →</button></div></div></section>
+<section id="step-done" hidden><div class="section"><div class="eyebrow">DEMO COMPLETE</div><h2>Enquiry preview finished</h2><p>This demonstration has completed. <strong>No personal information has been submitted or stored.</strong></p><button id="restart" class="btn primary" type="button">Start again</button></div></section>
+<p class="error" id="error" role="alert" hidden></p>
+<div class="nav" id="navigation"><button class="btn" type="button" id="back">← Back</button><div class="navright"><button class="btn" type="button" id="reset">Reset</button><button class="btn primary" type="button" id="next">Continue →</button></div></div>
+</div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
+<section id="admin" hidden><a href="./business-settings.html" style="display:inline-block;margin:12px 0 15px;color:#73bceb;font-size:13px;font-weight:750;text-decoration:underline">← Main business dashboard</a>
+<div class="eyebrow">QUOTE PRO · CONSERVATORY ROOF CLEANING</div><h1>Business settings</h1><p class="adminhelp">Set your prices and customer journey. Click Save settings to apply your changes.</p>
+<div class="adminsec"><h2>Shared Quote Pro colour theme</h2>
+ <p class="adminhelp">All services now use the same colours as your Quote Pro homepage. Change the palette once in <a style="color:#8dd6fa;font-weight:750" href="./business-settings.html">Main Business Settings → Shared Colour Theme</a>. Your pricing and other settings stay separate for each service.</p></div>
+<div class="adminsec"><h2>Conservatory roof prices</h2>
+<p class="adminhelp">Choose how customers describe their roof. Each price can be a fixed amount or a minimum–maximum range.</p>
+<label class="field" style="max-width:430px">Pricing method<select id="pricingMethod"><option value="size">By roof size</option><option value="panel">Per roof panel</option></select></label>
+<div id="sizeRates"></div>
+<div id="panelRates" hidden></div>
+</div>
+<div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
+<div class="adminsec"><h2>Estimate settings</h2><div class="settings">
+<label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
+<label class="field">Estimate buffer<select id="bufferMode"><option value="off">Off</option><option value="percent">Percentage ±%</option><option value="amount">Fixed amount ±£</option></select></label>
+<label class="field">Buffer value<input type="number" min="0" step=".01" id="bufferValue"></label>
+<label class="field">Contact details position<select id="contactPosition"><option value="end">At the end</option><option value="start">At the start</option></select></label>
+<label class="field">When to show estimated price<select id="estimateTiming"><option value="live">Live throughout</option><option value="end">Final review only</option></select></label>
+<label class="field">Required contact details<select id="contactRule"><option value="mobile">Mobile required; email optional</option><option value="email">Email required; mobile optional</option><option value="both">Both mobile and email required</option></select></label>
+</div><p class="adminhelp">Roof access and condition may affect the final quote. A buffer creates a natural range for possible differences in the work described. For example, £25 ±10% is displayed as £22–£28 (rounded outward to whole pounds). It is not an additional charge. Your minimum charge is respected.</p>
+<label class="check"><input id="showBreakdown" type="checkbox"> Show itemised prices in live estimate and quote summary</label>
+<p class="adminhelp">When off, customers see only the total estimate, never individual prices. Property and extra selection buttons never show individual prices.</p>
+<label class="check"><input id="showDisclaimer" type="checkbox"> Show final estimate disclaimer</label>
+<label class="field" style="margin-top:10px">Disclaimer wording<textarea id="disclaimerText" rows="2"></textarea></label>
+</div>
+<div class="adminactions"><button id="save" type="button" class="btn primary">Save settings</button><button id="preview" type="button" class="btn">Preview calculator</button></div><p class="adminhelp" role="status" id="admin-message"></p></section>
+<div class="footer">Quote Pro by JobCaddy · Conservatory Roof Cleaning private prototype</div>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const storageKey="quotepro-conservatory-roof-v1";
+const sizes={small:"Small",medium:"Medium",large:"Large"};
+const rateLabels={...sizes,panel:"Per roof panel"};
+const settingsFields=["minimum","bufferMode","bufferValue","contactPosition","estimateTiming","contactRule","disclaimerText"];
+const defaults={
+ pricingMethod:"panel",
+ rates:{
+  small:{mode:"fixed",lo:50,hi:50},
+  medium:{mode:"fixed",lo:75,hi:75},
+  large:{mode:"fixed",lo:100,hi:100},
+  panel:{mode:"range",lo:7,hi:10}
+ },
+ frequencies:[{id:"once",name:"One-off clean",on:true,inc:false,pct:0}],
+ minimum:45,bufferMode:"off",bufferValue:10,contactPosition:"end",estimateTiming:"live",contactRule:"mobile",
+ showBreakdown:false,showDisclaimer:true,
+ disclaimerText:"This is a provisional estimate. Final price depends on roof condition and safe access and will be confirmed by the service provider."
+};
+let config=defaults;
+try{
+ const saved=JSON.parse(localStorage.getItem(storageKey)||"null");
+ if(saved)config={...defaults,...saved,rates:{...defaults.rates,...saved.rates}};
+}catch(e){}
+
+const esc=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const money=pence=>"£"+(pence/100).toFixed(2);
+const range=(lo,hi)=>lo===hi?money(lo):money(lo)+"–"+money(hi);
+const order=()=>config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"];
+const label=step=>({property:"Roof details",frequency:"Frequency",contact:"Contact"})[step];
+const applyTheme=()=>window.QuoteProTheme?.applyCalculator($("customer"),"standard");
+const newState=()=>({step:order()[0],size:null,panels:0,frequency:null});
+let state=newState();
+
+function calc(){
+ const byPanel=config.pricingMethod==="panel";
+ const count=byPanel?state.panels:1;
+ const rate=byPanel?config.rates.panel:config.rates[state.size];
+ if(!rate||!Number.isSafeInteger(count)||count<1)return null;
+ const freq=config.frequencies.find(option=>option.id===state.frequency&&option.on);
+ const multiplier=freq?.inc?1+freq.pct/100:1;
+ const toPence=price=>Math.round(Math.round(price*100)*count*multiplier);
+ const baseLow=toPence(rate.lo),baseHigh=toPence(rate.mode==="range"?rate.hi:rate.lo);
+ const minimum=Math.round(config.minimum*100);
+ const buffer=config.bufferMode!=="off";
+ const bufferFor=base=>config.bufferMode==="percent"?base*config.bufferValue/100:config.bufferValue*100;
+ const low=buffer?Math.floor((baseLow-bufferFor(baseLow))/100)*100:baseLow;
+ const high=buffer?Math.ceil((baseHigh+bufferFor(baseHigh))/100)*100:baseHigh;
+ return {
+  selection:byPanel?count+(count===1?" roof panel":" roof panels"):sizes[state.size],
+  freq,baseLow,baseHigh,lo:Math.max(minimum,low),hi:Math.max(minimum,high)
+ };
+}
+
+function quoteMarkup(quote){
+ if(!quote){
+  const prompt=config.pricingMethod==="panel"?"Enter the number of roof panels to see your estimate.":"Choose a roof size to see your estimate.";
+  return '<div class="estimate"><p class="muted">'+prompt+'</p></div>';
+ }
+ return '<div class="estimate"><div class="estimate-head"><div><div class="fine">YOUR ESTIMATED PRICE</div><div class="amount">'+range(quote.lo,quote.hi)+'</div></div><div class="fine">'+esc(quote.freq?.name||"")+'</div></div>'+
+  (config.showBreakdown?'<div class="item-breakdown"><div class="line"><span>'+esc(quote.selection)+'</span><strong>'+range(quote.baseLow,quote.baseHigh)+'</strong></div></div>':"")+'</div>';
+}
+function renderEstimates(){
+ const show=config.estimateTiming==="live";
+ const markup=show?quoteMarkup(calc()):"";
+ for(const step of ["property","frequency","contact"]){
+  const estimate=$("estimate-"+step);
+  estimate.hidden=!show;
+  estimate.innerHTML=markup;
+ }
+}
+function render(){
+ applyTheme();
+ const steps=order(),current=state.step,index=steps.indexOf(current);
+ $("steps").innerHTML=steps.map((step,i)=>'<div class="step '+(step===current?"active":"")+'">'+(i+1)+' · '+label(step)+'</div>').join("");
+ for(const step of [...steps,"review","done"])$("step-"+step).hidden=step!==current;
+ $("steps").hidden=index<0;
+ $("navigation").hidden=index<0;
+ $("error").hidden=true;
+ if(index<0)return;
+ $("back").hidden=index===0;
+ $("next").textContent=index===steps.length-1?"Review my quote →":"Next: "+label(steps[index+1])+" →";
+ const byPanel=config.pricingMethod==="panel";
+ $("sizeChoice").hidden=byPanel;
+ $("panelChoice").hidden=!byPanel;
+ for(const button of $("sizeChoice").querySelectorAll("[data-size]")){
+  const selected=state.size===button.dataset.size;
+  button.classList.toggle("selected",selected);
+  button.setAttribute("aria-pressed",selected);
+ }
+ $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(option=>{
+  const selected=state.frequency===option.id;
+  return '<button type="button" class="frequency '+(selected?"selected":"")+'" aria-pressed="'+selected+'" data-frequency="'+esc(option.id)+'">'+esc(option.name)+'</button>';
+ }).join("");
+ $("phoneRequired").hidden=config.contactRule==="email";
+ $("emailRequired").hidden=config.contactRule==="mobile";
+ $("phone").required=config.contactRule!=="email";
+ $("email").required=config.contactRule!=="mobile";
+ renderEstimates();
+}
+
+function error(message){
+ $("error").textContent=message;
+ $("error").hidden=false;
+ $("error").scrollIntoView({block:"nearest"});
+}
+function validateContact(){
+ var name=$("name").value.trim(),phone=$("phone").value.trim(),email=$("email").value.trim();
+ if(!name)return "Please enter your full name.";
+ if(!$("address").value.trim())return "Please enter your property address.";
+ if(["mobile","both"].includes(config.contactRule)&&!phone)return "Please enter your mobile number.";
+ if(["email","both"].includes(config.contactRule)&&!email)return "Please enter your email address.";
+ if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return "Please enter a valid email address.";
+ if(phone&&(!/^[+\d\s()\-]{7,25}$/.test(phone)||phone.replace(/\D/g,"").length<7))return "Please enter a valid mobile number.";
+ return null;
+}
+function goTo(step){
+ state.step=step;
+ render();
+ $("customer").scrollIntoView({block:"start"});
+}
+function next(){
+ const step=state.step;
+ if(step==="property"&&!calc()){
+  return error(config.pricingMethod==="panel"?"Enter a whole number of roof panels (at least 1).":"Choose a conservatory roof size.");
+ }
+ if(step==="frequency"&&!state.frequency)return error("Please select a cleaning frequency.");
+ if(step==="contact"){
+  const invalid=validateContact();
+  if(invalid)return error(invalid);
+ }
+ const steps=order(),nextStep=steps[steps.indexOf(step)+1];
+ if(nextStep)goTo(nextStep);
+ else renderReview();
+}
+function summaryRow(key,value){
+ return '<div class="review-row"><span class="key">'+esc(key)+'</span><span>'+esc(value||"—")+'</span></div>';
+}
+function renderReview(){
+ const quote=calc();
+ $("review-details").innerHTML='<div class="review-card"><h3>Your contact details</h3>'+
+  summaryRow("Full name",$("name").value.trim())+summaryRow("Mobile",$("phone").value.trim())+
+  summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+
+  summaryRow("Notes",$("notes").value.trim())+'</div>'+
+  '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Service","Conservatory Roof Cleaning")+
+  summaryRow("Roof details",quote.selection)+summaryRow("Cleaning frequency",quote.freq?.name)+'</div>';
+ $("review-amount").innerHTML=quoteMarkup(quote);
+ $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
+ $("review-disclaimer").hidden=!config.showDisclaimer;
+ goTo("review");
+}
+
+$("panelCount").addEventListener("input",event=>{
+ state.panels=event.target.valueAsNumber;
+ $("error").hidden=true;
+ renderEstimates();
+});
+$("sizeChoice").addEventListener("click",event=>{
+ const button=event.target.closest("[data-size]");
+ if(button){state.size=button.dataset.size;render()}
+});
+$("frequencies").addEventListener("click",event=>{
+ const button=event.target.closest("[data-frequency]");
+ if(button){
+  state.frequency=button.dataset.frequency;
+  render();
+  [...$("frequencies").children].find(option=>option.dataset.frequency===state.frequency)?.focus();
+ }
+});
+$("next").onclick=next;
+$("back").onclick=()=>{const steps=order();goTo(steps[steps.indexOf(state.step)-1])};
+function reset(){
+ state=newState();
+ $("contacts").reset();
+ $("panelCount").value="";
+ $("review-details").replaceChildren();
+ $("review-amount").replaceChildren();
+ render();
+}
+$("reset").onclick=()=>{if(confirm("Reset all customer choices?"))reset()};
+$("restart").onclick=reset;
+$("reviewEdit").onclick=()=>goTo(order().at(-1));
+$("submit").onclick=()=>goTo("done");
+
+function showAdmin(isAdmin){
+ $("admin").hidden=!isAdmin;
+ $("customer").hidden=isAdmin;
+ $("adminTab").classList.toggle("active",isAdmin);
+ $("customerTab").classList.toggle("active",!isAdmin);
+ if(isAdmin)renderAdmin();
+ else render();
+ window.scrollTo(0,0);
+}
+$("adminTab").onclick=()=>showAdmin(true);
+$("customerTab").onclick=()=>showAdmin(false);
+$("preview").onclick=()=>showAdmin(false);
+
+function rateRow(key){
+ const rate=config.rates[key],isRange=rate.mode==="range";
+ return '<div class="price-row" data-rate="'+key+'"><h3>'+rateLabels[key]+'</h3><div class="priceline">'+
+  '<label class="field type">Price type<select data-mode><option value="fixed" '+(!isRange?"selected":"")+'>Fixed price</option><option value="range" '+(isRange?"selected":"")+'>Price range</option></select></label>'+
+  '<label class="field"><span data-lower-label>'+(isRange?"Minimum (£)":"Price (£)")+'</span><input data-lo type="number" min="0" step=".01" value="'+esc(rate.lo)+'"></label>'+
+  '<label class="field" data-max-wrap '+(!isRange?"hidden":"")+'>Maximum (£)<input data-hi type="number" min="0" step=".01" value="'+esc(rate.hi)+'"></label></div></div>';
+}
+function frequencyRow(option){
+ return '<div class="price-row" data-frequency-row="'+esc(option.id)+'"><div class="rowtop">'+
+  '<label class="field">Name<input data-name value="'+esc(option.name)+'"></label>'+
+  '<label class="check"><input data-on type="checkbox" '+(option.on?"checked":"")+'> Show</label>'+
+  '<button type="button" class="btn" data-remove>Delete</button></div><div class="priceline">'+
+  '<label class="check"><input type="checkbox" data-inc '+(option.inc?"checked":"")+'> Increase frequency price</label>'+
+  '<label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(option.pct)+'" '+(!option.inc?"disabled":"")+'></label></div></div>';
+}
+function showRateSettings(){
+ const byPanel=$("pricingMethod").value==="panel";
+ $("panelRates").hidden=!byPanel;
+ $("sizeRates").hidden=byPanel;
+}
+function renderAdmin(){
+ $("pricingMethod").value=config.pricingMethod;
+ $("sizeRates").innerHTML=Object.keys(sizes).map(rateRow).join("");
+ $("panelRates").innerHTML=rateRow("panel");
+ showRateSettings();
+ $("admin-frequencies").innerHTML=config.frequencies.map(frequencyRow).join("");
+ for(const key of settingsFields)$(key).value=config[key];
+ $("showBreakdown").checked=config.showBreakdown;
+ $("showDisclaimer").checked=config.showDisclaimer;
+ $("admin-message").textContent="";
+}
+$("pricingMethod").onchange=showRateSettings;
+$("addFrequency").onclick=()=>{
+ $("admin-frequencies").insertAdjacentHTML("beforeend",frequencyRow({id:"f"+crypto.randomUUID(),name:"",on:true,inc:false,pct:0}));
+ $("admin-frequencies").lastElementChild.querySelector("[data-name]").focus();
+};
+$("admin-frequencies").addEventListener("click",event=>{
+ const button=event.target.closest("[data-remove]");
+ if(button)button.closest("[data-frequency-row]").remove();
+});
+$("admin").addEventListener("change",event=>{
+ const input=event.target;
+ if(input.matches("[data-mode]")){
+  const row=input.closest("[data-rate]"),isRange=input.value==="range";
+  row.querySelector("[data-max-wrap]").hidden=!isRange;
+  row.querySelector("[data-lower-label]").textContent=isRange?"Minimum (£)":"Price (£)";
+ }
+ if(input.matches("[data-inc]"))input.closest("[data-frequency-row]").querySelector("[data-pct]").disabled=!input.checked;
+});
+
+function readPrice(input,message){
+ if(input.value===""||!input.validity.valid||!Number.isFinite(input.valueAsNumber))throw Error(message);
+ return input.valueAsNumber;
+}
+function readRates(){
+ return Object.fromEntries([...$("admin").querySelectorAll("[data-rate]")].map(row=>{
+  const key=row.dataset.rate,mode=row.querySelector("[data-mode]").value;
+  const lo=readPrice(row.querySelector("[data-lo]"),"Enter a valid price for "+rateLabels[key]+".");
+  const hi=mode==="range"?readPrice(row.querySelector("[data-hi]"),"Enter a valid maximum for "+rateLabels[key]+"."):lo;
+  if(hi<lo)throw Error("The maximum for "+rateLabels[key]+" must be at least the minimum.");
+  return [key,{mode,lo,hi}];
+ }));
+}
+function readFrequencies(){
+ const names=new Set();
+ const rows=[...$("admin-frequencies").querySelectorAll("[data-frequency-row]")];
+ return rows.map(row=>{
+  const name=row.querySelector("[data-name]").value.trim();
+  if(!name)throw Error("Give each frequency a name, or delete the empty row.");
+  if(names.has(name.toLowerCase()))throw Error("Duplicate frequency name: "+name);
+  names.add(name.toLowerCase());
+  const on=row.querySelector("[data-on]").checked,inc=row.querySelector("[data-inc]").checked;
+  const pctInput=row.querySelector("[data-pct]");
+  const pct=inc?readPrice(pctInput,"Enter a valid frequency increase for "+name+"."):Number(pctInput.value)||0;
+  return {id:row.dataset.frequencyRow,name,on,inc,pct};
+ });
+}
+$("save").onclick=()=>{
+ const status=$("admin-message");
+ try{
+  const minimum=readPrice($("minimum"),"Enter a valid minimum charge. Use 0 to turn it off.");
+  const bufferMode=$("bufferMode").value;
+  const bufferValue=bufferMode==="off"?Number($("bufferValue").value)||0:readPrice($("bufferValue"),"Enter a valid estimate buffer.");
+  if(bufferMode==="percent"&&bufferValue>100)throw Error("The percentage buffer must be between 0 and 100.");
+  const frequencies=readFrequencies();
+  if(!frequencies.some(option=>option.on))throw Error("Enable at least one cleaning frequency.");
+  config={
+   pricingMethod:$("pricingMethod").value,rates:readRates(),frequencies,minimum,bufferMode,bufferValue,
+   contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
+   disclaimerText:$("disclaimerText").value.trim().slice(0,500),
+   showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked
+  };
+  reset();
+  try{
+   localStorage.setItem(storageKey,JSON.stringify(config));
+   status.textContent="Settings saved in this browser. Select Preview calculator to review.";
+  }catch(e){
+   status.textContent="Settings applied for this session. Browser storage is unavailable.";
+  }
+ }catch(e){status.textContent=e.message}
+};
+render();
+if(new URLSearchParams(location.search).get("admin")==="1"){
+ document.body.classList.add("owner-demo");
+ showAdmin(true);
+}
+})();
+</script></body></html>
