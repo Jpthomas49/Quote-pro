@@ -30,7 +30,7 @@
     animation?.cancel();
     if (!canFade(node)) return;
     animation = node.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 230,
+      duration: 500,
       delay: 25,
       fill: "backwards",
       easing: "ease-out"
