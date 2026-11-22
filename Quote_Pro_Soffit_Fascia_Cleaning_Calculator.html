@@ -74,7 +74,6 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 .linkaction{color:#8fd5f6;text-decoration:none;background:transparent;border:0;padding:6px 0}
 .footer{font-size:11px;color:#809aaf;text-align:center;margin-top:18px}
 @media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}header{align-items:start}h1{font-size:30px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.navright{flex:1;justify-content:flex-end}.step{font-size:11px}}
-#admin-extras [data-remove]{display:none}
 #adminTab,#customerTab{display:none}body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
 #customer .caption{color:var(--c-secondary)}
 #customer .panel,#customer .section{border-color:var(--c-border)}
@@ -92,13 +91,12 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <p id="quantityHelp" class="caption">Enter the approximate length. We’ll confirm the exact details.</p>
 <label class="field" for="gutterQuantity"><span id="quantityLabel">Soffit and fascia length (metres)</span><input id="gutterQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
 <p class="muted" style="margin:9px 0 0">Estimated prices are subject to safe access, height and confirmation.</p></div>
-<div class="section"><div class="eyebrow">RECOMMENDED ADD-ON</div>
-<label class="extra" id="washOption"><span><strong>Gutter Emptying</strong><small class="muted" style="display:block;margin-top:3px">Remove leaves, moss and debris from your gutters</small></span><input id="washSelected" type="checkbox"></label>
+<div class="section" id="pairedService"><div class="eyebrow">RECOMMENDED ADD-ON</div>
+<label class="extra"><span><strong>Gutter Emptying</strong><small class="muted" style="display:block;margin-top:3px">Remove leaves, moss and debris from your gutters</small></span><input id="washSelected" type="checkbox"></label>
 <div id="washMeasureWrap" hidden style="margin-top:12px">
 <h3 id="washQuantityTitle">How much guttering needs emptying?</h3>
 <p id="washQuantityHelp" class="caption">Enter the approximate total length.</p>
 <label class="field" for="washQuantity"><span id="washQuantityLabel">Gutter length (metres)</span><input id="washQuantity" type="number" inputmode="decimal" min="1" max="5000" step=".5" placeholder="e.g. 15" autocomplete="off"></label>
-<div id="downpipeWrap" hidden style="margin-top:15px"><p class="caption" style="margin:0 0 5px">Also available:</p><div id="extras"></div></div>
 </div></div><div id="estimate-property" class="section"></div></section>
 <section id="step-frequency" hidden><div class="section"><div class="eyebrow">CLEANING FREQUENCY</div><h2>How often would you like your soffits and fascias cleaned?</h2><div id="frequencies"></div></div><div id="estimate-frequency" class="section"></div></section>
 <section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Please enter your contact details and any access notes for the PVC cleaning.</p>
@@ -136,7 +134,6 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <label class="field" style="max-width:430px;margin-top:12px">Pricing method<select id="washPricingMethod"><option value="metre">Price per metre</option><option value="side">Price per side</option></select></label>
 <div class="price-row"><h3>Per-metre gutter rates</h3><div class="priceline"><label class="field type">Pricing<select id="washMeterMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/m)<input id="washMeterLo" type="number" min="0" step=".01"></label><label class="field" id="washMeterHiWrap">Maximum (£/m)<input id="washMeterHi" type="number" min="0" step=".01"></label></div></div>
 <div class="price-row"><h3>Per-side gutter rates</h3><div class="priceline"><label class="field type">Pricing<select id="washSideMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Minimum (£/side)<input id="washSideLo" type="number" min="0" step=".01"></label><label class="field" id="washSideHiWrap">Maximum (£/side)<input id="washSideHi" type="number" min="0" step=".01"></label></div></div></div>
-<div class="adminsec"><h2>Conditional Downpipe Clearance</h2><p class="adminhelp">Disabled by default. When enabled, the customer sees this option only after selecting Gutter Emptying.</p><div id="admin-extras"></div></div>
 <div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
 <div class="adminsec"><h2>Estimate settings</h2><div class="settings">
 <label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
@@ -162,7 +159,6 @@ var defaults={
  colors:{bg:"#09131f",text:"#ffffff",card:"#1d314c",selector:"#131d29",outline:"#131d29",accent:"#73bceb",page:"#071420",secondary:"#b9cbd9",button:"#73bceb",buttontext:"#06243c",border:"#34516c",estimate:"#1d314c"},
  gutterPricingMethod:"metre",gutterRates:{metre:{mode:"range",lo:5,hi:7},side:{mode:"range",lo:35,hi:50}},
  washEnabled:true,washPricingMethod:"metre",washRates:{metre:{mode:"range",lo:3,hi:4},side:{mode:"fixed",lo:25,hi:25}},
- extras:[{id:"downpipe",name:"Downpipe clearance",on:false,mode:"fixed",lo:15,hi:15}],
  frequencies:[{id:"once",name:"One-off clean",on:true,inc:false,pct:0},{id:"6m",name:"Every 6 months",on:true,inc:false,pct:0},{id:"12m",name:"Every 12 months",on:true,inc:false,pct:0}],
  minimum:30,bufferMode:"off",bufferValue:10,contactPosition:"end",estimateTiming:"live",contactRule:"mobile",
  showBreakdown:false,showDisclaimer:true,disclaimerText:"This is a provisional exterior PVC wash estimate. Final price depends on safe access, height, condition and confirmation by the service provider."
@@ -171,10 +167,9 @@ var clone=obj=>JSON.parse(JSON.stringify(obj));
 var config=clone(defaults);
 try{var saved=JSON.parse(localStorage.getItem("quotepro-soffit-fascia-v1")||"null");if(saved&&typeof saved==="object"){
  config=Object.assign(clone(defaults),saved);
- config.extras=(Array.isArray(saved.extras)?saved.extras:defaults.extras).filter(x=>x.id==="downpipe");
  }}catch(e){}
 
-var state={step:"property",quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};
+var state={step:"property",quantity:null,washSelected:false,washQuantity:null,frequency:null};
 var esc=value=>String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 var money=value=>"£"+Number(value).toFixed(2);
 function order(){return config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"]}
@@ -207,8 +202,7 @@ function calc(){
  var washRates=config.washRates?.[washMethod]||defaults.washRates[washMethod];
  var washUnit=washMethod==="metre"?"m":"side"+(washQty===1?"":"s");
  var wash=washActive&&validWashQty?{name:"Gutter Emptying · "+washQty+" "+washUnit,mode:washRates.mode,lo:washQty*Number(washRates.lo),hi:washQty*Number(washRates.mode==="range"?washRates.hi:washRates.lo)}:null;
- var extras=config.extras.filter(x=>x.on&&x.id==="downpipe"&&washActive&&state.extras.includes(x.id));
- var items=[...(base?[base]:[]),...(wash?[wash]:[]),...(base&&wash?extras:[])],freq=config.frequencies.find(x=>x.id===state.frequency&&x.on);
+ var items=[...(base?[base]:[]),...(wash?[wash]:[])],freq=config.frequencies.find(x=>x.id===state.frequency&&x.on);
  var multiplier=freq&&freq.inc?1+Number(freq.pct)/100:1;
  var lo=items.reduce((a,x)=>a+Number(x.lo),0)*multiplier;
  var hi=items.reduce((a,x)=>a+Number(x.mode==="range"?x.hi:x.lo),0)*multiplier;
@@ -217,7 +211,7 @@ function calc(){
  var lowBuffer=buffer?(config.bufferMode==="amount"?val:lo*val/100):0;
  var highBuffer=buffer?(config.bufferMode==="amount"?val:hi*val/100):0;
  return {items,lo:items.length?Math.max(minimum,buffer?Math.floor(lo-lowBuffer):lo):0,
- hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer,multiplier,extras,freq,validQty,qty,method,washActive,washMethod,washQty,validWashQty};
+ hi:items.length?Math.max(minimum,buffer?Math.ceil(hi+highBuffer):hi):0,buffer,multiplier,freq,validQty,qty,method,washActive,washMethod,washQty,validWashQty};
 }
 function formatted(v){return config.bufferMode!=="off"?"£"+Math.round(v):money(v)}
 function range(lo,hi){return Math.abs(lo-hi)<.005?formatted(lo):formatted(lo)+"–"+formatted(hi)}
@@ -249,10 +243,9 @@ function render(){
  $("gutterQuantity").placeholder=side?"e.g. 2":"e.g. 15";
  $("gutterQuantity").value=state.quantity==null?"":state.quantity;
  var showWash=!!config.washEnabled,washSide=config.washPricingMethod==="side";
- $("washOption").hidden=!showWash;
+ $("pairedService").hidden=!showWash;
  $("washSelected").checked=showWash&&state.washSelected;
  $("washMeasureWrap").hidden=!showWash||!state.washSelected;
- $("downpipeWrap").hidden=!showWash||!state.washSelected||!config.extras.some(x=>x.id==="downpipe"&&x.on);
  $("washQuantityTitle").textContent=washSide?"How many sides need gutter emptying?":"How many metres of guttering need emptying?";
  $("washQuantityLabel").textContent=washSide?"Number of sides with gutters":"Approximate gutter length (metres)";
  $("washQuantityHelp").textContent=washSide?"Enter the number of property sides needing gutter emptying.":"Enter the approximate gutter length needing emptying.";
@@ -260,7 +253,6 @@ function render(){
  $("washQuantity").max=washSide?"20":"5000";
  $("washQuantity").placeholder=washSide?"e.g. 2":"e.g. 15";
  $("washQuantity").value=state.washQuantity==null?"":state.washQuantity;
- $("extras").innerHTML=config.extras.filter(x=>x.on&&x.id==="downpipe").map(x=>'<label class="extra"><span>'+esc(x.name)+'</span><input type="checkbox" data-extra="'+esc(x.id)+'" '+(state.extras.includes(x.id)?"checked":"")+'></label>').join("")||'<p class="muted">No optional extras offered.</p>';
  $("frequencies").innerHTML=config.frequencies.filter(x=>x.on).map(x=>'<button type="button" class="frequency '+(state.frequency===x.id?"selected":"")+'" data-frequency="'+esc(x.id)+'">'+esc(x.name)+'</button>').join("");
  $("phoneRequired").hidden=config.contactRule==="email";$("emailRequired").hidden=config.contactRule==="mobile";
  var show=config.estimateTiming==="live";
@@ -298,19 +290,18 @@ function renderReview(){
  summaryRow("Full name",$("name").value.trim())+summaryRow("Mobile",$("phone").value.trim())+summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+summaryRow("Notes",$("notes").value.trim())+'</div>'+
  '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Soffit & Fascia method",p.method==="side"?"Per side":"Per metre")+summaryRow("Soffit & Fascia quantity",p.qty+" "+(p.method==="side"?"sides":"metres"))+summaryRow("Included service","Soffit & Fascia Cleaning")+
  (p.washActive?summaryRow("Gutter Emptying",p.washQty+" "+(p.washMethod==="side"?"sides":"metres")):summaryRow("Gutter Emptying","Not selected"))+
- summaryRow("Downpipe clearance",p.extras.length?"Selected":"Not selected")+summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
+ summaryRow("Cleaning frequency",p.freq?.name||"—")+'</div>';
  $("review-amount").innerHTML=quoteMarkup();
  $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
  $("review-disclaimer").hidden=!config.showDisclaimer;
  $("customer").scrollIntoView({block:"start"});
 }
 $("gutterQuantity").addEventListener("input",e=>{state.quantity=e.target.value===""?null:Number(e.target.value);render()});
-$("washSelected").addEventListener("change",e=>{state.washSelected=e.target.checked;if(!e.target.checked){state.washQuantity=null;state.extras=state.extras.filter(x=>x!=="downpipe")}render()});
+$("washSelected").addEventListener("change",e=>{state.washSelected=e.target.checked;if(!e.target.checked)state.washQuantity=null;render()});
 $("washQuantity").addEventListener("input",e=>{state.washQuantity=e.target.value===""?null:Number(e.target.value);render()});
-$("extras").addEventListener("change",e=>{var id=e.target.dataset.extra;if(!id)return;state.extras=e.target.checked?[...new Set([...state.extras,id])]:state.extras.filter(x=>x!==id);render()});
 $("frequencies").addEventListener("click",e=>{var b=e.target.closest("[data-frequency]");if(b){state.frequency=b.dataset.frequency;render()}});
 $("next").onclick=next;$("back").onclick=()=>{var steps=order(),i=steps.indexOf(state.step);if(i>0){state.step=steps[i-1];render();$("customer").scrollIntoView({block:"start"})}};
-function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};$("contacts").reset();render()}
+function reset(){if(!confirm("Reset all customer choices?"))return;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,frequency:null};$("contacts").reset();render()}
 $("reset").onclick=reset;$("restart").onclick=reset;
 $("reviewEdit").onclick=()=>{state.step=order()[order().length-1];render();$("customer").scrollIntoView({block:"start"})};
 $("submit").onclick=()=>{state.step="done";render();$("customer").scrollIntoView({block:"start"})};
@@ -321,16 +312,14 @@ function showAdmin(isAdmin){
  window.scrollTo(0,0);
 }
 $("adminTab").onclick=()=>showAdmin(true);$("customerTab").onclick=()=>showAdmin(false);$("preview").onclick=()=>showAdmin(false);
-function priceRow(type,item){
- var addition=type==="frequency",cols=addition?"":'<div class="priceline"><label class="field type">Pricing<select data-mode><option value="fixed" '+(item.mode!=="range"?"selected":"")+'>Fixed price</option><option value="range" '+(item.mode==="range"?"selected":"")+'>Price range</option></select></label><label class="field">Price / minimum (£)<input data-lo type="number" step=".01" min="0" value="'+esc(item.lo)+'"></label><label class="field" data-max-wrap '+(item.mode!=="range"?"hidden":"")+'>Maximum (£)<input data-hi type="number" step=".01" min="0" value="'+esc(item.hi)+'"></label></div>';
- var extra=addition?'<div class="priceline"><label class="check"><input type="checkbox" data-inc '+(item.inc?"checked":"")+'> Increase frequency price</label><label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(item.pct||0)+'" '+(!item.inc?"disabled":"")+'></label></div>':"";
- return '<div class="price-row" data-type="'+type+'" data-id="'+esc(item.id)+'"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label><button type="button" class="btn" data-remove style="padding:7px 9px;min-height:36px">Delete</button></div>'+cols+extra+'</div>';
+function frequencyRow(item){
+ return '<div class="price-row" data-id="'+esc(item.id)+'"><div class="rowtop"><label class="field">Name<input data-name value="'+esc(item.name)+'"></label><label class="check"><input data-on type="checkbox" '+(item.on?"checked":"")+'> Show</label><button type="button" class="btn" data-remove style="padding:7px 9px;min-height:36px">Delete</button></div>'+
+  '<div class="priceline"><label class="check"><input type="checkbox" data-inc '+(item.inc?"checked":"")+'> Increase frequency price</label><label class="field">Increase (%)<input data-pct type="number" min="0" max="500" step=".1" value="'+esc(item.pct||0)+'" '+(!item.inc?"disabled":"")+'></label></div></div>';
 }
 function renderAdmin(){
  var cs=config.colors||defaults.colors;
  for(var key of ["Bg","Text","Card","Selector","Outline","Accent","Page","Secondary","Button","ButtonText","Border","Estimate"])$("color"+key).value=cs[key.toLowerCase()]||defaults.colors[key.toLowerCase()];
- for(var [k,container] of [["extras","admin-extras"],["frequencies","admin-frequencies"]])
-  $(container).innerHTML=config[k].map(x=>priceRow(k==="frequencies"?"frequency":k,x)).join("");
+ $("admin-frequencies").innerHTML=config.frequencies.map(frequencyRow).join("");
  $("gutterPricingMethod").value=config.gutterPricingMethod||"metre";
  $("washEnabled").checked=!!config.washEnabled;
  $("washPricingMethod").value=config.washPricingMethod||"metre";
@@ -349,40 +338,27 @@ function renderAdmin(){
  $("admin-message").textContent="";
 }
 $("paletteReset").onclick=()=>{for(var k of ["bg","text","card","selector","outline","accent","page","secondary","button","buttontext","border","estimate"])$("color"+(k==="buttontext"?"ButtonText":k[0].toUpperCase()+k.slice(1))).value=defaults.colors[k]};
-for(var id of ["addFrequency"])$(id).onclick=()=>{
- var collection=id==="addExtra"?"extras":"frequencies";
- var type=collection==="frequencies"?"frequency":collection;
- var item=collection==="frequencies"?{id:"f"+Date.now(),name:"",on:true,inc:false,pct:0}:{id:"i"+Date.now(),name:"",on:true,mode:"fixed",lo:0,hi:0};
- $(collection==="extras"?"admin-extras":"admin-frequencies").insertAdjacentHTML("beforeend",priceRow(type,item));
+$("addFrequency").onclick=()=>{
+ var item={id:"f"+Date.now(),name:"",on:true,inc:false,pct:0};
+ $("admin-frequencies").insertAdjacentHTML("beforeend",frequencyRow(item));
 };
 $("admin").addEventListener("click",e=>{var b=e.target.closest("[data-remove]");if(b)b.closest(".price-row").remove()});
 for(var service of ["gutter","wash"])for(var type of ["Meter","Side"])$(service+type+"Mode").addEventListener("change",e=>{$(service+type+"HiWrap").hidden=e.target.value!=="range"});
 $("admin").addEventListener("change",e=>{
  var row=e.target.closest(".price-row");if(!row)return;
- if(e.target.matches("[data-mode]"))row.querySelector("[data-max-wrap]").hidden=e.target.value!=="range";
- if(e.target.matches("[data-size-mode]"))e.target.closest(".admin-size-row").querySelector("[data-size-max-wrap]").hidden=e.target.value!=="range";
  if(e.target.matches("[data-inc]"))row.querySelector("[data-pct]").disabled=!e.target.checked;
 });
-function readRows(container,type){
- var rows=[...$(container).querySelectorAll(".price-row")],result=[],names=new Set();
+function readFrequencies(){
+ var rows=[...$("admin-frequencies").querySelectorAll(".price-row")],result=[],names=new Set();
  for(var row of rows){
- var name=row.querySelector("[data-name]").value.trim();
- if(!name)throw Error("Give each "+type+" a name, or delete the empty row.");
- if(names.has(name.toLowerCase()))throw Error("Duplicate "+type+" name: "+name);
- names.add(name.toLowerCase());
- var item={id:row.dataset.id,name:name,on:row.querySelector("[data-on]").checked};
- if(type==="frequencies"){
-  item.inc=row.querySelector("[data-inc]").checked;
-  item.pct=Number(row.querySelector("[data-pct]").value);
-  if(item.inc&&(!Number.isFinite(item.pct)||item.pct<0||item.pct>500))throw Error("Invalid frequency increase for "+name);
- }else{
-  item.mode=row.querySelector("[data-mode]").value;
-  var loText=row.querySelector("[data-lo]").value.trim(),hiText=row.querySelector("[data-hi]").value.trim();
-  item.lo=Number(loText);item.hi=item.mode==="range"?Number(hiText):item.lo;
-  if(item.on&&(loText===""||!Number.isFinite(item.lo)||item.lo<0))throw Error("Invalid price for "+name);
-  if(item.on&&item.mode==="range"&&(hiText===""||!Number.isFinite(item.hi)||item.hi<item.lo))throw Error("Invalid price range for "+name);
- }
- result.push(item);
+  var name=row.querySelector("[data-name]").value.trim();
+  if(!name)throw Error("Give each frequency a name, or delete the empty row.");
+  if(names.has(name.toLowerCase()))throw Error("Duplicate frequency name: "+name);
+  names.add(name.toLowerCase());
+  var inc=row.querySelector("[data-inc]").checked;
+  var pct=Number(row.querySelector("[data-pct]").value);
+  if(inc&&(!Number.isFinite(pct)||pct<0||pct>500))throw Error("Invalid frequency increase for "+name);
+  result.push({id:row.dataset.id,name,on:row.querySelector("[data-on]").checked,inc,pct});
  }
  return result;
 }
@@ -405,7 +381,7 @@ $("save").onclick=()=>{
  washPricingMethod:$("washPricingMethod").value,
  gutterRates:readServiceRates("gutter"),
  washRates:readServiceRates("wash"),
- extras:readRows("admin-extras","extras"),frequencies:readRows("admin-frequencies","frequencies"),downpipeDefaultV2:true,
+ frequencies:readFrequencies(),
  minimum:Number($("minimum").value),bufferMode:$("bufferMode").value,bufferValue:Number($("bufferValue").value),
  contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
  showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimerText:$("disclaimerText").value.trim().slice(0,500)
@@ -413,7 +389,7 @@ $("save").onclick=()=>{
  if(!p.frequencies.some(x=>x.on))throw Error("Enable at least one cleaning frequency.");
  if(!Number.isFinite(p.minimum)||p.minimum<0)throw Error("Enter a valid minimum charge.");
  if(!Number.isFinite(p.bufferValue)||p.bufferValue<0||(p.bufferMode==="percent"&&p.bufferValue>100))throw Error("Enter a valid buffer (0–100% for percentages).");
- config=p;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,extras:[],frequency:null};$("contacts").reset();applyTheme();
+ config=p;state={step:order()[0],quantity:null,washSelected:false,washQuantity:null,frequency:null};$("contacts").reset();applyTheme();
  try{localStorage.setItem("quotepro-soffit-fascia-v1",JSON.stringify(config));$("admin-message").textContent="Settings saved in this browser. Select Preview calculator to review."}
  catch(e){$("admin-message").textContent="Settings applied for this session; local storage is unavailable."}
  }catch(e){$("admin-message").textContent=e.message}
