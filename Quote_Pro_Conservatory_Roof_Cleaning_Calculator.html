@@ -112,7 +112,10 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 <div id="sizeRates"></div>
 <div id="panelRates" hidden></div>
 </div>
-<div class="adminsec"><h2>Cleaning frequencies</h2><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
+<div class="adminsec"><h2>Cleaning frequencies</h2>
+<label class="check"><input id="showFrequencyStep" type="checkbox" aria-controls="frequencySettings"> Ask customers how often they want roof cleaning</label>
+<div id="frequencySettings" hidden><p class="adminhelp">Choose which frequencies to show and optionally apply a percentage increase to each one.</p><div id="admin-frequencies"></div><button type="button" class="linkaction" id="addFrequency">+ Add frequency</button></div>
+</div>
 <div class="adminsec"><h2>Estimate settings</h2><div class="settings">
 <label class="field">Minimum charge (£)<input type="number" min="0" step="0.01" id="minimum"></label>
 <label class="field">Estimate buffer<select id="bufferMode"><option value="off">Off</option><option value="percent">Percentage ±%</option><option value="amount">Fixed amount ±£</option></select></label>
@@ -145,6 +148,7 @@ const defaults={
   large:{mode:"fixed",lo:100,hi:100},
   panel:{mode:"range",lo:7,hi:10}
  },
+ showFrequencyStep:false,
  frequencies:[{id:"once",name:"One-off clean",on:true,inc:false,pct:0}],
  minimum:45,bufferMode:"off",bufferValue:10,contactPosition:"end",estimateTiming:"live",contactRule:"mobile",
  showBreakdown:false,showDisclaimer:true,
@@ -159,7 +163,11 @@ try{
 const esc=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const money=pence=>"£"+(pence/100).toFixed(2);
 const range=(lo,hi)=>lo===hi?money(lo):money(lo)+"–"+money(hi);
-const order=()=>config.contactPosition==="start"?["contact","property","frequency"]:["property","frequency","contact"];
+const customerSteps=["property","frequency","contact"];
+function order(){
+ const steps=config.showFrequencyStep?customerSteps:["property","contact"];
+ return config.contactPosition==="start"?["contact",...steps.filter(step=>step!=="contact")]:steps;
+}
 const label=step=>({property:"Roof details",frequency:"Frequency",contact:"Contact"})[step];
 const applyTheme=()=>window.QuoteProTheme?.applyCalculator($("customer"),"standard");
 const newState=()=>({step:order()[0],size:null,panels:0,frequency:null});
@@ -170,7 +178,7 @@ function calc(){
  const count=byPanel?state.panels:1;
  const rate=byPanel?config.rates.panel:config.rates[state.size];
  if(!rate||!Number.isSafeInteger(count)||count<1)return null;
- const freq=config.frequencies.find(option=>option.id===state.frequency&&option.on);
+ const freq=config.showFrequencyStep?config.frequencies.find(option=>option.id===state.frequency&&option.on):null;
  const multiplier=freq?.inc?1+freq.pct/100:1;
  const toPence=price=>Math.round(Math.round(price*100)*count*multiplier);
  const baseLow=toPence(rate.lo),baseHigh=toPence(rate.mode==="range"?rate.hi:rate.lo);
@@ -196,7 +204,7 @@ function quoteMarkup(quote){
 function renderEstimates(){
  const show=config.estimateTiming==="live";
  const markup=show?quoteMarkup(calc()):"";
- for(const step of ["property","frequency","contact"]){
+ for(const step of customerSteps){
   const estimate=$("estimate-"+step);
   estimate.hidden=!show;
   estimate.innerHTML=markup;
@@ -206,7 +214,7 @@ function render(){
  applyTheme();
  const steps=order(),current=state.step,index=steps.indexOf(current);
  $("steps").innerHTML=steps.map((step,i)=>'<div class="step '+(step===current?"active":"")+'">'+(i+1)+' · '+label(step)+'</div>').join("");
- for(const step of [...steps,"review","done"])$("step-"+step).hidden=step!==current;
+ for(const step of [...customerSteps,"review","done"])$("step-"+step).hidden=step!==current;
  $("steps").hidden=index<0;
  $("navigation").hidden=index<0;
  $("error").hidden=true;
@@ -276,7 +284,7 @@ function renderReview(){
   summaryRow("Email",$("email").value.trim())+summaryRow("Address",$("address").value.trim())+
   summaryRow("Notes",$("notes").value.trim())+'</div>'+
   '<div class="review-card"><h3>Your selections</h3>'+summaryRow("Service","Conservatory Roof Cleaning")+
-  summaryRow("Roof details",quote.selection)+summaryRow("Cleaning frequency",quote.freq?.name)+'</div>';
+  summaryRow("Roof details",quote.selection)+(quote.freq?summaryRow("Cleaning frequency",quote.freq.name):"")+'</div>';
  $("review-amount").innerHTML=quoteMarkup(quote);
  $("review-disclaimer").textContent=config.disclaimerText||defaults.disclaimerText;
  $("review-disclaimer").hidden=!config.showDisclaimer;
@@ -354,12 +362,15 @@ function renderAdmin(){
  $("panelRates").innerHTML=rateRow("panel");
  showRateSettings();
  $("admin-frequencies").innerHTML=config.frequencies.map(frequencyRow).join("");
+ $("showFrequencyStep").checked=config.showFrequencyStep;
+ $("frequencySettings").hidden=!config.showFrequencyStep;
  for(const key of settingsFields)$(key).value=config[key];
  $("showBreakdown").checked=config.showBreakdown;
  $("showDisclaimer").checked=config.showDisclaimer;
  $("admin-message").textContent="";
 }
 $("pricingMethod").onchange=showRateSettings;
+$("showFrequencyStep").onchange=event=>{$("frequencySettings").hidden=!event.target.checked};
 $("addFrequency").onclick=()=>{
  $("admin-frequencies").insertAdjacentHTML("beforeend",frequencyRow({id:"f"+crypto.randomUUID(),name:"",on:true,inc:false,pct:0}));
  $("admin-frequencies").lastElementChild.querySelector("[data-name]").focus();
@@ -412,10 +423,11 @@ $("save").onclick=()=>{
   const bufferMode=$("bufferMode").value;
   const bufferValue=bufferMode==="off"?Number($("bufferValue").value)||0:readPrice($("bufferValue"),"Enter a valid estimate buffer.");
   if(bufferMode==="percent"&&bufferValue>100)throw Error("The percentage buffer must be between 0 and 100.");
-  const frequencies=readFrequencies();
-  if(!frequencies.some(option=>option.on))throw Error("Enable at least one cleaning frequency.");
+  const showFrequencyStep=$("showFrequencyStep").checked;
+  const frequencies=showFrequencyStep?readFrequencies():config.frequencies;
+  if(showFrequencyStep&&!frequencies.some(option=>option.on))throw Error("Enable at least one cleaning frequency.");
   config={
-   pricingMethod:$("pricingMethod").value,rates:readRates(),frequencies,minimum,bufferMode,bufferValue,
+   pricingMethod:$("pricingMethod").value,rates:readRates(),showFrequencyStep,frequencies,minimum,bufferMode,bufferValue,
    contactPosition:$("contactPosition").value,estimateTiming:$("estimateTiming").value,contactRule:$("contactRule").value,
    disclaimerText:$("disclaimerText").value.trim().slice(0,500),
    showBreakdown:$("showBreakdown").checked,showDisclaimer:$("showDisclaimer").checked
