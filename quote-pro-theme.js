@@ -7,8 +7,8 @@
 (function(){
  "use strict";
  const KEY="quotepro-landing-colours-v1";
- // Business owners only choose these three colours.
- const defaults=Object.freeze({top:"#0b2345",card:"#17324f",accent:"#73bceb"});
+ // Business owners choose these shared colours.
+ const defaults=Object.freeze({top:"#0b2345",card:"#17324f",accent:"#73bceb",icons:"#ffffff"});
  const previousDefaults=[
   {bg:"#0b2345",top:"#193f69",deep:"#071826",text:"#f7fbff",muted:"#b8cce0",card:"#173b64",card2:"#112c4d",accent:"#58bff0",border:"#3d6087",buttontext:"#061c30",smallheading:"#ffdb61",icon:"#245782"},
   {bg:"#071420",top:"#0b2345",deep:"#081625",text:"#ffffff",muted:"#b9cbd9",card:"#132c47",card2:"#0e2036",accent:"#73bceb",border:"#35516d",buttontext:"#06243c",smallheading:"#73bceb",icon:"#183b5e"}
@@ -28,7 +28,7 @@
   const l=luminance(col);
   return (1.05/(l+.05))>=((l+.05)/.05)?"#ffffff":"#000000";
  }
- function onlyThree(input){
+ function normalisePalette(input){
   const result={...defaults};
   if(input&&typeof input==="object"){
    for(const key of Object.keys(defaults))
@@ -37,7 +37,7 @@
   return result;
  }
  function derive(input){
-  const p=onlyThree(input);
+  const p=normalisePalette(input);
   const text=contrastText(p.top);
   const buttontext=contrastText(p.accent);
   const contrastingCard=contrastText(p.card);
@@ -53,6 +53,7 @@
    card:p.card,
    card2:blend(p.card,p.top,.35),
    accent:p.accent,
+   icons:p.icons,
    border,
    buttontext,
    smallheading:heading,
@@ -68,7 +69,7 @@
   }catch(e){return derive(defaults)}
  }
  function save(input){
-  const palette=onlyThree(input);
+  const palette=normalisePalette(input);
   localStorage.setItem(KEY,JSON.stringify(palette));
   return derive(palette);
  }
@@ -88,7 +89,7 @@
   document.body.style.background=p.bg;
   if(variant==="window-count"){
    setAll(element,{
-    "--qp-background":p.top,"--qp-font":p.text,"--qp-icons":p.text,
+    "--qp-background":p.top,"--qp-font":p.text,"--qp-icons":p.icons,
     "--qp-box":p.card,"--qp-selector":p.card2,"--qp-selector-border":p.border,
     "--qp-label":p.smallheading,"--qp-secondary":p.muted,
     "--qp-button":p.accent,"--qp-button-text":p.buttontext,
