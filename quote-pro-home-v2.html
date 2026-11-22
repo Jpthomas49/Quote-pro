@@ -51,7 +51,7 @@ h2{font-size:20px;margin:3px 0 7px;line-height:1.25}
 (function(){
 "use strict";
 const coloursKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
-const defaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
+const defaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true,conservatoryRoof:true},autoOpenSingle:true};
 function read(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
 if(window.QuoteProTheme)window.QuoteProTheme.applyHomepage();
 else{
@@ -62,13 +62,16 @@ else{
    if(/^#[0-9a-f]{6}$/i.test(value||""))document.documentElement.style.setProperty("--qp-"+key,value);
 }
 const stored=read(homeKey),cfg={...defaults,...(stored&&typeof stored==="object"?stored:{})};
-if(!cfg.services||typeof cfg.services!=="object")cfg.services={...defaults.services};
+if(stored?.services && typeof stored.services==="object"){
+ cfg.services={...defaults.services,conservatoryRoof:false,...stored.services};
+}else cfg.services={...defaults.services};
 function choice(){try{return localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){return "property"}}
 const services=[
 {id:"window",name:"Window Cleaning",description:"Professional window cleaning for your property.",icon:"▦",foot:"Windows, doors and extras",href:()=>choice()==="count"?"./Quote_Pro_Window_Cleaning_Prototype_v3.html":"./Quote_Pro_Property_Size_Calculator.html"},
 {id:"gutter",name:"Gutter Cleaning",description:"Gutter emptying, plus an optional gutter, soffit and fascia wash.",icon:"gutter",foot:"Emptying and external PVC wash",href:()=> "./Quote_Pro_Gutter_Cleaning_Calculator.html"},
 {id:"pressure",name:"Pressure Washing",description:"Patios, driveways and other surfaces. Enter your m² or calculate length × width.",icon:"▧",foot:"Surface-specific £/m² estimates",href:()=> "./Quote_Pro_Pressure_Washing_v2.html"},
-{id:"soffit",name:"Soffit & Fascia Cleaning",description:"An exterior PVC wash, with gutter emptying offered as an extra.",icon:"▤",foot:"Exterior PVC cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"}
+{id:"soffit",name:"Soffit & Fascia Cleaning",description:"An exterior PVC wash, with gutter emptying offered as an extra.",icon:"▤",foot:"Exterior PVC cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"},
+{id:"conservatoryRoof",name:"Conservatory Roof Cleaning",description:"Get an estimate for cleaning the outside of your conservatory roof.",icon:"⌂",foot:"Conservatory roof wash",href:()=> "./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html"}
 ];
 const enabled=services.filter(s=>cfg.services[s.id]!==false);
 if(enabled.length===1&&cfg.autoOpenSingle!==false&&!new URLSearchParams(location.search).has("preview")){
