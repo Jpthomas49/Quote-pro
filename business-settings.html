@@ -70,10 +70,11 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <label class="check"><input type="checkbox" id="serviceGutter"><span>Gutter Cleaning</span></label>
 <label class="check"><input type="checkbox" id="servicePressure"><span>Pressure Washing</span></label>
 <label class="check"><input type="checkbox" id="serviceSoffit"><span>Soffit &amp; Fascia Cleaning</span></label>
+<label class="check"><input type="checkbox" id="serviceConservatoryRoof"><span>Conservatory Roof Cleaning</span></label>
 <label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
 </section>
 <section class="section">
-<h2>Shared Quote Pro colour theme</h2><p class="help"><strong>Three colours control every customer-facing page:</strong> the service-selection homepage, both Window Cleaning methods, Gutter Cleaning, Soffit &amp; Fascia Cleaning and Pressure Washing. Text, borders, buttons and secondary colours are chosen automatically. Save once and every calculator uses the same theme. Service pricing remains independent.</p>
+<h2>Shared Quote Pro colour theme</h2><p class="help"><strong>Three colours control every customer-facing page:</strong> the service-selection homepage, both Window Cleaning methods, Gutter Cleaning, Soffit &amp; Fascia Cleaning, Pressure Washing and Conservatory Roof Cleaning. Text, borders, buttons and secondary colours are chosen automatically. Save once and every calculator uses the same theme. Service pricing remains independent.</p>
 <div class="pickers">
 <label>Background<input type="color" id="colorTop"></label>
 <label>Cards &amp; selection boxes<input type="color" id="colorCard"></label>
@@ -88,6 +89,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <a href="./Quote_Pro_Gutter_Cleaning_Calculator.html?admin=1">Gutter Cleaning <span>↗</span></a>
 <a href="./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html?admin=1">Soffit &amp; Fascia Cleaning <span>↗</span></a>
 <a href="./Quote_Pro_Pressure_Washing_v2.html?admin=1">Pressure Washing (surface-specific £/m² pricing) <span>↗</span></a>
+<a href="./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html?admin=1">Conservatory Roof Cleaning (roof size or panel count) <span>↗</span></a>
 </div></section>
 <div class="actions"><button class="btn primary" type="button" id="save">Save shared theme &amp; homepage settings</button><a class="btn" style="text-decoration:none" href="./?preview=1">Preview customer homepage</a></div>
 <div id="status" class="status" role="status"></div>
@@ -105,17 +107,20 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 const $=id=>document.getElementById(id);
 const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
 const defaults=window.QuoteProTheme?.defaults||{top:"#0b2345",card:"#17324f",accent:"#73bceb"};
-const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true},autoOpenSingle:true};
+const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true,conservatoryRoof:true},autoOpenSingle:true};
 const names={top:"Top",card:"Card",accent:"Accent"};
 function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
 function initialColours(){
  if(window.QuoteProTheme)return window.QuoteProTheme.get();
  const saved=fromStorage(colourKey);return saved&&typeof saved==="object"?{...defaults,...Object.fromEntries(Object.keys(defaults).filter(k=>saved[k]).map(k=>[k,saved[k]]))}:{...defaults};
 }
-let colours=initialColours(),config={...appDefaults,...fromStorage(homeKey)},windowMethod="property";
-if(!config.services||typeof config.services!=="object")config.services={...appDefaults.services};
+const savedHome=fromStorage(homeKey);
+let colours=initialColours(),config={...appDefaults,...savedHome},windowMethod="property";
+if(savedHome?.services && typeof savedHome.services==="object"){
+ config.services={...appDefaults.services,conservatoryRoof:false,...savedHome.services};
+}else config.services={...appDefaults.services};
 try{windowMethod=localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){}
-const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning"};
+const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning",conservatoryRoof:"Conservatory Roof Cleaning"};
 function load(){
  $("businessName").value=config.businessName||appDefaults.businessName;
  $("headline").value=config.headline||appDefaults.headline;
