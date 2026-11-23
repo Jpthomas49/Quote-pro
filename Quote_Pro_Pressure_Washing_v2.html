@@ -32,7 +32,6 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 #customer .field input{border-color:var(--outline);background:var(--select);color:var(--text)}
 .calc-area{margin:16px 0;padding:14px;border-radius:13px;background:var(--card);border:1px solid var(--accent)}
 .calc-area .area-amount{font-size:30px;font-weight:900;line-height:1.15;margin:4px 0}
-.calc-area .hint{font-size:12px;opacity:.8}
 .extra{display:flex;gap:12px;align-items:center;padding:15px 14px;border-radius:12px;margin-top:10px;border:1px solid var(--outline);background:var(--select);color:var(--text);cursor:pointer}
 .extra span{flex:1;line-height:1.35;font-weight:700}
 .extra input{appearance:auto;width:20px;height:20px;flex:0 0 20px;margin:0;accent-color:var(--accent)}
@@ -95,7 +94,7 @@ body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
 <div class="method-row"><button type="button" class="method selected" data-mode="direct" aria-pressed="true">Enter total m²</button><button type="button" class="method" data-mode="dimensions" aria-pressed="false">Calculate length × width</button></div>
 <div id="directInputs"><label class="field" for="squareMetres">Total area (m²)<input id="squareMetres" type="number" inputmode="decimal" min="0.01" max="50000" step="any" placeholder="e.g. 35" autocomplete="off"></label></div>
 <div id="dimensionInputs" hidden><div class="formgrid"><label class="field" for="length">Length (metres)<input id="length" type="number" inputmode="decimal" min="0.01" max="1000" step="any" placeholder="e.g. 7" autocomplete="off"></label><label class="field" for="width">Width (metres)<input id="width" type="number" inputmode="decimal" min="0.01" max="1000" step="any" placeholder="e.g. 5" autocomplete="off"></label></div></div>
-<div class="calc-area" aria-live="polite"><div class="eyebrow">CALCULATED SURFACE AREA</div><div class="area-amount" id="areaOutput">— m²</div><div class="hint" id="areaHint">Enter a surface area to calculate your estimate.</div></div></div>
+<div class="calc-area" aria-live="polite"><div class="eyebrow">CALCULATED SURFACE AREA</div><div class="area-amount" id="areaOutput">— m²</div></div></div>
 <div class="section"><div class="eyebrow">ADDITIONAL TREATMENTS</div><h2>Would you like any extras?</h2><p class="caption">Select optional treatments. Each is priced per m²; joint sanding is available for block paving only.</p><div id="extras"></div></div>
 <div id="estimate-area" class="section"></div></section>
 <section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Enter your contact details and tell us about the surface that needs cleaning.</p>
@@ -231,7 +230,6 @@ function theme(){
 }
 function updateEstimate(){
  var measured=measure(),x=calculate();$("areaOutput").textContent=measured.valid?numberArea(measured.area)+" m²":"— m²";
- $("areaHint").textContent=measured.valid?st.method==="dimensions"?"Calculated from "+st.length+" m × "+st.width+" m":"Entered total surface area":"Enter a valid area of up to 50,000 m².";
  var show=cfg.timing==="live";
  for(var part of ["area","contact"]){
   $("estimate-"+part).hidden=!show;
