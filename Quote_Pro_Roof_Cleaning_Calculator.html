@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quote Pro — Roof Cleaning calculator</title>
+<style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#071420;color:#eef6ff;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #58bff0;outline-offset:2px}
+[hidden]{display:none!important}
+.app{max-width:950px;margin:auto;padding:19px 14px 70px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.5px}.brand span{color:#58bff0}
+.subbrand{color:#aabfd1;font-size:12px}
+.tabs{display:flex;gap:8px}
+.tab,.btn{border:1px solid #36526a;color:#f5faff;background:#1a3145;border-radius:11px;font-weight:750;padding:11px 14px;min-height:44px}
+.tab.active,.btn.primary{background:#58bff0;color:#06243c;border-color:#58bff0}
+.notice{border-radius:10px;border:1px solid #435668;background:#192b38;color:#c3d3df;padding:11px 14px;margin-bottom:14px;font-size:12px}
+#customer{--bg:#09131f;--text:#ffffff;--card:#1d314c;--select:#131d29;--outline:#314d68;--accent:#73bceb;--button-text:#06243c;background:var(--bg);color:var(--text);border-radius:20px;padding:18px}
+.hero{padding:23px 27px 0;margin-bottom:22px}
+.eyebrow{color:var(--accent);font-size:11px;letter-spacing:1.5px;font-weight:850}
+h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-size:21px;line-height:1.27;margin:4px 0 7px}h3{font-size:16px;margin:0 0 11px}
+.muted{font-size:13px;opacity:.77}.caption{font-size:13px;color:#b9cbd9;margin:2px 0 16px}
+.panel{padding:clamp(16px,3vw,24px);border:1px solid #34516c;border-radius:19px}
+.steps{display:flex;gap:8px;margin-bottom:18px}.step{flex:1;border-bottom:3px solid #40556a;padding:4px 3px 10px;color:#b1c6d7;text-align:center;font-size:12px;font-weight:700}.step.active{border-color:var(--accent);color:var(--text)}
+.section{padding:18px 0;border-bottom:1px solid #35516b}.section:first-child{padding-top:0}.section:last-child{padding-bottom:0;border:0}
+.method-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 17px}
+.method{padding:14px 10px;min-height:62px;border-radius:12px;border:1px solid var(--outline);background:var(--select);color:var(--text);font-size:13px;font-weight:800}
+.method.selected{outline:2px solid var(--accent);outline-offset:-2px;border-color:var(--accent)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;font-size:13px;font-weight:700}.field.wide{grid-column:1/-1}
+.field input,.field textarea,.field select{width:100%;display:block;margin-top:6px;background:#0a192a;color:#f4faff;border:1px solid #51708c;border-radius:9px;min-width:0;padding:11px 12px}
+.field textarea{resize:vertical}
+#customer .field input{border-color:var(--outline);background:var(--select);color:var(--text)}
+.calc-area{margin:16px 0;padding:14px;border-radius:13px;background:var(--card);border:1px solid var(--accent)}
+.calc-area .area-amount{font-size:30px;font-weight:900;line-height:1.15;margin:4px 0}
+.extra{display:flex;gap:12px;align-items:center;padding:15px 14px;border-radius:12px;margin-top:10px;border:1px solid var(--outline);background:var(--select);color:var(--text);cursor:pointer}
+.extra span{flex:1;line-height:1.35;font-weight:700}
+.extra input{appearance:auto;width:20px;height:20px;flex:0 0 20px;margin:0;accent-color:var(--accent)}
+.estimate{background:var(--card);border:1px solid var(--accent);border-radius:14px;padding:16px}
+.estimate-top{display:flex;align-items:start;justify-content:space-between;gap:12px}.estimate .amount{font-size:clamp(26px,5vw,38px);font-weight:900;line-height:1.25}.estimate .fine{font-size:12px;opacity:.8}
+.breakdown{border-top:1px solid #546980;margin-top:12px;padding-top:7px}
+.line{display:flex;justify-content:space-between;align-items:start;gap:12px;font-size:13px;padding:6px 0}.line strong{text-align:right;white-space:nowrap}
+.review-card{border:1px solid var(--outline);background:var(--card);padding:15px;border-radius:13px;margin:12px 0}
+.review-row{display:grid;grid-template-columns:36% minmax(0,1fr);gap:10px;padding:5px 0;font-size:13px}
+.review-row .key{opacity:.76}.review-row span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+.disclaimer{border-left:3px solid var(--accent);background:var(--card);padding:10px 12px;font-size:13px;white-space:pre-wrap}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:21px;flex-wrap:wrap}
+.nav-right{display:flex;gap:8px}.nav .btn.primary,#customer .btn.primary{background:var(--accent);color:var(--button-text);border-color:var(--accent)}
+.error{color:#ffbdbd;margin:12px 0;font-size:13px}
+.powered{text-align:center;font-size:11px;opacity:.74;margin:16px auto 0}.powered strong{color:var(--accent)}
+#admin{background:#101e2b;border-radius:18px;border:1px solid #38546a;padding:20px}
+.adminsec{padding:17px 0;border-bottom:1px solid #304555}.adminsec:last-of-type{border-bottom:0}
+.adminsec h2{font-size:19px}.help{color:#b4c5d4;font-size:12px;margin:3px 0 14px}
+.pickergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px}
+.pickergrid label{font-size:12px;font-weight:650;color:#cfdeed}.pickergrid input{width:100%;display:block;height:42px;margin-top:7px;cursor:pointer;border:1px solid #50687c;border-radius:8px;background:#172b3a;padding:4px}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#admin .field{color:#cbdcec}#admin .field input,#admin .field select,#admin .field textarea{background:#0a1725}
+.price-row{border:1px solid #3c5368;border-radius:12px;padding:13px;margin:10px 0;background:#172a39}
+.rowtop{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:11px}.rowtop .field{flex:1;min-width:155px}
+.priceline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.priceline input,.priceline select{padding:9px!important}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:650}.check input[type=checkbox]{width:19px;height:19px;flex:0 0 19px;margin:0;accent-color:#73bceb}
+.linkaction{border:0;background:transparent;color:#9ad9ff;font:inherit;padding:7px 0;text-decoration:underline;cursor:pointer}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.footer{text-align:center;color:#8199ad;font-size:11px;margin-top:19px}
+@media(max-width:620px){.app{padding:12px 10px 55px}#customer{padding:12px}.hero{padding:21px 20px 0;margin-bottom:16px}.panel{padding:16px}h1{font-size:29px}.formgrid,.settings{grid-template-columns:1fr}.priceline{grid-template-columns:1fr 1fr}.priceline .type{grid-column:1/-1}.review-row{grid-template-columns:1fr;gap:1px}.nav-right{margin-left:auto}.method{font-size:12px}}
+/* Shared Quote Pro visual styling, controlled by Business Settings */
+#customer .caption{color:var(--secondary)}
+#customer .panel{border-color:var(--panel-border)}
+#customer .section{border-color:var(--panel-border)}
+#customer .step{border-color:var(--panel-border)}
+#customer .step.active{border-color:var(--accent)}
+#customer .estimate{background:var(--estimate-bg)}
+#customer .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--primary-text)}
+#customer .muted{color:var(--secondary);opacity:1}
+#customer .method,#customer .extra{border-color:var(--outline)}
+#customer .method.selected{border-color:var(--accent)}
+#adminTab,#customerTab{display:none}
+body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
+#customer > .qp-services-link{display:inline-flex;align-items:center;min-height:44px;padding:4px 8px;color:var(--qp-return-colour,currentColor);font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.roof-area{margin-top:14px}
+.roof-area fieldset{border:0;padding:0;margin:10px 0 0;min-width:0}
+.roof-area legend{font-size:13px;color:var(--secondary);margin-bottom:5px}
+</style><script src="./quote-pro-theme.js"></script><script src="./quote-pro-screen-fades.js?v=2" defer></script></head><body><div class="app">
+<header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Roof Cleaning calculator · Professional quoting, made simple.</div></div>
+<div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
+<div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> No enquiries are sent or stored. The business sets its own roof cleaning rate.</div>
+<section id="customer">
+<a class="qp-services-link" href="./quote-pro-home-v2.html?preview=1&amp;v=roof-cleaning">← Back to services</a>
+<div class="hero"><div class="eyebrow">ROOF CLEANING · £/m²</div><h1>Get your instant roof cleaning estimate</h1><div class="muted">Enter the area of the roof you want cleaned to get an estimate.</div></div>
+<div class="panel"><div id="steps" class="steps"></div>
+<section id="step-area">
+<div class="section"><div class="eyebrow">YOUR ROOF</div><h2>How much roof needs cleaning?</h2>
+<p class="caption">Enter the roof surface area, or measure the length and width along the slope. Include each section you want cleaned.</p>
+<div class="method-row"><button type="button" class="method selected" data-mode="direct" aria-pressed="true">Enter total m²</button><button type="button" class="method" data-mode="dimensions" aria-pressed="false">Calculate length × width</button></div>
+<div id="areaFields"></div>
+<div class="calc-area" aria-live="polite"><div class="eyebrow">TOTAL ROOF AREA</div><div class="area-amount" id="areaOutput">— m²</div></div></div>
+<div class="section" id="treatmentSection" hidden><h2>What would you like done?</h2><div id="treatments"></div></div>
+<div id="estimate-area" class="section"></div></section>
+<section id="step-contact" hidden><div class="section"><div class="eyebrow">YOUR DETAILS</div><h2>How can we contact you?</h2><p class="caption">Enter your contact details and tell us about the roof that needs cleaning.</p>
+<div class="formgrid">
+<label class="field">Full name <span style="color:#ffda74">*</span><input id="name" autocomplete="name" placeholder="Your full name"></label>
+<label class="field">Mobile number <span id="phoneRequired" style="color:#ffda74">*</span><input id="phone" autocomplete="tel" type="tel" placeholder="Mobile number"></label>
+<label class="field">Email address <span id="emailRequired" style="color:#ffda74" hidden>*</span><input id="email" autocomplete="email" type="email" placeholder="you@example.com"></label>
+<label class="field wide">Property address <span style="color:#ffda74">*</span><textarea id="address" rows="2" placeholder="Address of the property to clean"></textarea></label>
+<label class="field wide">Additional notes <span class="muted">(optional)</span><textarea id="notes" rows="3" placeholder="e.g. moss build-up or access issues"></textarea></label>
+</div></div><div id="estimate-contact" class="section"></div></section>
+<section id="step-review" hidden><div class="section"><div class="eyebrow">FINAL STEP</div><h2>Review your enquiry</h2><p class="caption">Please check your roof measurements and contact details.</p><div id="reviewDetails"></div><div id="reviewEstimate"></div><p id="reviewDisclaimer" class="disclaimer"></p><p class="muted">Prototype only: submitting completes a demonstration and does not send any data.</p>
+<div class="nav"><button type="button" class="btn" id="edit">← Edit details</button><button type="button" class="btn primary" id="submit">Submit my enquiry →</button></div></div></section>
+<section id="step-done" hidden><div class="section"><div class="eyebrow">DEMO COMPLETE</div><h2>Enquiry preview finished</h2><p>This is a demonstration. <strong>No customer details were submitted or stored.</strong></p><button type="button" class="btn primary" id="restart">Start again</button></div></section>
+<div class="error" id="error" hidden role="alert"></div>
+<div class="nav" id="navigation"><button type="button" class="btn" id="back">← Back</button><div class="nav-right"><button type="button" class="btn" id="reset">Reset</button><button type="button" class="btn primary" id="next">Continue →</button></div></div>
+</div><div class="powered">Powered by <strong>JobCaddy</strong></div></section>
+<section id="admin" hidden><a href="./business-settings.html" style="display:inline-block;margin:12px 0 15px;color:#73bceb;font-size:13px;font-weight:750;text-decoration:underline">← Main business dashboard</a><div class="eyebrow">QUOTE PRO · ROOF CLEANING</div><h1>Business settings</h1><p class="help">Set the roof cleaning rate, minimum charge and optional choices, then save. Prices are examples until configured by a business.</p>
+<div class="adminsec"><h2>Shared Quote Pro colour theme</h2>
+<p class="help">The homepage and every calculator now use one shared colour palette. To change it, open <a href="./business-settings.html" style="color:#8dd6fa;font-weight:800">Main Business Settings → Shared Colour Theme</a>. Price settings remain specific to each service.</p></div>
+<div class="adminsec"><h2>Roof cleaning prices</h2><p class="help">Set the base cleaning rate per m². Choose a fixed rate or a price range.</p><div class="price-row">
+<div class="priceline"><label class="field type">Pricing<select id="baseMode"><option value="fixed">Fixed rate</option><option value="range">Rate range</option></select></label><label class="field">Price / minimum per m² (£)<input id="baseLo" type="number" min="0" step=".01"></label><label id="baseHiWrap" class="field">Maximum per m² (£)<input id="baseHi" type="number" min="0" step=".01"></label></div>
+</div><label class="field" style="max-width:320px">Minimum job charge (£)<input id="minimum" type="number" min="0" step=".01"></label></div>
+<div class="adminsec"><h2>Roof areas</h2>
+<label class="check"><input type="checkbox" id="showAreas"> Let customers measure named roof areas separately</label>
+<div id="areaSettings" hidden><p class="help">Customers can select the roof areas they need. All entered areas use the same rate.</p><div id="adminAreas"></div><button class="linkaction" id="addArea" type="button">+ Add roof area</button></div></div>
+<div class="adminsec"><h2>Work options</h2>
+<label class="check"><input type="checkbox" id="showTreatments"> Let customers choose the work they want</label>
+<div id="treatmentSettings" hidden><p class="help">Edit the work options shown to customers. Their choices are included in the enquiry and use the overall roof rate.</p><div id="adminTreatments"></div><button class="linkaction" id="addTreatment" type="button">+ Add work option</button></div></div>
+<div class="adminsec"><h2>Quote presentation</h2><div class="settings">
+<label class="field">When to show the estimate<select id="timing"><option value="live">Show live throughout</option><option value="end">Final review only</option></select></label>
+<label class="field">Contact details position<select id="contactPosition"><option value="end">At the end</option><option value="start">At the start</option></select></label>
+<label class="field">Contact requirement<select id="contactRule"><option value="mobile">Mobile required; email optional</option><option value="email">Email required; mobile optional</option><option value="both">Both mobile and email required</option></select></label>
+<label class="field">Estimate buffer<select id="bufferMode"><option value="off">Off</option><option value="percent">Percentage ±%</option><option value="amount">Fixed amount ±£</option></select></label>
+<label class="field">Buffer value<input id="bufferValue" type="number" min="0" step=".01"></label>
+</div>
+<p class="help">Buffers apply to the whole estimated job, not each m². When enabled, the estimate is rounded outward to whole pounds and respects the minimum charge.</p>
+<label class="check"><input id="breakdown" type="checkbox"> Show itemised prices in live estimates and the final summary</label>
+<p class="help">When disabled, only the total estimate appears.</p>
+<label class="check"><input id="showDisclaimer" type="checkbox"> Show final disclaimer</label>
+<label class="field" style="margin-top:12px">Disclaimer wording<textarea id="disclaimer" rows="2"></textarea></label></div>
+<div class="actions"><button type="button" class="btn primary" id="save">Save settings</button><button type="button" class="btn" id="preview">Preview calculator</button></div><p class="help" role="status" id="adminStatus"></p></section>
+<div class="footer">Quote Pro by JobCaddy · Roof Cleaning private prototype</div>
+</div><script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const key="quotepro-roof-cleaning-v1";
+const defaults={
+ base:{mode:"fixed",lo:10,hi:10},
+ minimum:500,
+ showAreas:false,
+ areas:[{id:"main",name:"Main roof",on:true},{id:"garage",name:"Garage roof",on:true},{id:"extension",name:"Extension roof",on:true}],
+ showTreatments:false,
+ treatments:[{id:"scrape",name:"Roof scrape",on:true},{id:"wash",name:"Roof wash",on:true},{id:"biocide",name:"Biocide treatment",on:true}],
+ timing:"live",contactPosition:"end",contactRule:"mobile",bufferMode:"off",bufferValue:10,
+ breakdown:false,showDisclaimer:true,
+ disclaimer:"This estimate is based on the roof area provided. Final pricing is subject to confirmation of the measurements, roof condition and safe access."
+};
+let cfg=structuredClone(defaults);
+try{
+ const saved=JSON.parse(localStorage.getItem(key)||"null");
+ if(saved)cfg={...cfg,...saved};
+}catch(e){}
+const wholeRoof={id:"whole",name:"Total roof area"};
+const contactFields=["name","phone","email","address","notes"];
+const order=()=>cfg.contactPosition==="start"?["contact","area"]:["area","contact"];
+const title=step=>step==="area"?"Roof area":"Contact";
+const esc=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const money=value=>"£"+value.toFixed(2);
+const areaLabel=value=>value.toLocaleString("en-GB",{maximumFractionDigits:2})+" m²";
+const roofAreas=()=>cfg.showAreas?cfg.areas.filter(x=>x.on):[wholeRoof];
+const workOptions=()=>cfg.showTreatments?cfg.treatments.filter(x=>x.on):[];
+const makeState=()=>({step:order()[0],method:"direct",measurements:new Map(),treatments:new Set()});
+let st=makeState();
+
+function measurements(id){
+ if(!st.measurements.has(id))st.measurements.set(id,{selected:!cfg.showAreas,direct:"",length:"",width:""});
+ return st.measurements.get(id);
+}
+function measure(){
+ const selected=roofAreas().filter(x=>measurements(x.id).selected);
+ const parts=selected.map(x=>{
+  const input=measurements(x.id);
+  const value=st.method==="direct"?Number(input.direct):Number(input.length)*Number(input.width);
+  const dimensionsValid=st.method==="direct"||
+   [input.length,input.width].every(dim=>Number(dim)>0&&Number(dim)<=1000);
+  return {name:x.name,value,valid:dimensionsValid&&Number.isFinite(value)&&value>=.01&&value<=50000};
+ });
+ const area=parts.reduce((sum,x)=>sum+x.value,0);
+ return {parts,area,valid:parts.length>0&&parts.every(x=>x.valid)&&area<=50000};
+}
+function calculate(){
+ const measured=measure();
+ if(!measured.valid)return measured;
+ const lower=measured.area*cfg.base.lo,upper=measured.area*cfg.base.hi;
+ const buffer=cfg.bufferMode!=="off";
+ const offset=price=>cfg.bufferMode==="percent"?price*cfg.bufferValue/100:cfg.bufferValue;
+ return {...measured,lower,upper,
+  lo:Math.max(cfg.minimum,buffer?Math.floor(lower-offset(lower)):lower),
+  hi:Math.max(cfg.minimum,buffer?Math.ceil(upper+offset(upper)):upper)};
+}
+function priceRange(lo,hi){
+ const low=money(lo),high=money(hi);
+ return low===high?low:low+"–"+high;
+}
+function estimate(result){
+ if(!result.valid)return '<div class="estimate"><p class="muted">Enter the roof area to see your estimate.</p></div>';
+ const itemised=cfg.breakdown?'<div class="breakdown"><div class="line"><span>Roof cleaning</span><strong>'+priceRange(result.lower,result.upper)+'</strong></div>'+
+  (result.lower<cfg.minimum?'<div class="line"><span>Minimum job charge</span><strong>'+money(cfg.minimum)+'</strong></div>':'')+'</div>':'';
+ return '<div class="estimate"><div class="estimate-top"><div><div class="fine">YOUR ESTIMATED PRICE</div><div class="amount">'+priceRange(result.lo,result.hi)+'</div></div><div class="fine">'+areaLabel(result.area)+'</div></div>'+itemised+'</div>';
+}
+function updateEstimate(){
+ const result=calculate();
+ $("areaOutput").textContent=result.valid?areaLabel(result.area):"— m²";
+ const live=cfg.timing==="live";
+ for(const step of ["area","contact"]){
+  const box=$("estimate-"+step);
+  box.hidden=!live;
+  if(live)box.innerHTML='<div class="eyebrow" style="margin-bottom:8px">YOUR LIVE ESTIMATE</div>'+estimate(result);
+ }
+}
+function measurementField(label,key,value,max){
+ return '<label class="field">'+label+'<input type="number" inputmode="decimal" min=".01" max="'+max+'" step="any" data-measure="'+key+'" value="'+esc(value)+'"></label>';
+}
+function renderChoices(){
+ $("areaFields").innerHTML=roofAreas().map(area=>{
+  const data=measurements(area.id);
+  const choice=cfg.showAreas?'<label class="extra"><span>'+esc(area.name)+'</span><input type="checkbox" data-select-area '+(data.selected?'checked':'')+'></label>':'';
+  const field=st.method==="direct"?measurementField("Roof area (m²)","direct",data.direct,50000):
+   '<div class="formgrid">'+measurementField("Length (metres)","length",data.length,1000)+measurementField("Width along the roof slope (metres)","width",data.width,1000)+'</div>';
+  return '<div class="roof-area" data-area="'+esc(area.id)+'">'+choice+'<fieldset '+(data.selected?'':'hidden')+'>'+
+   (cfg.showAreas?'<legend>'+esc(area.name)+' measurements</legend>':'')+field+'</fieldset></div>';
+ }).join("");
+ $("treatments").innerHTML=workOptions().map(item=>'<label class="extra"><span>'+esc(item.name)+'</span><input type="checkbox" data-treatment="'+esc(item.id)+'" '+(st.treatments.has(item.id)?'checked':'')+'></label>').join("");
+ $("treatmentSection").hidden=workOptions().length===0;
+}
+function render(){
+ window.QuoteProTheme?.applyCalculator($("customer"),"pressure");
+ const steps=order();
+ $("steps").innerHTML=steps.map((step,i)=>'<div class="step '+(step===st.step?'active':'')+'">'+(i+1)+' · '+title(step)+'</div>').join("");
+ for(const step of ["area","contact","review","done"])$("step-"+step).hidden=step!==st.step;
+ const complete=st.step==="review"||st.step==="done";
+ $("steps").hidden=complete;
+ $("navigation").hidden=complete;
+ $("error").hidden=true;
+ if(complete)return;
+ $("back").hidden=st.step===steps[0];
+ $("next").textContent=st.step===steps[1]?"Review my quote →":"Next: "+title(steps[1])+" →";
+ for(const button of document.querySelectorAll("button[data-mode]")){
+  const selected=button.dataset.mode===st.method;
+  button.classList.toggle("selected",selected);
+  button.setAttribute("aria-pressed",String(selected));
+ }
+ $("phoneRequired").hidden=cfg.contactRule==="email";
+ $("emailRequired").hidden=cfg.contactRule==="mobile";
+ renderChoices();
+ updateEstimate();
+}
+function error(message){
+ $("error").textContent=message;
+ $("error").hidden=false;
+ $("error").scrollIntoView({block:"nearest"});
+}
+function validateContact(){
+ var name=$("name").value.trim(),phone=$("phone").value.trim(),email=$("email").value.trim();
+ if(!name)return "Please enter your full name.";
+ if(!$("address").value.trim())return "Please enter the property address.";
+ if(["mobile","both"].includes(cfg.contactRule)&&!phone)return "Please enter your mobile number.";
+ if(["email","both"].includes(cfg.contactRule)&&!email)return "Please enter your email address.";
+ if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return "Please enter a valid email address.";
+ if(phone&&!/^[+\d\s()\-]{7,25}$/.test(phone))return "Please enter a valid mobile number.";
+ return null;
+}
+function goTo(step){
+ st.step=step;
+ render();
+ $("customer").scrollIntoView({block:"start"});
+}
+function row(label,value){
+ return '<div class="review-row"><span class="key">'+esc(label)+'</span><span>'+esc(value||"—")+'</span></div>';
+}
+function review(){
+ const result=calculate(),labels=["Full name","Mobile","Email","Address","Notes"];
+ const selected=workOptions().filter(item=>st.treatments.has(item.id)).map(item=>item.name);
+ $("reviewDetails").innerHTML='<div class="review-card"><h3>Your contact details</h3>'+
+  contactFields.map((id,i)=>row(labels[i],$(id).value.trim())).join("")+'</div>'+
+  '<div class="review-card"><h3>Your roof</h3>'+
+  (cfg.showAreas?result.parts.map(part=>row(part.name,areaLabel(part.value))).join(""):"")+
+  row("Total roof area",areaLabel(result.area))+
+  (selected.length?row("Requested work",selected.join(", ")):"")+'</div>';
+ $("reviewEstimate").innerHTML=estimate(result);
+ $("reviewDisclaimer").textContent=cfg.disclaimer||defaults.disclaimer;
+ $("reviewDisclaimer").hidden=!cfg.showDisclaimer;
+ goTo("review");
+}
+$("next").onclick=()=>{
+ if(st.step==="area"&&!measure().valid)return error(cfg.showAreas?
+  "Select at least one roof area and enter valid measurements for every selected area.":
+  "Enter the roof area in m² or provide valid length and width measurements.");
+ if(st.step==="contact"){
+  const message=validateContact();
+  if(message)return error(message);
+ }
+ const steps=order();
+ if(st.step===steps[0])goTo(steps[1]);
+ else review();
+};
+$("back").onclick=()=>goTo(order()[0]);
+$("edit").onclick=()=>goTo(order()[1]);
+$("submit").onclick=()=>goTo("done");
+function reset(){
+ st=makeState();
+ for(const id of contactFields)$(id).value="";
+ render();
+}
+$("reset").onclick=()=>{if(confirm("Reset customer selections?"))reset()};
+$("restart").onclick=reset;
+document.querySelectorAll("button[data-mode]").forEach(button=>{
+ button.onclick=()=>{st.method=button.dataset.mode;render()};
+});
+$("areaFields").addEventListener("input",event=>{
+ const input=event.target;
+ if(!input.dataset.measure)return;
+ measurements(input.closest("[data-area]").dataset.area)[input.dataset.measure]=input.value;
+ $("error").hidden=true;
+ updateEstimate();
+});
+$("areaFields").addEventListener("change",event=>{
+ const input=event.target;
+ if(!input.hasAttribute("data-select-area"))return;
+ const area=input.closest("[data-area]");
+ measurements(area.dataset.area).selected=input.checked;
+ area.querySelector("fieldset").hidden=!input.checked;
+ $("error").hidden=true;
+ updateEstimate();
+});
+$("treatments").addEventListener("change",event=>{
+ const id=event.target.dataset.treatment;
+ if(!id)return;
+ if(event.target.checked)st.treatments.add(id);
+ else st.treatments.delete(id);
+});
+
+const lists=[
+ {key:"areas",container:"adminAreas",add:"addArea",toggle:"showAreas",settings:"areaSettings",label:"roof area"},
+ {key:"treatments",container:"adminTreatments",add:"addTreatment",toggle:"showTreatments",settings:"treatmentSettings",label:"work option"}
+];
+const settingInputs=["timing","contactPosition","contactRule","bufferMode","bufferValue","disclaimer"];
+function optionRow(option,label){
+ return '<div class="price-row" data-id="'+esc(option.id)+'"><div class="rowtop">'+
+  '<label class="field">'+label+' name<input data-name value="'+esc(option.name)+'"></label>'+
+  '<label class="check"><input data-on type="checkbox" '+(option.on?'checked':'')+'> Show</label>'+
+  '<button type="button" class="btn" data-remove>Delete</button></div></div>';
+}
+function renderAdmin(){
+ $("baseMode").value=cfg.base.mode;
+ $("baseLo").value=cfg.base.lo;
+ $("baseHi").value=cfg.base.hi;
+ $("baseHiWrap").hidden=cfg.base.mode!=="range";
+ $("minimum").value=cfg.minimum;
+ for(const list of lists){
+  $(list.toggle).checked=cfg[list.toggle];
+  $(list.settings).hidden=!cfg[list.toggle];
+  $(list.container).innerHTML=cfg[list.key].map(item=>optionRow(item,list.label)).join("");
+ }
+ for(const id of settingInputs)$(id).value=cfg[id];
+ $("breakdown").checked=cfg.breakdown;
+ $("showDisclaimer").checked=cfg.showDisclaimer;
+ $("adminStatus").textContent="";
+}
+function showAdmin(yes){
+ $("admin").hidden=!yes;
+ $("customer").hidden=yes;
+ $("adminTab").classList.toggle("active",yes);
+ $("customerTab").classList.toggle("active",!yes);
+ if(yes)renderAdmin();
+ else{st.step=order()[0];render()}
+ window.scrollTo(0,0);
+}
+$("adminTab").onclick=()=>showAdmin(true);
+$("customerTab").onclick=()=>showAdmin(false);
+$("preview").onclick=()=>showAdmin(false);
+$("baseMode").onchange=()=>{$("baseHiWrap").hidden=$("baseMode").value!=="range"};
+let optionCount=0;
+for(const list of lists){
+ $(list.toggle).onchange=()=>{$(list.settings).hidden=!$(list.toggle).checked};
+ $(list.add).onclick=()=>{
+  const box=$(list.container);
+  box.insertAdjacentHTML("beforeend",optionRow({id:"custom-"+Date.now()+"-"+(++optionCount),name:"",on:true},list.label));
+  box.lastElementChild.querySelector("[data-name]").focus();
+ };
+ $(list.container).addEventListener("click",event=>{
+  const button=event.target.closest("[data-remove]");
+  if(button)button.closest("[data-id]").remove();
+ });
+}
+function readOptions(list){
+ const enabled=$(list.toggle).checked,names=new Set(),items=[];
+ for(const row of $(list.container).querySelectorAll("[data-id]")){
+  const name=row.querySelector("[data-name]").value.trim();
+  if(!name&&!enabled)continue;
+  if(!name)throw Error("Give each "+list.label+" a name, or delete the blank row.");
+  if(enabled&&names.has(name.toLowerCase()))throw Error("Duplicate "+list.label+": "+name+".");
+  names.add(name.toLowerCase());
+  items.push({id:row.dataset.id,name,on:row.querySelector("[data-on]").checked});
+ }
+ if(enabled&&!items.some(item=>item.on))throw Error("Show at least one "+list.label+", or turn this option off.");
+ return items;
+}
+function readPrice(id,message){
+ const input=$(id),value=input.valueAsNumber;
+ if(input.value===""||!input.validity.valid||!Number.isFinite(value))throw Error(message);
+ return value;
+}
+$("save").onclick=()=>{
+ const status=$("adminStatus");
+ try{
+  const mode=$("baseMode").value;
+  const lo=readPrice("baseLo","Enter a valid roof cleaning rate.");
+  const hi=mode==="range"?readPrice("baseHi","Enter a valid maximum rate."):lo;
+  if(hi<lo)throw Error("The maximum rate must be at least the minimum rate.");
+  const minimum=readPrice("minimum","Enter a valid minimum charge.");
+  const bufferMode=$("bufferMode").value;
+  const bufferValue=bufferMode==="off"?Number($("bufferValue").value)||0:readPrice("bufferValue","Enter a valid buffer.");
+  if(bufferMode==="percent"&&bufferValue>100)throw Error("The percentage buffer must be 100% or less.");
+  const areas=readOptions(lists[0]),treatments=readOptions(lists[1]);
+  cfg={
+   base:{mode,lo,hi},minimum,bufferMode,bufferValue,areas,treatments,
+   timing:$("timing").value,contactPosition:$("contactPosition").value,contactRule:$("contactRule").value,
+   showAreas:$("showAreas").checked,showTreatments:$("showTreatments").checked,
+   breakdown:$("breakdown").checked,showDisclaimer:$("showDisclaimer").checked,disclaimer:$("disclaimer").value.trim()
+  };
+  reset();
+  try{
+   localStorage.setItem(key,JSON.stringify(cfg));
+   status.textContent="Settings saved in this browser. Select Preview calculator to review.";
+  }catch(e){status.textContent="Settings applied this session, but browser storage is unavailable."}
+ }catch(e){status.textContent=e.message}
+};
+if(new URLSearchParams(location.search).get("admin")==="1"){
+ document.body.classList.add("owner-demo");
+ showAdmin(true);
+}else render();
+})();
+</script></body></html>
