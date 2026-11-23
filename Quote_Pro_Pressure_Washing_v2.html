@@ -79,11 +79,14 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 #customer .method.selected,#customer .surface-choice.selected{border-color:var(--accent)}
 #adminTab,#customerTab{display:none}
 body.owner-demo #adminTab,body.owner-demo #customerTab{display:inline-block}
+#customer > .qp-services-link{display:inline-flex;align-items:center;min-height:44px;padding:4px 8px;color:var(--qp-return-colour,currentColor);font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 </style><script src="./quote-pro-theme.js"></script><script src="./quote-pro-screen-fades.js?v=2" defer></script></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Pressure Washing calculator · Professional quoting, made simple.</div></div>
 <div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · EXAMPLE PRICES.</strong> No enquiries are sent or stored. Surface prices are configurable by the business.</div>
-<section id="customer"><div class="hero"><div class="eyebrow">PRESSURE WASHING · £/m²</div><h1>Get your instant pressure washing estimate</h1><div class="muted">Calculate your surface area, choose any additional treatments and review your estimate.</div></div>
+<section id="customer">
+<a class="qp-services-link" href="./quote-pro-home-v2.html?preview=1&amp;v=service-navigation">← Back to services</a>
+<div class="hero"><div class="eyebrow">PRESSURE WASHING · £/m²</div><h1>Get your instant pressure washing estimate</h1><div class="muted">Calculate your surface area, choose any additional treatments and review your estimate.</div></div>
 <div class="panel"><div id="steps" class="steps"></div>
 <section id="step-area"><div class="section"><div class="eyebrow">SURFACE TYPE</div><h2>What are you having cleaned?</h2><p class="caption">Select your surface material below. Your estimate is calculated using the business’s price per m² for that material.</p>
 <div id="surfaceTypes" class="surface-grid"></div></div>
