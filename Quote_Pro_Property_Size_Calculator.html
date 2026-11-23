@@ -80,10 +80,13 @@ h1{font-size:clamp(28px,4.2vw,35px);line-height:1.15;margin:8px 0 10px}h2{font-s
 #customer .estimate{background:var(--c-estimate)}
 #customer .btn.primary{background:var(--c-button);border-color:var(--c-button);color:var(--c-button-text)}
 #customer .muted{color:var(--c-secondary)}
+#customer > .qp-services-link{display:inline-flex;align-items:center;min-height:44px;padding:4px 8px;color:var(--qp-return-colour,currentColor);font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 </style><script src="./quote-pro-theme.js"></script><script src="./quote-pro-screen-fades.js?v=2" defer></script></head><body><div class="app">
 <header><div><div class="brand">Job<span>Caddy</span> / Quote Pro</div><div class="subbrand">Property Size calculator · Professional quoting, made simple.</div></div><div class="tabs"><button type="button" class="tab active" id="customerTab">Customer preview</button><button type="button" class="tab" id="adminTab">Business settings</button></div></header>
 <div class="notice"><strong>PRIVATE DEMO · FICTIONAL PRICES.</strong> Enquiries are not sent or stored. Business settings save only in this browser.</div>
-<section id="customer"><div class="hero"><div class="eyebrow">PROPERTY SIZE CALCULATOR</div><h1>Get your instant estimate</h1><div class="muted">Choose your property size, add any extras and select a cleaning frequency.</div></div>
+<section id="customer">
+<a class="qp-services-link" href="./quote-pro-home-v2.html?preview=1&amp;v=service-navigation">← Back to services</a>
+<div class="hero"><div class="eyebrow">PROPERTY SIZE CALCULATOR</div><h1>Get your instant estimate</h1><div class="muted">Choose your property size, add any extras and select a cleaning frequency.</div></div>
 <div class="panel">
 <div class="steps" id="steps"></div>
 <section id="step-property"><div class="section"><div class="eyebrow">YOUR PROPERTY</div><h2>What size is your property?</h2><p class="caption">Choose the option that best describes your home.</p><div id="houses" class="choices"></div></div>
