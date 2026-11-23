@@ -83,11 +83,23 @@
   document.body.style.background=p.bg;
   return p;
  }
- let selectionStylesAdded=false;
- function addSelectionStyles(){
-  if(selectionStylesAdded)return;
+ let calculatorStylesAdded=false;
+ function addCalculatorStyles(){
+  if(calculatorStylesAdded)return;
   const style=document.createElement("style");
   style.textContent=`
+   #customer > .qp-services-link {
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    padding:4px 8px;
+    color:var(--qp-return-colour);
+    font-size:13px;
+    font-weight:700;
+    text-decoration:underline;
+    text-underline-offset:3px;
+   }
+   #customer > .qp-services-link:focus-visible {outline:2px solid currentColor;outline-offset:2px}
    #customer :is(button.selected:not(:disabled),label:where(.extra,.option):where(:has(input[type="checkbox"]:checked))) {
     background:var(--qp-selection-fill)!important;
     color:var(--qp-selection-ink)!important;
@@ -106,14 +118,21 @@
    }
   `;
   document.head.append(style);
-  selectionStylesAdded=true;
+  calculatorStylesAdded=true;
  }
  function applyCalculator(element,variant){
   if(!element)return get();
   const p=get();
   document.body.style.background=p.bg;
-  addSelectionStyles();
-  setAll(element,{"--qp-selection-fill":p.accent,"--qp-selection-ink":p.buttontext});
+  addCalculatorStyles();
+  if(!element.querySelector(".qp-services-link")){
+   const link=document.createElement("a");
+   link.className="qp-services-link";
+   link.href="./quote-pro-home-v2.html?preview=1";
+   link.textContent="← Back to services";
+   element.prepend(link);
+  }
+  setAll(element,{"--qp-selection-fill":p.accent,"--qp-selection-ink":p.buttontext,"--qp-return-colour":p.text});
   if(variant==="window-count"){
    setAll(element,{
     "--qp-background":p.top,"--qp-font":p.text,"--qp-icons":p.icons,
