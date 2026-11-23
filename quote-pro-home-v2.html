@@ -67,9 +67,10 @@ const services=[
 {id:"soffit",name:"Soffit & Fascia Cleaning",href:()=> "./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html"},
 {id:"conservatoryRoof",name:"Conservatory Roof Cleaning",href:()=> "./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html"}
 ];
+const calculatorUrl=service=>service.href()+"?v=service-navigation";
 const enabled=services.filter(s=>cfg.services[s.id]!==false);
 if(enabled.length===1&&cfg.autoOpenSingle!==false&&!new URLSearchParams(location.search).has("preview")){
- location.replace(enabled[0].href());return;
+ location.replace(calculatorUrl(enabled[0]));return;
 }
 document.getElementById("businessName").textContent=cfg.businessName||defaults.businessName;
 document.getElementById("headline").textContent=cfg.headline||defaults.headline;
@@ -91,7 +92,7 @@ for(const s of enabled){
   paragraph.textContent=text;
   content.append(paragraph);
  }
- a.className="action";a.href=s.href();a.textContent="Get a quote →";
+ a.className="action";a.href=calculatorUrl(s);a.textContent="Get a quote →";
  card.append(ico,content,a);list.append(card);
 }
 })();
