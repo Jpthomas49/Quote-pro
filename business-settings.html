@@ -52,7 +52,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 .footer{font-size:11px;color:#8ca7bc;margin-top:23px;text-align:center}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.preview{position:static}}
 @media(max-width:450px){.pickers{grid-template-columns:repeat(2,minmax(0,1fr))}.intro{padding:19px}.settings{padding:16px}}
-</style><link rel="stylesheet" href="./quote-pro-service-art.css?v=icon-colour"><script src="./quote-pro-theme.js?v=icon-colour"></script><script src="./quote-pro-screen-fades.js?v=2" defer></script></head>
+</style><link rel="stylesheet" href="./quote-pro-service-art.css?v=icon-colour"><link rel="stylesheet" href="./quote-pro-roof-art.css"><script src="./quote-pro-theme.js?v=icon-colour"></script><script src="./quote-pro-screen-fades.js?v=2" defer></script></head>
 <body><div class="wrap">
 <header class="top"><div><div class="brand">Job<b>Caddy</b> / Quote Pro</div><div class="subtitle">Business dashboard · Shared branding and service settings</div></div><a href="./?preview=1">View customer homepage →</a></header>
 <div class="intro"><div class="eyebrow">BUSINESS OWNER PREVIEW</div><h1>Customise all your Quote Pro pages.</h1><p class="lead">One colour theme for the homepage and every quote calculator. Choose your services, set the window-cleaning method and manage prices in each service.</p></div>
@@ -75,6 +75,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <label class="check"><input type="checkbox" id="servicePressure"><span>Pressure Washing</span></label>
 <label class="check"><input type="checkbox" id="serviceSoffit"><span>Soffit &amp; Fascia Cleaning</span></label>
 <label class="check"><input type="checkbox" id="serviceConservatoryRoof"><span>Conservatory Roof Cleaning</span></label>
+<label class="check"><input type="checkbox" id="serviceRoof"><span>Roof Cleaning</span></label>
 <label class="check"><input type="checkbox" id="autoOpenSingle"><span>Open the calculator directly when only one service is active</span></label>
 </section>
 <section class="section">
@@ -92,7 +93,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 </div><button type="button" class="btn" id="restore">Restore shared navy and light-blue theme</button>
 </section>
 <section class="section">
-<h2>Each calculator's own settings</h2><p class="help">Open pricing, extras, minimum charges and quote options. All five calculators currently have their own settings.</p>
+<h2>Each calculator's own settings</h2><p class="help">Open pricing, extras, minimum charges and quote options.</p>
 <div class="service-links">
 <a href="./Quote_Pro_Property_Size_Calculator.html?admin=1">Window Cleaning — Property Size <span>↗</span></a>
 <a href="./Quote_Pro_Window_Cleaning_Prototype_v3.html?admin=1">Window Cleaning — Window Count <span>↗</span></a>
@@ -100,6 +101,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 <a href="./Quote_Pro_Soffit_Fascia_Cleaning_Calculator.html?admin=1">Soffit &amp; Fascia Cleaning <span>↗</span></a>
 <a href="./Quote_Pro_Pressure_Washing_v2.html?admin=1">Pressure Washing (surface-specific £/m² pricing) <span>↗</span></a>
 <a href="./Quote_Pro_Conservatory_Roof_Cleaning_Calculator.html?admin=1">Conservatory Roof Cleaning (roof size or panel count) <span>↗</span></a>
+<a href="./Quote_Pro_Roof_Cleaning_Calculator.html?admin=1">Roof Cleaning <span>↗</span></a>
 </div></section>
 <div class="actions"><button class="btn primary" type="button" id="save">Save shared theme &amp; homepage settings</button><a class="btn" style="text-decoration:none" href="./?preview=1">Preview customer homepage</a></div>
 <div id="status" class="status" role="status"></div>
@@ -117,7 +119,7 @@ h2{font-size:19px;margin:0 0 7px}h3{font-size:15px;margin:0 0 8px}
 const $=id=>document.getElementById(id);
 const colourKey="quotepro-landing-colours-v1",homeKey="quotepro-homepage-owner-v2",windowKey="quotepro-window-method-v1";
 const defaults=window.QuoteProTheme?.defaults||{top:"#0b2345",card:"#17324f",accent:"#73bceb",icons:"#ffffff"};
-const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true,conservatoryRoof:true},autoOpenSingle:true};
+const appDefaults={businessName:"JobCaddy / Quote Pro",headline:"Which service would you like a quote for?",description:"Choose the service you need to get a personalised estimate.",services:{window:true,gutter:true,pressure:true,soffit:true,conservatoryRoof:true,roof:true},autoOpenSingle:true};
 const names={top:"Top",card:"Card",accent:"Accent",icons:"Icons"};
 function fromStorage(key){try{return JSON.parse(localStorage.getItem(key)||"null")}catch(e){return null}}
 function initialColours(){
@@ -127,10 +129,10 @@ function initialColours(){
 const savedHome=fromStorage(homeKey);
 let colours=initialColours(),config={...appDefaults,...savedHome},windowMethod="property";
 if(savedHome?.services && typeof savedHome.services==="object"){
- config.services={...appDefaults.services,conservatoryRoof:false,...savedHome.services};
+ config.services={...appDefaults.services,conservatoryRoof:false,roof:!Object.values(savedHome.services).includes(false),...savedHome.services};
 }else config.services={...appDefaults.services};
 try{windowMethod=localStorage.getItem(windowKey)==="count"?"count":"property"}catch(e){}
-const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning",conservatoryRoof:"Conservatory Roof Cleaning"};
+const serviceLabels={window:"Window Cleaning",gutter:"Gutter Cleaning",pressure:"Pressure Washing",soffit:"Soffit & Fascia Cleaning",conservatoryRoof:"Conservatory Roof Cleaning",roof:"Roof Cleaning"};
 const subheadingFields=new Map();
 for(const [key,name] of Object.entries(serviceLabels)){
  const field=document.createElement("div"),toggle=document.createElement("label"),enabled=document.createElement("input");
